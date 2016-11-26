@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/memoItemRoot">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ToggleButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/memoItemImportance"
+            android:textOn="Imp"
+            android:textOff="NImp"/>
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/memoItemDelete" />
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toStartOf="@id/memoItemDelete"
+            android:layout_toLeftOf="@id/memoItemDelete"
+            android:id="@+id/memoItemCopy"/>
+
+    </RelativeLayout>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/memoItemContent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:textIsSelectable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="true"/>
+</ScrollView>
+</LinearLayout>

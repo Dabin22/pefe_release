@@ -156,7 +156,7 @@ public class MemoViewImpl implements MemoView {
     private void setDefaultInnerMemo(View innerMemo){
         RadioGroup colorParllet;
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
-        Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.folderSpinner);
+        Spinner dirSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
         EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
         //TODO 각 요소 상태 초기화(필요할 경우)
     }

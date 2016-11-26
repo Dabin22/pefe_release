@@ -12,6 +12,7 @@ import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.model.todo.Todo;
 
 import io.realm.DynamicRealm;
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 import io.realm.RealmConfiguration;
@@ -87,6 +88,25 @@ public class RealmControlImpl implements RealmControl {
         memoRealm.close();
     }
 
+    @Override
+    public OrderedRealmCollection<Memo> readMemoByImportance(String dirCode) {
+        return null;
+    }
+
+    @Override
+    public OrderedRealmCollection<Memo> readMemoByDirCode(String dirCode) {
+        return null;
+    }
+
+    @Override
+    public OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode) {
+        return null;
+    }
+
+    @Override
+    public OrderedRealmCollection<Directory> readDirAll() {
+        return null;
+    }
 
 
     private class MemoCreateTransaction implements Realm.Transaction {
@@ -218,6 +238,7 @@ public class RealmControlImpl implements RealmControl {
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {}
     }
+
 
 
 
