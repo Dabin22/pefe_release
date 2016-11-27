@@ -25,7 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TodoFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class TodoFragment extends Fragment implements View.OnClickListener,
+        DatePickerDialog.OnDateSetListener, TodoHandler {
 
     public TodoFragment() {
         // Required empty public constructor
@@ -67,6 +68,12 @@ public class TodoFragment extends Fragment implements View.OnClickListener, Date
     private ViewGroup parent;
     private View dialogView;
 
+
+    /*
+        today : 오늘 날짜
+        selected_day : 선택된 날짜
+        cal : calendar 변수
+     */
     private Date today,selcted_day;
     private Calendar cal;
 
@@ -239,4 +246,58 @@ public class TodoFragment extends Fragment implements View.OnClickListener, Date
     }
 
 
+    @Override
+    public void setTodoType(String type) {
+
+    }
+
+    @Override
+    public void moveDate(int bottonID) {
+
+    }
+
+    @Override
+    public void swapPosition(int src, int tar, String adapterType) {
+
+    }
+
+    @Override
+    public void register_todo(String pickedType, int pickedIndex, String targetType) {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void setSpinner(int index) {
+
+    }
+
+    @Override
+    public void changeBelongDate(Date pickedBelongDate, int pickedIndex) {
+
+    }
+
+    @Override
+    public void unRegister_mode(Date pickedBelongDate, int pickedIndex) {
+
+    }
+
+    @Override
+    public void change_mode(boolean isDlete) {
+
+    }
+
+    @Override
+    public void isEntered(boolean check) {
+
+    }
+
+    @Override
+    public void delete(String pickedType, int pickedIndex, Date pickedBelongDate) {
+
+    }
 }
