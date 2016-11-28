@@ -1,11 +1,10 @@
 package com.pefe.pefememo.Realm;
 
 import android.content.Context;
+
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.model.todo.Todo;
-
-import java.util.ArrayList;
 
 import io.realm.DynamicRealm;
 import io.realm.OrderedRealmCollection;
@@ -53,22 +52,22 @@ public class RealmControlImpl implements RealmControl {
     @RealmModule(classes={Memo.class, Directory.class, Todo.class})
     private class MemoModule{}
 
-    @Override
-    public void addDir(long no, long order, String code, String name, String pw){
-        Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);
-        RealmAsyncTask addDirTask = memoRealm.executeTransactionAsync(new DirCreateTransaction(no,order,code,name,pw)
-                            ,new OnDirCreateSuccess()
-                            ,new OnDirCreateError());
-        addDirTask.cancel();
-        memoRealm.close();
-    }
-//
 //    @Override
 //    public void addDir(long no, long order, String code, String name, String pw){
 //        Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);
-//        memoRealm.executeTransaction(new DirCreateTransaction(no,order,code,name,pw));
+//        RealmAsyncTask addDirTask = memoRealm.executeTransactionAsync(new DirCreateTransaction(no,order,code,name,pw)
+//                            ,new OnDirCreateSuccess()
+//                            ,new OnDirCreateError());
+//        addDirTask.cancel();
 //        memoRealm.close();
 //    }
+
+    @Override
+    public void addDir(long no, long order, String code, String name, String pw){
+        Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);
+        memoRealm.executeTransaction(new DirCreateTransaction(no,order,code,name,pw));
+        memoRealm.close();
+    }
 
     @Override
     public void modifyDir(String code,long order, String name, String pw){
@@ -90,21 +89,21 @@ public class RealmControlImpl implements RealmControl {
         memoRealm.close();
     }
 
-    @Override
-    public void writeMemo(long no, boolean importance, String dirCode, String content){
-        Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);
-        RealmAsyncTask writeTask = memoRealm.executeTransactionAsync(new MemoCreateTransaction(no, importance, dirCode, content)
-                        , new OnMemoCreateSuccess()
-                        , new OnMemoCreateError());
-        writeTask.cancel();
-        memoRealm.close();
-    }
 //    @Override
 //    public void writeMemo(long no, boolean importance, String dirCode, String content){
 //        Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);
-//        memoRealm.executeTransaction(new MemoCreateTransaction(no, importance, dirCode, content));
+//        RealmAsyncTask writeTask = memoRealm.executeTransactionAsync(new MemoCreateTransaction(no, importance, dirCode, content)
+//                        , new OnMemoCreateSuccess()
+//                        , new OnMemoCreateError());
+//        writeTask.cancel();
 //        memoRealm.close();
 //    }
+    @Override
+    public void writeMemo(long no, boolean importance, String dirCode, String content){
+        Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);
+        memoRealm.executeTransaction(new MemoCreateTransaction(no, importance, dirCode, content));
+        memoRealm.close();
+    }
     @Override
     public void modifyMemo(long no, boolean importance, String dirCode, String content){
         Realm memoRealm = Realm.getInstance(RealmControlImpl.memoConfig);

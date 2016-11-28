@@ -27,8 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class TodoFragment extends Fragment implements View.OnClickListener,
@@ -111,7 +111,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //초기화하는 함수입니다.
     private void init(View view) {
         tv_goal = (TextView) view.findViewById(R.id.tv_goal);
-        tv_yearMonth = (TextView) view.findViewById(R.id.tv_nDate);
+        tv_nDate = (TextView) view.findViewById(R.id.tv_nDate);
         tv_yearMonth = (TextView) view.findViewById(R.id.tv_yearMonth);
         ib_before = (ImageButton) view.findViewById(R.id.ib_before);
         ib_next = (ImageButton) view.findViewById(R.id.ib_next);
@@ -120,6 +120,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         sp_todoType = (Spinner) view.findViewById(R.id.sp_todoType);
         delete_layout = (LinearLayout) view.findViewById(R.id.delete_layout);
         menu_layout = (LinearLayout) view.findViewById(R.id.menu_layout);
+
+        map_register_adpaters = new HashMap<>();
 
         init_goal();
         init_dateData();
@@ -131,23 +133,20 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     }
 
-    //date에 따라 어뎁터를 불러오는 맵을 생성합니다.
-    private void init_topAdapter() {
-        map_register_adpaters = new HashMap<>();
-        setTopAdapter();
-    }
-
     //데이트와 맞는 어뎁터가 없을시 생성하고 불러온 데이터를 현재 선택한 날짜의 어뎁터에 추가합니다.
-    private void setTopAdapter() {
-        if(map_register_adpaters.get(selcted_day) == null){
+    private void init_topAdapter() {
+        if(map_register_adpaters.containsKey(selcted_day)){
             map_register_adpaters.put(selcted_day,new RegisteredAdapter(dragListener,this));
         }
+        settingSelectedDate();
+    }
+
+    private void settingSelectedDate() {
         for(SelectedTodo sTodo : total_datas){
             if(compare_date(sTodo.getBelongDate()).equals("same")){
                 map_register_adpaters.get(selcted_day).addData(sTodo);
             }
         }
-
     }
 
 
@@ -208,7 +207,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     private void init_dateData() {
         cal = Calendar.getInstance(Locale.KOREA);
         today = modifi_customDate(Calendar.getInstance().getTime());
-        setDate();
+        if(map_register_adpaters != null)
+            setDate();
     }
 
     //시,분,초를 모두 0으로 초기화 해주는 함수입니다.
@@ -224,9 +224,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         SimpleDateFormat yearMonth_format = new SimpleDateFormat("yyyy MM");
         SimpleDateFormat day_format = new SimpleDateFormat("E요일 \n d  ");
 
-        tv_yearMonth.setText(yearMonth_format.format(yearMonth_format));
+        tv_yearMonth.setText(yearMonth_format.format(selcted_day));
         tv_nDate.setText(day_format.format(selcted_day));
-        setTopAdapter();
 
     }
 
@@ -275,9 +274,11 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         switch (view.getId()) {
             case R.id.ib_before:
                 changeDate(false);
+                settingSelectedDate();
                 break;
             case R.id.ib_next:
                 changeDate(true);
+                settingSelectedDate();
                 break;
             case R.id.tv_goal:
                 setGoal();
