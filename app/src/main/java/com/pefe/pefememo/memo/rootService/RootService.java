@@ -1,4 +1,4 @@
-package com.pefe.pefememo.memo.rootService;
+package com.pefe.pefememo.memo.rootservice;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -18,7 +18,7 @@ import android.view.WindowManager;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.app.MainViewImpl;
+import com.pefe.pefememo.app.main.MainViewImpl;
 import com.pefe.pefememo.lockscreen.LockScreenViewImpl;
 import com.pefe.pefememo.memo.memo.MemoView;
 import com.pefe.pefememo.memo.memo.MemoViewImpl;

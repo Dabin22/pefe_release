@@ -2,6 +2,7 @@ package com.pefe.pefememo.memo.memo;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.ToggleButton;
 
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.memo.rootService.RootService;
+import com.pefe.pefememo.memo.rootservice.RootService;
 
 import java.util.ArrayList;
 
@@ -41,17 +42,19 @@ public class MemoViewImpl implements MemoView {
     private float displayHeight;
     private float displayWidth;
 
-    private int innerType = 1;
+    private int innerType = 0;
     private final int numbOfType = 2;
-    private final int MEMO = 1;
-    private final int TODO = 2;
+    private final int MEMO = 0;
+    private final int TODO = 1;
 
     private View trnspBtn = null;
 
-    private FrameLayout memoRoot = null;
-    private ViewGroup memoFrame = null;
+//    private FrameLayout memoRoot = null;
+    View memoFrame;
     private View innerMemo = null;
     private View innerTodo = null;
+
+    private boolean memoOnOff = false;
 
     public MemoViewImpl(Context context, WindowManager wm, LayoutInflater inflater, float displayHeight, float displayWidth) {
         this.memoController = new MemoCotrollerImpl();
@@ -64,7 +67,11 @@ public class MemoViewImpl implements MemoView {
 
     @Override
     public void initMemo() {
-        settrnspBtn();
+        trnspBtn = new View(context);
+        trnspBtn.setOnTouchListener(new TrnspBtnListener());
+        setTrnspBtn();
+
+        setDefaultMemo();
     }
 
     @Override
@@ -73,14 +80,13 @@ public class MemoViewImpl implements MemoView {
     }
 
     //동작 감지를 위한 투명버튼 세팅, 메모에서 버튼으로 윈도우 매니저에 넣어진 뷰를 변화시킬 수 있음
-    private void settrnspBtn(){
-        trnspBtn = new View(context);
-        trnspBtn.setOnTouchListener(new TrnspBtnListener());
-        //메모루트가 null이 아닐 경우 => 현재 wm에 메모가 들어가 있음
-        if(memoRoot != null) {
-            wm.removeViewImmediate(memoRoot);
+    private void setTrnspBtn(){
+        //메모가 켜져있을 경우 root제거
+        Log.e("memoStatus",memoOnOff+"");
+        if(memoOnOff) {
+            wm.removeViewImmediate(memoFrame);
             wm.addView(trnspBtn, setTrnspBtnParams());
-            memoRoot = null;
+            memoOnOff = false;
         }else{
             wm.addView(trnspBtn, setTrnspBtnParams());
         }
@@ -89,23 +95,22 @@ public class MemoViewImpl implements MemoView {
 
     //wm에 메모 뷰를 넣는 역할, 투명버튼에서 메모로 전환도 담당
     private void setMemo(){
-        if(memoRoot == null){
-            setDefaultMemo();
-        }
-        if(trnspBtn!=null){
+        if(!memoOnOff){
             wm.removeViewImmediate(trnspBtn);
             wm.addView(memoFrame,setMemoParams());
-            trnspBtn = null;
+            memoOnOff= true;
         }
     }
 
     //wm안의 뷰를 모두 없애고 wm도 초기화
     private void removeWm(){
-        if(memoFrame != null){
+        if(memoOnOff){
             wm.removeViewImmediate(memoFrame);
         }else if(trnspBtn != null){
             wm.removeViewImmediate(trnspBtn);
         }
+        memoFrame = null;
+        trnspBtn = null;
         wm = null;
     }
 
@@ -124,7 +129,7 @@ public class MemoViewImpl implements MemoView {
 
     private WindowManager.LayoutParams setMemoParams(){
         //TODO 사용자에게 정의된 비율 사용
-        int memoHeight = (int) displayHeight/3;
+        int memoHeight = (int) displayHeight/2;
         WindowManager.LayoutParams memoParams  = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
                 memoHeight,
                 WindowManager.LayoutParams.TYPE_PHONE
@@ -135,8 +140,8 @@ public class MemoViewImpl implements MemoView {
     }
     //메모 내부 초기화
     private void setDefaultMemo(){
-        memoRoot = new FrameLayout(context);
-        memoFrame = (ViewGroup) inflater.inflate(R.layout.window_memo,memoRoot);
+//        memoRoot = new FrameLayout(context);
+        memoFrame = View.inflate(context,R.layout.window_memo,null);
         innerMemo = memoFrame.findViewById(R.id.innerMemo);
         setDefaultInnerMemo(innerMemo);
         innerTodo = memoFrame.findViewById(R.id.innerTodo);
@@ -196,7 +201,7 @@ public class MemoViewImpl implements MemoView {
     private class exitListener implements View.OnClickListener{
         @Override
         public void onClick(View view) {
-            settrnspBtn();
+            setTrnspBtn();
         }
     }
 
@@ -216,7 +221,7 @@ public class MemoViewImpl implements MemoView {
     private class purposeListener implements View.OnClickListener{
         @Override
         public void onClick(View view) {
-            innerType = (innerType++)%numbOfType;
+            innerType = (innerType+1)%numbOfType;
             switch (innerType){
                 case MEMO:
                     ((Button)view).setText(R.string.memo);
@@ -235,7 +240,7 @@ public class MemoViewImpl implements MemoView {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             float trnsp = i/1000f;
-            memoRoot.setAlpha(trnsp);
+            memoFrame.setAlpha(trnsp);
         }
 
         @Override

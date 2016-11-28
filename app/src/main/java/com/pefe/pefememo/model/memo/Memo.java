@@ -1,13 +1,17 @@
 package com.pefe.pefememo.model.memo;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by dodoproject on 2016-11-07.
  */
 
 public class Memo extends RealmObject {
+
+    @PrimaryKey
     private long no;
+
     private String dirCode;
     private boolean important;
     private String content;

@@ -10,6 +10,6 @@ public class LockScreenViewImpl extends AppCompatActivity implements LockScreenV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lock_screen_view_impl);
+        setContentView(R.layout.activity_lock_screen_view);
     }
 }

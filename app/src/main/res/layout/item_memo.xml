@@ -33,12 +33,11 @@
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/memoItemContent"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:inputType="textMultiLine"
         android:ems="10"
         android:textIsSelectable="true"
         android:focusable="false"

@@ -13,9 +13,14 @@ import io.realm.OrderedRealmCollection;
 
 public interface RealmControl {
     void realmInit();
-    void writeMemo(View innerMemo, long no, boolean importance, String dirCode, String content);
+    void realmClose();
+    void addDir(long no, long order, String code, String name, String pw);
+    void modifyDir(String code, long order, String name, String pw);
+    void deleteDir(String code);
+    void writeMemo(long no, boolean importance, String dirCode, String content);
     void modifyMemo(long no, boolean importance, String dirCode, String content);
     void deleteMemo(long no);
+    Memo readAMemoByNO(long no);
     OrderedRealmCollection<Memo> readMemoByImportance(String dirCode);
     OrderedRealmCollection<Memo> readMemoByDirCode(String dirCode);
     OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode);

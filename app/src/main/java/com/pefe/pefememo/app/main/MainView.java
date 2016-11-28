@@ -1,4 +1,4 @@
-package com.pefe.pefememo.app;
+package com.pefe.pefememo.app.main;
 
 /**
  * Created by dodoproject on 2016-11-24.
