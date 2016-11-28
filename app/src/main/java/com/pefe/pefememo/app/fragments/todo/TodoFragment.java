@@ -24,6 +24,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TodoFragment extends Fragment implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener, TodoHandler {
@@ -110,6 +111,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     //오늘 날짜를 저장하고 날짜 표시하는 함수 setDate()를 호출합니다.
     private void init_dateData() {
+        cal = Calendar.getInstance(Locale.KOREA);
         today = modifi_customDate(Calendar.getInstance().getTime());
         setDate();
     }
