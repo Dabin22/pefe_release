@@ -18,13 +18,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.pefe.pefememo.R;
+import com.pefe.pefememo.model.todo.SelectedTodo;
+import com.pefe.pefememo.model.todo.Todo;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.HashMap;
+
 
 public class TodoFragment extends Fragment implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener, TodoHandler {
@@ -34,7 +39,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     }
 
 
-    public static TodoFragment newInstance(String param1, String param2) {
+    public static TodoFragment newInstance() {
         TodoFragment fragment = new TodoFragment();
         return fragment;
     }
@@ -58,11 +63,11 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
                      delete_layout : 삭제버튼이 들어있는 레이아웃으로 드래그 시에 보이면 메뉴 레이아웃이
                                      안보여진다.
      */
-    private TextView tv_goal,tv_yearMonth,tv_nDate;
-    private ImageButton ib_before,ib_next;
-    private RecyclerView unRegister_todoList,registered_todoList;
+    private TextView tv_goal, tv_yearMonth, tv_nDate;
+    private ImageButton ib_before, ib_next;
+    private RecyclerView unRegister_todoList, registered_todoList;
     private Spinner sp_todoType;
-    private LinearLayout delete_layout,menu_layout;
+    private LinearLayout delete_layout, menu_layout;
 
     //goal dialog 창에 관련된 것들
     private LayoutInflater inflater;
@@ -75,15 +80,29 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         selected_day : 선택된 날짜
         cal : calendar 변수
      */
-    private Date today,selcted_day;
+    private Date today, selcted_day;
     private Calendar cal;
+
+
+
+    private TodoDragListener dragListener;
+    private TodoLongClickListener longClickListener;
+    private TodoTypeSelectItemListener selectItemListener;
+
+    private UnRegisterAdapter onceAdapter, repeatAdapter, oldAdapter;
+    private HashMap<String, UnRegisterAdapter> map_unRegister_adpaters;
+    private static final String ONCE = "Once";
+    private static final String REPEAT = "Repeat";
+    private static final String OLD = "Old";
+
+    private HashMap<Date,RegisteredAdapter> map_register_adpaters;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_todo, container, false);
-        this.inflater =inflater;
+        this.inflater = inflater;
         parent = container;
         init(view);
         return view;
@@ -91,23 +110,99 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     //초기화하는 함수입니다.
     private void init(View view) {
-        tv_goal = (TextView)view.findViewById(R.id.tv_goal);
-        tv_yearMonth = (TextView)view.findViewById(R.id.tv_nDate);
-        tv_yearMonth = (TextView)view.findViewById(R.id.tv_yearMonth);
-        ib_before = (ImageButton)view.findViewById(R.id.ib_before);
-        ib_next = (ImageButton)view.findViewById(R.id.ib_next);
-        unRegister_todoList = (RecyclerView)view.findViewById(R.id.unRegister_todoList);
-        registered_todoList = (RecyclerView)view.findViewById(R.id.registered_todoList);
-        sp_todoType = (Spinner)view.findViewById(R.id.sp_todoType);
-        delete_layout = (LinearLayout)view.findViewById(R.id.delete_layout);
-        menu_layout = (LinearLayout)view.findViewById(R.id.menu_layout);
+        tv_goal = (TextView) view.findViewById(R.id.tv_goal);
+        tv_yearMonth = (TextView) view.findViewById(R.id.tv_nDate);
+        tv_yearMonth = (TextView) view.findViewById(R.id.tv_yearMonth);
+        ib_before = (ImageButton) view.findViewById(R.id.ib_before);
+        ib_next = (ImageButton) view.findViewById(R.id.ib_next);
+        unRegister_todoList = (RecyclerView) view.findViewById(R.id.unRegister_todoList);
+        registered_todoList = (RecyclerView) view.findViewById(R.id.registered_todoList);
+        sp_todoType = (Spinner) view.findViewById(R.id.sp_todoType);
+        delete_layout = (LinearLayout) view.findViewById(R.id.delete_layout);
+        menu_layout = (LinearLayout) view.findViewById(R.id.menu_layout);
 
         init_goal();
         init_dateData();
         init_listener();
+        init_bottomAdapter();
+        init_todoDate();
+        init_topAdapter();
 
 
     }
+
+    //date에 따라 어뎁터를 불러오는 맵을 생성합니다.
+    private void init_topAdapter() {
+        map_register_adpaters = new HashMap<>();
+        setTopAdapter();
+    }
+
+    //데이트와 맞는 어뎁터가 없을시 생성하고 불러온 데이터를 현재 선택한 날짜의 어뎁터에 추가합니다.
+    private void setTopAdapter() {
+        if(map_register_adpaters.get(selcted_day) == null){
+            map_register_adpaters.put(selcted_day,new RegisteredAdapter(dragListener,this));
+        }
+        for(SelectedTodo sTodo : total_datas){
+            if(compare_date(sTodo.getBelongDate()).equals("same")){
+                map_register_adpaters.get(selcted_day).addData(sTodo);
+            }
+        }
+
+    }
+
+
+    private HashMap<Date, ArrayList<SelectedTodo>> map_selected_datas;
+    private ArrayList<SelectedTodo> total_datas;
+    //기존의 디비를 불러와 입력합니다.
+    private void init_todoDate() {
+        //todo 데이터 가져오기
+        ArrayList<Todo> todos = new ArrayList<>();
+        ArrayList<SelectedTodo> sTodos = new ArrayList<>();
+
+
+        total_datas = new ArrayList<>();
+        for(Todo todo : todos){
+             map_unRegister_adpaters.get(todo.getType()).addData(todo);
+        }
+
+        for(SelectedTodo todo : sTodos){
+            if(compare_date(todo.getBelongDate()).equals("past")){
+                if(!todo.isDone() && todo.getType().equals(ONCE)){
+                    Todo temp_todo = modifi_selectedTodo(todo);
+                    map_unRegister_adpaters.get(OLD).addData(temp_todo);
+                }else if(todo.isDone()){
+                    total_datas.add(todo);
+                }
+            }
+        }
+
+
+    }
+
+    private Todo modifi_selectedTodo(SelectedTodo todo) {
+        Todo temp_todo = new Todo();
+        temp_todo.setCreatDate(today);
+        temp_todo.setType(ONCE);
+        temp_todo.setContent(todo.getContent());
+        temp_todo.setDone(false);
+        return temp_todo;
+    }
+
+
+
+
+    //아래 어뎁터 생성후 맵에 연결합니다.
+    private void init_bottomAdapter() {
+        onceAdapter = new UnRegisterAdapter(dragListener);
+        repeatAdapter = new UnRegisterAdapter(dragListener);
+        oldAdapter = new UnRegisterAdapter(dragListener);
+        map_unRegister_adpaters = new HashMap<>();
+        map_unRegister_adpaters.put(ONCE, onceAdapter);
+        map_unRegister_adpaters.put(REPEAT, repeatAdapter);
+        map_unRegister_adpaters.put(OLD, oldAdapter);
+
+    }
+
 
     //오늘 날짜를 저장하고 날짜 표시하는 함수 setDate()를 호출합니다.
     private void init_dateData() {
@@ -131,8 +226,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
         tv_yearMonth.setText(yearMonth_format.format(yearMonth_format));
         tv_nDate.setText(day_format.format(selcted_day));
+        setTopAdapter();
 
     }
+
 
 
     //각종 리스너를 생성 및 설정하는 함수 입니다.
@@ -141,6 +238,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         tv_yearMonth.setOnClickListener(this);
         ib_before.setOnClickListener(this);
         ib_next.setOnClickListener(this);
+
+        dragListener = new TodoDragListener(this);
+        longClickListener = new TodoLongClickListener();
+        selectItemListener = new TodoTypeSelectItemListener(this);
 
 
     }
@@ -155,8 +256,6 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             tv_goal.setText(old_goal);
         }
     }
-
-
 
 
     //프래그먼트 종료시 tv_goal에 적힌 내용을 sharedPreference에 저장합니다.
@@ -200,6 +299,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             cal.add(Calendar.DATE, -1);
         }
         setDate();
+
     }
 
     //달력 다이얼로그 창을 통해서 날짜를 선택하게 합니다.
@@ -247,6 +347,17 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         builder.show();
     }
 
+    //오늘 날짜와 비교하여 값을 리턴하여 줍니다.
+    @Override
+    public String compare_date(Date belongDate) {
+        if(today.compareTo(belongDate) == 0 ){
+            return "same";
+        }else if(today.compareTo(belongDate) >0){
+            return "past";
+        }else{
+            return "future";
+        }
+    }
 
     @Override
     public void setTodoType(String type) {

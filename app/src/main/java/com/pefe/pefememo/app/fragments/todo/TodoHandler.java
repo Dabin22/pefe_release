@@ -28,4 +28,6 @@ public interface TodoHandler {
     void isEntered(boolean check);
 
     void delete(String pickedType, int pickedIndex, Date pickedBelongDate);
+
+    String compare_date(Date belongDate);
 }

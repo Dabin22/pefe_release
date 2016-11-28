@@ -24,42 +24,56 @@ public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.Vi
     private ArrayList<SelectedTodo> datas;
     private SelectedTodo todo;
     private int belong_day = -1;
-    public RegisteredAdapter(){
+    private TodoDragListener dragListener;
+    private TodoLongClickListener longClickListener;
+    private TodoHandler handler;
+
+
+    public RegisteredAdapter(TodoDragListener dragListener, TodoHandler handler) {
         datas = new ArrayList<>();
+        this.dragListener = dragListener;
+        longClickListener = new TodoLongClickListener();
+        this.handler = handler;
     }
 
     @Override
     public RegisteredAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_registered_todo_list,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_registered_todo_list, parent, false);
         return new ViewHolder(view);
     }
 
-    public void addData(SelectedTodo todo){
+    public void addData(SelectedTodo todo) {
         datas.add(todo);
         recycle();
     }
-    public void addDatas(ArrayList<SelectedTodo> subDatas){
+
+    public void addDatas(ArrayList<SelectedTodo> subDatas) {
         datas.addAll(subDatas);
         recycle();
     }
-    public void removeData(SelectedTodo todo){
+
+    public void removeData(SelectedTodo todo) {
         datas.remove(todo);
         recycle();
     }
+
     public void removeData(int pickedIndex) {
         datas.remove(pickedIndex);
         recycle();
     }
+
     public SelectedTodo pop(int pickedIndex) {
-        SelectedTodo pop_todo =datas.get(pickedIndex);
+        SelectedTodo pop_todo = datas.get(pickedIndex);
         removeData(pop_todo);
         recycle();
         return pop_todo;
     }
-    public String getType(int index){
+
+    public String getType(int index) {
         return datas.get(index).getType();
     }
-    private void recycle(){
+
+    private void recycle() {
         notifyDataSetChanged();
     }
 
@@ -69,24 +83,27 @@ public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.Vi
         todo = datas.get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
-        holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean done) {
-                todo.setDone(done);
-            }
-        });
-
+        if (!handler.compare_date(todo.getBelongDate()).equals("past")) {
+            holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean done) {
+                    todo.setDone(done);
+                }
+            });
+        }else{
+            holder.ck_todo_done.setVisibility(View.GONE);
+        }
         TodoViewType viewType = new TodoViewType();
-        if(belong_day ==0){
+        if (belong_day == 0) {
             viewType.setType("Today");
             viewType.setIndex(position);
             viewType.setBelongDate(todo.getBelongDate());
             holder.itemView.setTag(viewType);
-        }else if(belong_day == -1){
+        } else if (belong_day == -1) {
             viewType.setType("Tommorow");
             viewType.setIndex(position);
             holder.itemView.setTag(viewType);
-        }else{
+        } else {
             Log.e("error", "belong_day is null!");
         }
     }
@@ -100,11 +117,14 @@ public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.Vi
         TextView tv_unput_todo;
         ImageView iv_unput_todo;
         CheckBox ck_todo_done;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            tv_unput_todo =(TextView)itemView.findViewById(R.id.tv_unput_todo);
-            iv_unput_todo = (ImageView)itemView.findViewById(R.id.iv_unput_todo);
-            ck_todo_done = (CheckBox)itemView.findViewById(R.id.ck_todo_done);
+            tv_unput_todo = (TextView) itemView.findViewById(R.id.tv_unput_todo);
+            iv_unput_todo = (ImageView) itemView.findViewById(R.id.iv_unput_todo);
+            ck_todo_done = (CheckBox) itemView.findViewById(R.id.ck_todo_done);
+            itemView.setOnLongClickListener(longClickListener);
+            itemView.setOnDragListener(dragListener);
         }
     }
 }

@@ -24,10 +24,13 @@ import static com.pefe.pefememo.R.id.tv_unput_todo;
 public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.ViewHolder> {
 
     private ArrayList<Todo> datas;
-    //private Todo_handler handler;
+    private TodoDragListener dragListener;
+    private TodoLongClickListener longClickListener;
 
-    public UnRegisterAdapter(){
+    public UnRegisterAdapter(TodoDragListener dragListener){
         datas = new ArrayList<>();
+        this.dragListener = dragListener;
+        longClickListener = new TodoLongClickListener();
     }
     @Override
     public UnRegisterAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -111,6 +114,8 @@ public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.Vi
             super(itemView);
             tv_unRegister_todo =(TextView)itemView.findViewById(tv_unput_todo);
             iv_unRegister_todo = (ImageView)itemView.findViewById(iv_unput_todo);
+            itemView.setOnDragListener(dragListener);
+            itemView.setOnLongClickListener(longClickListener);
         }
     }
 }

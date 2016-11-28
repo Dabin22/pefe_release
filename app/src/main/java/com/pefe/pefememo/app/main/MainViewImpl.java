@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -30,8 +30,6 @@ import com.pefe.pefememo.sample.Sample;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
-
 public class MainViewImpl extends AppCompatActivity {
 
     PreferenceControl preferenceControl;
@@ -42,8 +40,7 @@ public class MainViewImpl extends AppCompatActivity {
 
     ArrayList<Fragment> fragments = new ArrayList<>();
     MemoFragment memoFragment;
-    SettingsFragment todoFragment;
-    //TodoFragment todoFragment;
+    TodoFragment todoFragment;
     SettingsFragment settingsFragment;
 
 
@@ -98,8 +95,7 @@ public class MainViewImpl extends AppCompatActivity {
         switchLockScreen.setOnCheckedChangeListener(new CheckChangeListener());
         tabs = (TabLayout) findViewById(R.id.tabs);
         memoFragment = MemoFragment.newInstance();
-        //todoFragment = TodoFragment.newInstance("Ester","Egg");
-        todoFragment = SettingsFragment.newInstance();
+        todoFragment = TodoFragment.newInstance();
         settingsFragment = SettingsFragment.newInstance();
         fragments.add(memoFragment);
         fragments.add(todoFragment);
