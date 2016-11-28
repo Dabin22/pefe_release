@@ -4,13 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:id="@+id/memoFragment"
     tools:context="com.pefe.pefememo.app.fragments.memo.MemoFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:id="@+id/searchBar"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="S"
+            android:id="@+id/searchBtn"/>
+        <ToggleButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:id="@+id/folderBtn"
+            android:text="F"/>
+    </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ScrollView
-        android:layout_width="0dp"
-        android:layout_weight="8"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:id="@+id/memoScroll">
@@ -22,17 +48,22 @@
     </ScrollView>
 
     <ScrollView
-        android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_width="70dp"
         android:layout_height="match_parent"
-        android:scrollbarAlwaysDrawVerticalTrack="true">
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:layout_gravity="end"
+        android:id="@+id/folderList"
+        android:visibility="gone">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/greenWhite">
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="40dp" />
+                android:layout_height="70dp"
+                android:id="@+id/addFolderBtn"/>
+
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,5 +71,5 @@
         </LinearLayout>
 
     </ScrollView>
-
+    </FrameLayout>
 </LinearLayout>
