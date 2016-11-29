@@ -91,11 +91,11 @@ public class MainViewImpl extends AppCompatActivity {
             realmController.writeMemoNT(m.isImportant(), m.getDirCode(), m.getContent());
         }
         for (Todo t : Sample.createSampleTodo()) {
-            Log.e("Memo",t.getNo()+"");
+            Log.e("todo",t.getNo()+"");
             realmController.writeTodoNT(t.getType(), t.getContent(), t.getCreateDate());
         }
         for (SelectedTodo st : Sample.createSampleSelectedTodo()){
-            Log.e("Memo",st.getNo()+"");
+            Log.e("stodo",st.getNo()+"");
             realmController.writeSelectedTodoNT(st.getType(),st.getContent(),st.getBelongDate(),st.getPutDate());
         }
         }
