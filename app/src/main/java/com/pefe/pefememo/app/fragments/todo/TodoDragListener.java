@@ -36,7 +36,7 @@ public class TodoDragListener implements View.OnDragListener {
 
         switch (dragEvent.getAction()) {
             case DragEvent.ACTION_DRAG_STARTED:
-                if (pickedType.equals("Today") || pickedType.equals("Today_list")) {
+                if (pickedType.equals("Today")) {
                     handler.setSpinner(pickedIndex);
                 }
                 handler.change_mode(true);
@@ -74,8 +74,7 @@ public class TodoDragListener implements View.OnDragListener {
 
                     if (targetType.equals(pickedType)) {
                         handler.swapPosition(pickedIndex, targetIndex, targetType);
-                    } else if (targetType.equals("Today") || targetType.equals("Tommorow")
-                            || targetType.equals("Today_list") || targetType.equals("Tommorow_list")) {
+                    } else if (targetType.equals("Today") || targetType.equals("Today_list")) {
                         handler.register_todo(pickedType, pickedIndex, targetType);
                     }
 

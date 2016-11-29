@@ -14,13 +14,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/iv_unput_todo"
+            android:id="@+id/iv_register_todo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_rotate" />
 
         <TextView
-            android:id="@+id/tv_unput_todo"
+            android:id="@+id/tv_register_todo"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

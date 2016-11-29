@@ -14,9 +14,6 @@ import com.pefe.pefememo.model.todo.Todo;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.pefe.pefememo.R.id.iv_unput_todo;
-import static com.pefe.pefememo.R.id.tv_unput_todo;
-
 /**
  * Created by Dabin on 2016-11-27.
  */
@@ -60,7 +57,7 @@ public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.Vi
     }
     public Todo pop(int pickedIndex) {
         Todo pop_todo =datas.get(pickedIndex);
-        removeData(pop_todo);
+        datas.get(pickedIndex).setDone(true);
         recycle();
         return pop_todo;
     }
@@ -73,9 +70,14 @@ public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.Vi
     @Override
     public void onBindViewHolder(UnRegisterAdapter.ViewHolder holder, int position) {
         Todo todo = datas.get(position);
-        holder.tv_unRegister_todo.setText(todo.getContent());
-        holder.iv_unRegister_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
-        setViewTag(todo.getType(),holder.itemView,position);
+        if(!todo.isDone()){
+            holder.tv_unRegister_todo.setText(todo.getContent());
+            holder.iv_unRegister_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
+            setViewTag(todo.getType(),holder.itemView,position);
+        }else{
+            holder.itemView.setVisibility(View.GONE);
+        }
+
 
     }
 
@@ -106,14 +108,18 @@ public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.Vi
         return datas.size();
     }
 
+    public Todo get(int pickedIndex) {
+        return datas.get(pickedIndex);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_unRegister_todo;
         ImageView iv_unRegister_todo;
         public ViewHolder(View itemView) {
             super(itemView);
-            tv_unRegister_todo =(TextView)itemView.findViewById(tv_unput_todo);
-            iv_unRegister_todo = (ImageView)itemView.findViewById(iv_unput_todo);
+            tv_unRegister_todo =(TextView)itemView.findViewById(R.id.tv_unRegister_todo);
+            iv_unRegister_todo = (ImageView)itemView.findViewById(R.id.iv_unRegister_todo);
             itemView.setOnDragListener(dragListener);
             itemView.setOnLongClickListener(longClickListener);
         }

@@ -113,6 +113,14 @@ public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.Vi
         return datas.size();
     }
 
+    public boolean isExistence(SelectedTodo sTodo) {
+        for(SelectedTodo todo : datas){
+            if(todo.getContent().equals(sTodo.getContent()))
+                return true;
+        }
+        return false;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_unput_todo;
         ImageView iv_unput_todo;
@@ -120,8 +128,8 @@ public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tv_unput_todo = (TextView) itemView.findViewById(R.id.tv_unput_todo);
-            iv_unput_todo = (ImageView) itemView.findViewById(R.id.iv_unput_todo);
+            tv_unput_todo = (TextView) itemView.findViewById(R.id.tv_register_todo);
+            iv_unput_todo = (ImageView) itemView.findViewById(R.id.iv_register_todo);
             ck_todo_done = (CheckBox) itemView.findViewById(R.id.ck_todo_done);
             itemView.setOnLongClickListener(longClickListener);
             itemView.setOnDragListener(dragListener);

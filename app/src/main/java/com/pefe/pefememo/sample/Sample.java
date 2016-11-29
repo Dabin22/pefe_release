@@ -2,8 +2,11 @@ package com.pefe.pefememo.sample;
 
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
+import com.pefe.pefememo.model.todo.SelectedTodo;
+import com.pefe.pefememo.model.todo.Todo;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by dodoproject on 2016-11-25.
@@ -86,6 +89,63 @@ public class Sample {
                 "젊은 장돌뱅이. 아버지 얼굴을 모르고 태어나 계부와 마찰을 계기로 장돌뱅이가 되었다. 여담이지만 왼손잡이가 유전되는지는 논란이 있지만, 두 사람의 부자 관계를 암시하는 문학적 장치라 봐야 한다. I Am Your Father[2][3] 연명판 애니에서의 성우는 엄상현.");
         memos.add(m6);
     return memos;
+    }
+
+    public static ArrayList<Todo> creatSampleTodo(){
+        ArrayList<Todo> sample = new ArrayList<>();
+        Todo todo1 = new Todo();
+        todo1.setNo(1);
+        todo1.setContent("밥 먹기");
+        todo1.setCreatDate(Calendar.getInstance().getTime());
+        todo1.setType("Repeat");
+        sample.add(todo1);
+
+        Todo todo2 = new Todo();
+        todo2.setNo(2);
+        todo2.setContent("잠자기");
+        todo2.setCreatDate(Calendar.getInstance().getTime());
+        todo2.setType("Repeat");
+        sample.add(todo2);
+
+        Todo todo3 = new Todo();
+        todo3.setNo(3);
+        todo3.setContent("Realm");
+        todo3.setCreatDate(Calendar.getInstance().getTime());
+        todo3.setType("Once");
+        sample.add(todo3);
+
+        return sample;
+    }
+
+    public static ArrayList<SelectedTodo> creatSampleSelectedTodo(){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE,-3);
+        ArrayList<SelectedTodo> sample = new ArrayList<>();
+        SelectedTodo sTodo1 = new SelectedTodo();
+        sTodo1.setDone(false);
+        sTodo1.setType("Once");
+        sTodo1.setContent("계좌 이체");
+        sTodo1.setBelongDate(cal.getTime());
+        sample.add(sTodo1);
+        SelectedTodo sTodo2 = new SelectedTodo();
+        sTodo2.setDone(false);
+        sTodo2.setType("Repeat");
+        sTodo2.setContent("잠자기");
+        sTodo2.setBelongDate(cal.getTime());
+        sample.add(sTodo2);
+        SelectedTodo sTodo3 = new SelectedTodo();
+        sTodo3.setDone(true);
+        sTodo3.setType("Repeat");
+        sTodo3.setContent("잠자기");
+        sTodo3.setBelongDate(cal.getTime());
+        cal.add(Calendar.DATE,6);
+        SelectedTodo sTodo4 = new SelectedTodo();
+        sTodo4.setDone(false);
+        sTodo4.setType("Repeat");
+        sTodo4.setContent("잠자기");
+        sTodo4.setBelongDate(cal.getTime());
+        sample.add(sTodo4);
+        return sample;
     }
 
 }
