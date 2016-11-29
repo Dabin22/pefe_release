@@ -52,10 +52,10 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         content = (EditText) findViewById(R.id.memoEditorContent);
         content.setText(memo.getContent());
         close = (Button) findViewById(R.id.memoEditorClose);
-        close.setOnClickListener(new CloseClickListener());
         save = (Button) findViewById(R.id.memoEditorSave);
-        save.setOnClickListener(new SaveClickListener(content));
         copy = (Button) findViewById(R.id.memoEditorCopy);
+        close.setOnClickListener(new CloseClickListener());
+        save.setOnClickListener(new SaveClickListener());
         copy.setOnClickListener(new CopyClickListener(content));
     }
 
@@ -97,15 +97,13 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     }
 
     private class SaveClickListener implements View.OnClickListener{
-        EditText content;
 
-        private SaveClickListener(EditText content) {
-            this.content = content;
-        }
+        private SaveClickListener() {}
         @Override
         public void onClick(View view) {
             String memoContent = content.getText().toString();
-            realmController.modifyMemo(memo.getNo(),memo.isImportant(),memo.getDirCode(),memoContent);
+            boolean important = importance.isChecked();
+            realmController.modifyMemo(memo.getNo(),important,memo.getDirCode(),memoContent);
             Toast.makeText(MemoEditorViewImpl.this, "Memo Saved", Toast.LENGTH_SHORT).show();
             view.setVisibility(View.GONE);
         }

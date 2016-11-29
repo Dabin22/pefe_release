@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -45,20 +46,29 @@ public class MainViewImpl extends AppCompatActivity {
     TodoFragment todoFragment;
     SettingsFragment settingsFragment;
 
+    RealmController realmController;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_view);
-        //addSamples();
+        realmController = new RealmControllerImpl(this);
+        realmController.realmInit();
+        addSamples();
         versionCheck();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        checkRoot();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        realmController.realmClose();
+        realmController = null;
     }
 
     @Override
@@ -72,28 +82,30 @@ public class MainViewImpl extends AppCompatActivity {
     }
 
     private void addSamples() {
-        RealmController realmController = new RealmControllerImpl(this);
-        realmController.realmInit();
         for (Directory d : Sample.getDirectories()) {
+            Log.e("Directory",d.getCode());
             realmController.createDir(d.getOrder(), d.getCode(), d.getName(), d.getPw());
         }
         for (Memo m : Sample.getMemos()) {
+            Log.e("Memo",m.getNo()+"");
             realmController.writeMemo(m.isImportant(), m.getDirCode(), m.getContent());
         }
         for (Todo t : Sample.createSampleTodo()) {
+            Log.e("Memo",t.getNo()+"");
             realmController.writeTodo(t.getType(), t.getContent(), t.getCreateDate());
         }
         for (SelectedTodo st : Sample.createSampleSelectedTodo()){
+            Log.e("Memo",st.getNo()+"");
             realmController.writeSelectedTodo(st.getType(),st.getContent(),st.getBelongDate(),st.getPutDate());
         }
-        realmController.realmClose();
-        realmController = null;
-    }
+        }
 
     private void init(){
         SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
         preferenceControl = new PreferenceControlImpl(preferences);
         drawViews();
+        checkRoot();
+
     }
 
     private void drawViews(){

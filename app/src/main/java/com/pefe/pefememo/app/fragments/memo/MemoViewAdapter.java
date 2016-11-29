@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,6 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         holder.content.setMaxLines(MAXLINES);
         if(isImportant){
             holder.importance.setVisibility(View.VISIBLE);
-
         }
 //      holder.copy.setOnClickListener(new CopyClickListener(holder.content));
         holder.delete.setOnClickListener(new DeleteClickListener(no));

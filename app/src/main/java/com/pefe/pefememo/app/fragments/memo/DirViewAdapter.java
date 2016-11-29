@@ -36,6 +36,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         this.memoDistributor = memoDistributor;
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //View dir = View.inflate(parent.getContext(),R.layout.item_directory,null);
