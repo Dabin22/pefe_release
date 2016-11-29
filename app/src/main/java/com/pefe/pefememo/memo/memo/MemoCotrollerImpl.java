@@ -19,13 +19,13 @@ public class MemoCotrollerImpl implements MemoController {
     }
     @Override
     public void saveMemo(boolean importance, String dirCode, String content){
-        long no = realmController.getLargestNo(RealmControllerImpl.MEMO)+1;
-        realmController.writeMemo(no,importance,dirCode,content);
+//        long no = realmController.getLargestNo(RealmControllerImpl.MEMO)+1;
+        realmController.writeMemo(importance,dirCode,content);
     }
 
     @Override
     public void saveTodo(boolean repeat, String content) {
-        long no = realmController.getLargestNo(RealmControllerImpl.TODO)+1;
+//        long no = realmController.getLargestNo(RealmControllerImpl.TODO)+1;
         String type = null;
         if(repeat){
             type = Todo.REPEAT;
@@ -34,6 +34,6 @@ public class MemoCotrollerImpl implements MemoController {
         }
         //Todo DateType?
         Date currentDate = Calendar.getInstance().getTime();
-        realmController.writeTodo(no,type,content,currentDate);
+        realmController.writeTodo(type,content,currentDate);
     }
 }

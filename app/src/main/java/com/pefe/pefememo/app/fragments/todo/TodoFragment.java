@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.model.todo.SelectedTodo;
 import com.pefe.pefememo.model.todo.Todo;
+import com.pefe.pefememo.realm.RealmController;
+import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.sample.Sample;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -34,10 +36,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import io.realm.OrderedRealmCollection;
+
 
 public class TodoFragment extends Fragment implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener, TodoHandler {
 
+    RealmController realmController;
     public TodoFragment() {
         // Required empty public constructor
     }
@@ -103,7 +108,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        realmController = new RealmControllerImpl(getContext());
         View view = inflater.inflate(R.layout.fragment_todo, container, false);
         this.inflater = inflater;
         parent = container;
@@ -166,7 +171,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            final OldAdapter oldAdapter = new OldAdapter(old_datas, inflater);
+            OrderedRealmCollection<Todo> datas = realmController.readTodoByType(Todo.OLD);
+            final OldAdapter oldAdapter = new OldAdapter(getContext(),datas,true);
             Log.e("old_list", oldAdapter + "");
             RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             old_list.setLayoutManager(manager);
@@ -216,8 +222,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //기존의 디비를 불러와 입력합니다.
     private void init_todoData() {
         //todo 데이터 가져오기
-        ArrayList<Todo> todos = Sample.creatSampleTodo();
-        ArrayList<SelectedTodo> sTodos = Sample.creatSampleSelectedTodo();
+        ArrayList<Todo> todos = Sample.createSampleTodo();
+        ArrayList<SelectedTodo> sTodos = Sample.createSampleSelectedTodo();
 
         old_datas = new ArrayList<>();
         total_datas = new ArrayList<>();

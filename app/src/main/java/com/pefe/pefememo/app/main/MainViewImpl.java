@@ -16,6 +16,8 @@ import android.widget.Switch;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
+import com.pefe.pefememo.model.todo.SelectedTodo;
+import com.pefe.pefememo.model.todo.Todo;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.fragments.memo.MemoFragment;
@@ -69,16 +71,20 @@ public class MainViewImpl extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void addSamples(){
+    private void addSamples() {
         RealmController realmController = new RealmControllerImpl(this);
-        Sample sample = new Sample();
-        for(Directory d : sample.getDirectories()){
-            realmController.createDir(d.getNo(),d.getOrder(),d.getCode(),d.getName(),d.getPw());
+        for (Directory d : Sample.getDirectories()) {
+            realmController.createDir(d.getOrder(), d.getCode(), d.getName(), d.getPw());
         }
-        for(Memo m : sample.getMemos()){
-            realmController.writeMemo(m.getNo(),m.isImportant(),m.getDirCode(),m.getContent());
+        for (Memo m : Sample.getMemos()) {
+            realmController.writeMemo(m.isImportant(), m.getDirCode(), m.getContent());
         }
-
+        for (Todo t : Sample.createSampleTodo()) {
+            realmController.writeTodo(t.getType(), t.getContent(), t.getCreateDate());
+        }
+        for (SelectedTodo st : Sample.createSampleSelectedTodo()){
+            realmController.writeSelectedTodo(st.getType(),st.getContent(),st.getBelongDate(),st.getPutDate());
+        }
     }
 
     private void init(){

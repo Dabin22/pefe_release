@@ -91,7 +91,7 @@ public class Sample {
     return memos;
     }
 
-    public static ArrayList<Todo> creatSampleTodo(){
+    public static ArrayList<Todo> createSampleTodo(){
         ArrayList<Todo> sample = new ArrayList<>();
         Todo todo1 = new Todo();
         todo1.setNo(1);
@@ -117,7 +117,7 @@ public class Sample {
         return sample;
     }
 
-    public static ArrayList<SelectedTodo> creatSampleSelectedTodo(){
+    public static ArrayList<SelectedTodo> createSampleSelectedTodo(){
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE,-3);
         ArrayList<SelectedTodo> sample = new ArrayList<>();

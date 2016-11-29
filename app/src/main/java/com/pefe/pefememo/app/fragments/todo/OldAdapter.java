@@ -1,5 +1,8 @@
 package com.pefe.pefememo.app.fragments.todo;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,23 +18,26 @@ import com.pefe.pefememo.model.todo.Todo;
 
 import java.util.ArrayList;
 
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
+
 /**
  * Created by Dabin on 2016-11-28.
  */
 
-public class OldAdapter extends RecyclerView.Adapter<OldAdapter.ViewHolder> {
+public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHolder> {
 
-    ArrayList<Todo> datas;
-    LayoutInflater inflater;
+    Context context;
 
-    public OldAdapter(ArrayList<Todo> datas, LayoutInflater inflater){
-        this.datas = datas;
-        this.inflater = inflater;
+    public OldAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Todo> data, boolean autoUpdate) {
+        super(context, data, autoUpdate);
+        this.context = context;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_registered_todo_list,null);
+        View view = View.inflate(context,R.layout.item_registered_todo_list,parent);
         Log.e("view",view+"");
         return new ViewHolder(view);
     }
@@ -39,8 +45,8 @@ public class OldAdapter extends RecyclerView.Adapter<OldAdapter.ViewHolder> {
     private Todo todo;
     @Override
     public void onBindViewHolder(OldAdapter.ViewHolder holder, int position) {
-        Log.e("oldAdapter","data = " + datas.get(position));
-        todo = datas.get(position);
+        Log.e("oldAdapter","data = " + getData().get(position));
+        todo = getData().get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
         holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -58,12 +64,12 @@ public class OldAdapter extends RecyclerView.Adapter<OldAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return getData().size();
     }
 
     public ArrayList<Todo> popData() {
         ArrayList<Todo> recycleDatas = new ArrayList<>();
-        for (Todo todo : datas){
+        for (Todo todo : getData()){
             if(todo.isDone()){
                 todo.setDone(false);
                 recycleDatas.add(todo);

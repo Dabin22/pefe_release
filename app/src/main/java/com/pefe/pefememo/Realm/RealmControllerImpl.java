@@ -1,6 +1,7 @@
 package com.pefe.pefememo.realm;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
@@ -25,9 +26,11 @@ public class RealmControllerImpl implements RealmController {
 
     Context context;
 
+    public static final String DIR = "DIR";
     public static final String MEMO = "MEMO";
     public static final String TODO = "TODO";
     public static final String SELECTED_TODO = "SELECTED_TODO";
+
 
     private final int NEWEST_VERSION = 0;
     private static RealmConfiguration memoConfig;
@@ -78,7 +81,8 @@ public class RealmControllerImpl implements RealmController {
     }
 
     @Override
-    public void createDir(long no, long order, String code, String name, String pw){
+    public void createDir(long order, String code, String name, String pw){
+        long no = getLargestNo(RealmControllerImpl.DIR)+1;
         RealmAsyncTask addDirTask = pefeRealm.executeTransactionAsync(new DirCreateTransaction(no,order,code,name,pw)
                             ,new OnDirCreateSuccess()
                             ,new OnDirCreateError());
@@ -111,6 +115,12 @@ public class RealmControllerImpl implements RealmController {
         long result = 0;
         Number temp;
         switch (whose){
+            case DIR:
+                temp = pefeRealm.where(Directory.class).max("no");
+                if(temp != null){
+                    result = temp.longValue();
+                }
+                break;
             case MEMO:
                 temp = pefeRealm.where(Memo.class).max("no");
                 if(temp != null){
@@ -133,7 +143,8 @@ public class RealmControllerImpl implements RealmController {
         return  result;
     }
     @Override
-    public void writeMemo(long no, boolean importance, String dirCode, String content){
+    public void writeMemo(boolean importance, String dirCode, String content){
+        long no = getLargestNo(RealmControllerImpl.MEMO)+1;
         RealmAsyncTask writeMemoTask = pefeRealm.executeTransactionAsync(new MemoWriteTransaction(no, importance, dirCode, content)
                         , new OnMemoWriteSuccess()
                         , new OnMemoWriteError());
@@ -178,7 +189,8 @@ public class RealmControllerImpl implements RealmController {
     }
 
     @Override
-    public void writeTodo(long no, String type, String content, Date createDate) {
+    public void writeTodo(String type, String content, Date createDate) {
+        long no = getLargestNo(RealmControllerImpl.TODO)+1;
         RealmAsyncTask writeTodoTask = pefeRealm.executeTransactionAsync(new TodoWriteTransaction(no,type,content,createDate)
                         ,new OnTodoWriteSuccess()
                         ,new OnTodoWriteError());
@@ -209,9 +221,15 @@ public class RealmControllerImpl implements RealmController {
         RealmResults<Todo> todos = pefeRealm.where(Todo.class).contains("content",keyWord).findAll();
         return todos;
     }
+    @Override
+    public OrderedRealmCollection<Todo> readTodoByType(String type) {
+        RealmResults<Todo> todos = pefeRealm.where(Todo.class).contains("type",type).findAll();
+        return todos;
+    }
 
     @Override
-    public void writeSelectedTodo(long no, String type, String content, Date belongDate, Date putDate) {
+    public void writeSelectedTodo(String type, String content, Date belongDate, Date putDate) {
+        long no = getLargestNo(RealmControllerImpl.SELECTED_TODO)+1;
         RealmAsyncTask writeSelectedTodoTask = pefeRealm.executeTransactionAsync(new SelectedTodoWriteTransaction(no,type,content,belongDate,putDate)
                 ,new OnSelectedTodoWriteSuccess()
                 ,new OnSelectedTodoWriteError());
@@ -364,6 +382,7 @@ public class RealmControllerImpl implements RealmController {
 
         @Override
         public void onSuccess() {
+            Toast.makeText(context, "Memo Saved", Toast.LENGTH_SHORT).show();
         }
     }
     private class OnMemoWriteError implements Realm.Transaction.OnError {
@@ -402,7 +421,7 @@ public class RealmControllerImpl implements RealmController {
 
         @Override
         public void onSuccess() {
-            //directory 내 Board 새로고침
+            Toast.makeText(context, "Memo Modified", Toast.LENGTH_SHORT).show();
         }
     }
     private class OnMemoModifyError implements Realm.Transaction.OnError{
@@ -428,7 +447,7 @@ public class RealmControllerImpl implements RealmController {
     private class OnMemoDeleteSuccess implements Realm.Transaction.OnSuccess {
         @Override
         public void onSuccess() {
-
+            Toast.makeText(context, "Memo Deleted", Toast.LENGTH_SHORT).show();
         }
     }
     private class OnMemoDeleteError implements Realm.Transaction.OnError {
@@ -464,6 +483,7 @@ public class RealmControllerImpl implements RealmController {
 
         @Override
         public void onSuccess() {
+            Toast.makeText(context, "Todo Saved", Toast.LENGTH_SHORT).show();
         }
     }
     private class OnTodoWriteError implements Realm.Transaction.OnError {
@@ -504,7 +524,7 @@ public class RealmControllerImpl implements RealmController {
 
         @Override
         public void onSuccess() {
-            //directory 내 Board 새로고침
+            Toast.makeText(context, "Todo Modified", Toast.LENGTH_SHORT).show();
         }
     }
     private class OnTodoModifyError implements Realm.Transaction.OnError{
@@ -530,7 +550,7 @@ public class RealmControllerImpl implements RealmController {
     private class OnTodoDeleteSuccess implements Realm.Transaction.OnSuccess {
         @Override
         public void onSuccess() {
-
+            Toast.makeText(context, "Todo Deleted", Toast.LENGTH_SHORT).show();
         }
     }
     private class OnTodoDeleteError implements Realm.Transaction.OnError {

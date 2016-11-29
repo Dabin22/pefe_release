@@ -18,13 +18,13 @@ public interface RealmController {
     void realmClose();
     void taskClose();
     
-    void createDir(long no, long order, String code, String name, String pw);
+    void createDir(long order, String code, String name, String pw);
     void modifyDir(String code, long order, String name, String pw);
     void deleteDir(String code);
     OrderedRealmCollection<Directory> readDirAll();
     
     long getLargestNo(String whose);
-    void writeMemo(long no, boolean importance, String dirCode, String content);
+    void writeMemo( boolean importance, String dirCode, String content);
     void modifyMemo(long no, boolean importance, String dirCode, String content);
     void deleteMemo(long no);
     Memo readAMemoByNO(long no);
@@ -32,13 +32,14 @@ public interface RealmController {
     OrderedRealmCollection<Memo> readMemoByDirCode(String dirCode);
     OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode);
     
-    void writeTodo(long no, String type, String content, Date createDate);
+    void writeTodo(String type, String content, Date createDate);
     void modifyTodo(long no, String type, String content, Date createDate, boolean done);
     void deleteTodo(long no);
     Todo readATodoByNO(long no);
     OrderedRealmCollection<Todo> readTodoByContent(String keyWord);
+    OrderedRealmCollection<Todo> readTodoByType(String type);
 
-    void writeSelectedTodo( long no, String type, String content, Date belongDate, Date putDate);
+    void writeSelectedTodo(String type, String content, Date belongDate, Date putDate);
     void modifySelectedTodo(long no, boolean done, String type, String content, Date belongDate, Date putDate);
     void deleteSelectedTodo(long no);
     SelectedTodo readASelectedTodoByNO(long no);
