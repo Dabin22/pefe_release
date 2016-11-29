@@ -7,21 +7,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.realm.RealmController;
-import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.fragments.memo.MemoViewAdapter;
 import com.pefe.pefememo.model.memo.Memo;
-
-import rx.Observable;
-import rx.Subscriber;
+import com.pefe.pefememo.realm.RealmController;
+import com.pefe.pefememo.realm.RealmControllerImpl;
 
 public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorView {
     RealmController realmController;
