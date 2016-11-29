@@ -1,5 +1,6 @@
 package com.pefe.pefememo.realm;
 
+import com.pefe.pefememo.app.fragments.memo.MemoFragmentController;
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.model.todo.SelectedTodo;
@@ -14,6 +15,7 @@ import io.realm.OrderedRealmCollection;
  */
 
 public interface RealmController {
+    void getMemoDistributor(MemoFragmentController memoDistributor);
     void realmInit();
     void realmClose();
     void taskClose();
@@ -26,6 +28,7 @@ public interface RealmController {
     long getLargestNo(String whose);
     void writeMemo( boolean importance, String dirCode, String content);
     void modifyMemo(long no, boolean importance, String dirCode, String content);
+    void modifyMemoinEditor(long no, boolean importance, String dirCode, String content);
     void deleteMemo(long no);
     Memo readAMemoByNO(long no);
     OrderedRealmCollection<Memo> readMemoByImportance(String dirCode);

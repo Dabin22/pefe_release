@@ -6,6 +6,9 @@ package com.pefe.pefememo.app.fragments.memo;
 
 public interface MemoFragmentController {
     void setCustomResult(String keyWord);
-    void addFolder(int poisition);
+    void addFolder(int position);
     void addFolder(long no, long order, String dirCode,String name, String pw);
+
+    String getCurrentFolderCode();
+    void setMemosByDirCode(String code);
 }

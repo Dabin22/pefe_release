@@ -58,7 +58,7 @@ public class MemoFragment extends Fragment {
         realmController = new RealmControllerImpl(getContext());
         realmController.realmInit();
         memoFragmentController = new MemoFragmentControllerImpl(getContext(), realmController,memoView,dirView);
-
+        realmController.getMemoDistributor(memoFragmentController);
         return memoFragment;
     }
 

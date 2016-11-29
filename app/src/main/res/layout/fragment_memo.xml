@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:background="@color/blueAccent">
+        android:background="@color/blueRep">
         <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"

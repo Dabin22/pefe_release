@@ -51,7 +51,7 @@ public class MainViewImpl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_view);
-//        addSamples();
+        //addSamples();
         versionCheck();
     }
 
@@ -73,6 +73,7 @@ public class MainViewImpl extends AppCompatActivity {
 
     private void addSamples() {
         RealmController realmController = new RealmControllerImpl(this);
+        realmController.realmInit();
         for (Directory d : Sample.getDirectories()) {
             realmController.createDir(d.getOrder(), d.getCode(), d.getName(), d.getPw());
         }
@@ -85,6 +86,8 @@ public class MainViewImpl extends AppCompatActivity {
         for (SelectedTodo st : Sample.createSampleSelectedTodo()){
             realmController.writeSelectedTodo(st.getType(),st.getContent(),st.getBelongDate(),st.getPutDate());
         }
+        realmController.realmClose();
+        realmController = null;
     }
 
     private void init(){

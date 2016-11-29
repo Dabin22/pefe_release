@@ -17,7 +17,9 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/todoContent"
-        android:hint="Content"/>
+        android:hint="Content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
     <ToggleButton
         android:layout_width="0dp"
         android:layout_weight="1"

@@ -28,7 +28,7 @@ import io.realm.RealmRecyclerViewAdapter;
 public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAdapter.ViewHolder> {
 
     private RealmController realmController;
-    private MemoDistributor memoDistributor;
+    private MemoFragmentController memoDistributor;
 
     public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);

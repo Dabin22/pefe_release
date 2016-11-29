@@ -174,12 +174,18 @@ public class MemoViewImpl implements MemoView {
         todoList = new ArrayList<>();
         GridLayout todoBoard = (GridLayout) innerTodo.findViewById(R.id.todoBoard);
 //        Spinner todoDirSpinner = (Spinner) parent.findViewById(R.id.todoDirSpinner);
+        defaultingTodo(todoBoard);
+    }
+    private void defaultingTodo(GridLayout todoBoard){
         View todoItem = View.inflate(context,R.layout.item_todo,null);
         ToggleButton repeatOnceBtn = (ToggleButton) todoItem.findViewById(R.id.todoOnceRepeatBtn);
         ToggleButton addDeleteBtn = (ToggleButton)todoItem.findViewById(R.id.todoAddDelBtn);
-        addDeleteBtn.setOnCheckedChangeListener(new deleteAddTodoListener());
+        addDeleteBtn.setOnCheckedChangeListener(new DeleteAddTodoListener());
+        EditText content = (EditText)todoItem.findViewById(R.id.todoContent);
+        content.setOnClickListener(new AddTodoItemListener());
         todoItem.setAlpha(TEMP_TODOITEM_ALPHA);
         todoBoard.addView(todoItem);
+
     }
     //투명버튼 터치 리스너, 동작으로 메모를 띄울 지 설정한다
 
@@ -222,6 +228,9 @@ public class MemoViewImpl implements MemoView {
                     String dirCode = Sample.defaultCode;
                     String content = memoContent.getText().toString();
                     memoController.saveMemo(important,dirCode,content);
+
+                    importanceTBtn.setChecked(false);
+                    memoContent.setText("");
                     break;
                 case TODO:
                     for(View todoItem : todoList){
@@ -235,6 +244,10 @@ public class MemoViewImpl implements MemoView {
                             memoController.saveTodo(repeat,tContent);
                         }
                     }
+                    GridLayout todoBoard =(GridLayout)innerTodo.findViewById(R.id.todoBoard);
+                    todoBoard.removeAllViews();
+                    defaultingTodo(todoBoard);
+                    todoList.clear();
                     break;
             }
         }
@@ -269,7 +282,7 @@ public class MemoViewImpl implements MemoView {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {}
     }
-    private class deleteAddTodoListener implements CompoundButton.OnCheckedChangeListener{
+    private class DeleteAddTodoListener implements CompoundButton.OnCheckedChangeListener{
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             GridLayout todoBoard = (GridLayout) compoundButton.getParent().getParent();
@@ -277,18 +290,35 @@ public class MemoViewImpl implements MemoView {
             if(!b){
                 EditText content = (EditText) todoItem.findViewById(R.id.todoContent);
                 content.setText("");
-                todoBoard.removeView(todoItem);}
+                todoList.remove(todoItem);
+                todoBoard.removeView(todoItem);
+                todoItem = null;
+            }
             else{
                 View parent =(View) compoundButton.getParent();
                 parent.setAlpha(1f);
                 todoList.add(parent);
                 View newAddTodo = inflater.inflate(R.layout.item_todo,null);
                 ToggleButton deleteAddBtn = (ToggleButton) newAddTodo.findViewById(R.id.todoAddDelBtn);
-                deleteAddBtn.setOnCheckedChangeListener(new deleteAddTodoListener());
+                EditText content = (EditText)newAddTodo.findViewById(R.id.todoContent);
+                content.setOnClickListener(new AddTodoItemListener());
+                deleteAddBtn.setOnCheckedChangeListener(new DeleteAddTodoListener());
                 todoBoard.addView(newAddTodo);
                 newAddTodo.setAlpha(0.3f);}
         }
     }
+    private class AddTodoItemListener implements View.OnClickListener{
 
-
+        @Override
+        public void onClick(View view) {
+            View todoItem = (View) view.getParent();
+            ToggleButton deleteAddButton = (ToggleButton) todoItem.findViewById(R.id.todoAddDelBtn);
+            deleteAddButton.setChecked(true);
+            EditText content = (EditText)view;
+            content.setFocusable(true);
+            content.setFocusableInTouchMode(true);
+            todoItem.setAlpha(1f);
+            todoList.add(todoItem);
+}
+    }
 }

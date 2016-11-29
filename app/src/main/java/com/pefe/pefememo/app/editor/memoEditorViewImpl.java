@@ -28,8 +28,6 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
 
     Memo memo;
 
-    boolean contentChanged = false;
-
     ToggleButton importance;
     Button close;
     Button save;
@@ -51,7 +49,6 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     private void setMemo(Memo memo){
         importance = (ToggleButton) findViewById(R.id.memoEditorImportance);
         importance.setChecked(memo.isImportant());
-        importance.setOnCheckedChangeListener(new ImportanceChangeListener());
         content = (EditText) findViewById(R.id.memoEditorContent);
         content.setText(memo.getContent());
         close = (Button) findViewById(R.id.memoEditorClose);
@@ -60,9 +57,6 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         save.setOnClickListener(new SaveClickListener(content));
         copy = (Button) findViewById(R.id.memoEditorCopy);
         copy.setOnClickListener(new CopyClickListener(content));
-
-        Observable<TextViewTextChangeEvent> textChange = RxTextView.textChangeEvents((EditText)findViewById(R.id.memoEditorContent));
-        textChange.subscribe(new OnContentChange());
     }
 
     @Override
@@ -77,25 +71,8 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         realmController.realmClose();
     }
 
-    private class OnContentChange extends Subscriber<TextViewTextChangeEvent>{
-        @Override
-        public void onCompleted() {}
-        @Override
-        public void onError(Throwable e) {e.printStackTrace();}
 
-        @Override
-        public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
-            contentChanged = true;
-            save.setVisibility(View.VISIBLE);
-        }
-    }
 
-    private class ImportanceChangeListener implements CompoundButton.OnCheckedChangeListener{
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            realmController.modifyMemo(memo.getNo(),b,memo.getDirCode(),memo.getContent());
-        }
-    }
     private class CopyClickListener implements View.OnClickListener{
         EditText content = null;
         String memoContent = null;
@@ -130,7 +107,6 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
             String memoContent = content.getText().toString();
             realmController.modifyMemo(memo.getNo(),memo.isImportant(),memo.getDirCode(),memoContent);
             Toast.makeText(MemoEditorViewImpl.this, "Memo Saved", Toast.LENGTH_SHORT).show();
-            contentChanged = false;
             view.setVisibility(View.GONE);
         }
     }
@@ -138,12 +114,8 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
 
         @Override
         public void onClick(View view) {
-            if(contentChanged){
-                //TODO 닫을거야?
-                finish();
-            }else{
-                finish();
-            }
+            finish();
+
         }
     }
 }

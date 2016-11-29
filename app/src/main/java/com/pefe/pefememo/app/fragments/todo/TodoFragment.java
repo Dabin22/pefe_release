@@ -109,6 +109,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         realmController = new RealmControllerImpl(getContext());
+        realmController.realmInit();
         View view = inflater.inflate(R.layout.fragment_todo, container, false);
         this.inflater = inflater;
         parent = container;
@@ -331,6 +332,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         SharedPreferences pref = getActivity().getSharedPreferences("Goal", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("goal", tv_goal.getText().toString());
+        realmController.realmClose();
         editor.commit();
     }
 

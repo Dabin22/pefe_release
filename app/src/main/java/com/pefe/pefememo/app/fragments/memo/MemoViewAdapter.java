@@ -54,13 +54,13 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         boolean isImportant = getData().get(position).isImportant();
         String dirCode = getData().get(position).getDirCode();
         String memoContent = getData().get(position).getContent();
-
-        holder.importance.setChecked(isImportant);
         holder.content.setText(memoContent);
         holder.content.setMaxLines(MAXLINES);
+        if(isImportant){
+            holder.importance.setVisibility(View.VISIBLE);
 
-        holder.importance.setOnCheckedChangeListener(new ImportanceChangeListener(no, dirCode, memoContent));
-        holder.copy.setOnClickListener(new CopyClickListener(holder.content));
+        }
+//      holder.copy.setOnClickListener(new CopyClickListener(holder.content));
         holder.delete.setOnClickListener(new DeleteClickListener(no));
         holder.content.setOnClickListener(new ContentClickListener(no));
     }
@@ -68,7 +68,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
 
     class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout memoItemRoot;
-        ToggleButton importance;
+        View importance;
         Button copy;
         Button delete;
         TextView content;
@@ -76,29 +76,28 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         private ViewHolder(View itemView) {
             super(itemView);
             memoItemRoot = (LinearLayout) itemView.findViewById(R.id.memoItemRoot);
-            importance = (ToggleButton) itemView.findViewById(R.id.memoItemImportance);
+            importance = itemView.findViewById(R.id.memoItemImportance);
             copy = (Button) itemView.findViewById(R.id.memoItemCopy);
             delete = (Button) itemView.findViewById(R.id.memoItemDelete);
             content = (TextView) itemView.findViewById(R.id.memoItemContent);
         }
     }
 
-    private class ImportanceChangeListener implements CompoundButton.OnCheckedChangeListener{
-        long no;
-        String dirCode;
-        String content;
-
-        private ImportanceChangeListener(long no, String dirCode, String content) {
-            this.no = no;
-            this.dirCode = dirCode;
-            this.content = content;
-        }
-
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            realmController.modifyMemo(no,b,dirCode,content);
-        }
-    }
+//    private class ImportanceChangeListener implements CompoundButton.OnCheckedChangeListener{
+//        long no;
+//        String dirCode;
+//        String content;
+//
+//        private ImportanceChangeListener(long no, String dirCode, String content) {
+//            this.no = no;
+//            this.dirCode = dirCode;
+//            this.content = content;
+//        }
+//        @Override
+//        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//            realmController.modifyMemo(no,b,dirCode,content);
+//        }
+//    }
     private class CopyClickListener implements View.OnClickListener{
         TextView content = null;
         String memoContent = null;

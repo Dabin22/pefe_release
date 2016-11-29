@@ -33,8 +33,7 @@
             android:layout_toStartOf="@id/memoEditorClose"
             android:layout_toLeftOf="@id/memoEditorClose"
             android:id="@+id/memoEditorSave"
-            android:text="S"
-            android:visibility="gone"/>
+            android:text="S"/>
 
         <Button
             android:layout_width="40dp"

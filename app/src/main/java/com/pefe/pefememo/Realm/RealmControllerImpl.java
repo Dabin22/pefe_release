@@ -3,10 +3,12 @@ package com.pefe.pefememo.realm;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.pefe.pefememo.app.fragments.memo.MemoFragmentController;
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.model.todo.SelectedTodo;
 import com.pefe.pefememo.model.todo.Todo;
+import com.pefe.pefememo.sample.Sample;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,9 +39,16 @@ public class RealmControllerImpl implements RealmController {
     private Realm pefeRealm;
     private ArrayList<RealmAsyncTask> taskList;
 
+    private MemoFragmentController memoDistributor;
+
     public RealmControllerImpl(Context context){
         this.context =context;
         realmConfig();
+    }
+
+    @Override
+    public void getMemoDistributor(MemoFragmentController memoDistributor) {
+        this.memoDistributor = memoDistributor;
     }
     //settings
     @RealmModule(classes={Memo.class, Directory.class, Todo.class, SelectedTodo.class})
@@ -157,6 +166,10 @@ public class RealmControllerImpl implements RealmController {
                         , new OnMemoModifySuccess()
                         , new OnMemoModifyError());
         taskList.add(modifyMemoTask);
+    }
+    @Override
+    public void modifyMemoinEditor(long no, boolean importance, String dirCode, String content){
+        pefeRealm.executeTransaction(new MemoModifyTransaction(no,importance,dirCode,content));
     }
     @Override
     public void deleteMemo(long no){
@@ -421,6 +434,8 @@ public class RealmControllerImpl implements RealmController {
 
         @Override
         public void onSuccess() {
+//            String currentCode = memoDistributor.getCurrentFolderCode();
+//            memoDistributor.setMemosByDirCode(Sample.defaultCode);
             Toast.makeText(context, "Memo Modified", Toast.LENGTH_SHORT).show();
         }
     }
@@ -447,6 +462,8 @@ public class RealmControllerImpl implements RealmController {
     private class OnMemoDeleteSuccess implements Realm.Transaction.OnSuccess {
         @Override
         public void onSuccess() {
+//            String currentCode = memoDistributor.getCurrentFolderCode();
+//            memoDistributor.setMemosByDirCode(currentCode);
             Toast.makeText(context, "Memo Deleted", Toast.LENGTH_SHORT).show();
         }
     }

@@ -15,7 +15,7 @@ import io.realm.OrderedRealmCollection;
  * Created by dodoproject on 2016-11-25.
  */
 
-public class MemoFragmentControllerImpl implements MemoFragmentController, MemoDistributor{
+public class MemoFragmentControllerImpl implements MemoFragmentController {
     Context context;
     RealmController realmController = null;
     RecyclerView memoRecyclerView,dirRecyclerView;
@@ -48,11 +48,11 @@ public class MemoFragmentControllerImpl implements MemoFragmentController, MemoD
     @Override
     public void addFolder(int position){
         Directory d1 = Sample.getDirectories().get(position);
-        realmController.createDir(d1.getNo(),d1.getOrder(),d1.getCode(),d1.getName(),d1.getPw());
+        realmController.createDir(d1.getOrder(),d1.getCode(),d1.getName(),d1.getPw());
     }
     @Override
     public void addFolder(long no, long order, String dirCode,String name, String pw){
-        realmController.createDir(no,order,dirCode,name,pw);
+        realmController.createDir(order,dirCode,name,pw);
     }
 
     @Override
@@ -64,6 +64,11 @@ public class MemoFragmentControllerImpl implements MemoFragmentController, MemoD
         memoRecyclerView.setAdapter(memoAdapter);
         memoRecyclerView.setLayoutManager(gridLayoutManager);
     }
+    @Override
+    public String getCurrentFolderCode() {
+        return currentFolderCode;
+    }
+
     private void setDirRecyclerView(){
         directories = realmController.readDirAll();
         DirViewAdapter dirViewAdapter = new DirViewAdapter(context,directories,true,MemoFragmentControllerImpl.this, realmController);
