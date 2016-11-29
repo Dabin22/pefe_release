@@ -3,12 +3,14 @@ package com.pefe.pefememo.model.todo;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Dabin on 2016-11-27.
  */
 
 public class SelectedTodo extends RealmObject {
+    @PrimaryKey
     private long no;
     private boolean done;
     private String type;

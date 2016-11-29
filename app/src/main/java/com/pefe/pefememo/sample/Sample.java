@@ -20,7 +20,7 @@ public class Sample {
     private static ArrayList<Memo> memos;
     private static ArrayList<Directory> directories;
 
-    public ArrayList<Directory> getDirectories(){
+    public static ArrayList<Directory> getDirectories(){
         directories = new ArrayList<>();
         Directory defaultDirectory;
         Directory sampleDirectory;
@@ -43,7 +43,7 @@ public class Sample {
 
         return  directories;
     }
-    public ArrayList<Memo> getMemos(){
+    public static ArrayList<Memo> getMemos(){
         memos = new ArrayList<>();
         Memo m1 = new Memo();
         m1.setNo(1);
@@ -96,21 +96,21 @@ public class Sample {
         Todo todo1 = new Todo();
         todo1.setNo(1);
         todo1.setContent("밥 먹기");
-        todo1.setCreatDate(Calendar.getInstance().getTime());
+        todo1.setCreateDate(Calendar.getInstance().getTime());
         todo1.setType("Repeat");
         sample.add(todo1);
 
         Todo todo2 = new Todo();
         todo2.setNo(2);
         todo2.setContent("잠자기");
-        todo2.setCreatDate(Calendar.getInstance().getTime());
+        todo2.setCreateDate(Calendar.getInstance().getTime());
         todo2.setType("Repeat");
         sample.add(todo2);
 
         Todo todo3 = new Todo();
         todo3.setNo(3);
         todo3.setContent("Realm");
-        todo3.setCreatDate(Calendar.getInstance().getTime());
+        todo3.setCreateDate(Calendar.getInstance().getTime());
         todo3.setType("Once");
         sample.add(todo3);
 

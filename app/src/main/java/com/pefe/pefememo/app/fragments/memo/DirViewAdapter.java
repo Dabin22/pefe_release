@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.Realm.RealmControl;
+import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.model.directory.Directory;
 
 import io.realm.OrderedRealmCollection;
@@ -27,12 +27,12 @@ import io.realm.RealmRecyclerViewAdapter;
 //todo 디렉토리 삭제 방법 고민하기
 public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAdapter.ViewHolder> {
 
-    private RealmControl realmControl;
+    private RealmController realmController;
     private MemoDistributor memoDistributor;
 
-    public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmControl realmControl) {
+    public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);
-        this.realmControl = realmControl;
+        this.realmController = realmController;
         this.memoDistributor = memoDistributor;
     }
 

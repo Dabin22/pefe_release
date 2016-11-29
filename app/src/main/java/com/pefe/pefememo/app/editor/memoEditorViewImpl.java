@@ -15,8 +15,8 @@ import android.widget.ToggleButton;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.Realm.RealmControl;
-import com.pefe.pefememo.Realm.RealmControlImpl;
+import com.pefe.pefememo.realm.RealmController;
+import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.fragments.memo.MemoViewAdapter;
 import com.pefe.pefememo.model.memo.Memo;
 
@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorView {
-    RealmControl realmControl;
+    RealmController realmController;
 
     Memo memo;
 
@@ -40,13 +40,13 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memo_editor_view);
-        realmControl = new RealmControlImpl(this);
+        realmController = new RealmControllerImpl(this);
+        realmController.realmInit();
 
         long no = getIntent().getExtras().getLong(MemoViewAdapter.MEMO_NO);
-        memo = realmControl.readAMemoByNO(no);
+        memo = realmController.readAMemoByNO(no);
+
         setMemo(memo);
-
-
     }
     private void setMemo(Memo memo){
         importance = (ToggleButton) findViewById(R.id.memoEditorImportance);
@@ -65,6 +65,18 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         textChange.subscribe(new OnContentChange());
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        realmController.taskClose();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realmController.realmClose();
+    }
+
     private class OnContentChange extends Subscriber<TextViewTextChangeEvent>{
         @Override
         public void onCompleted() {}
@@ -81,8 +93,7 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     private class ImportanceChangeListener implements CompoundButton.OnCheckedChangeListener{
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            memo.setImportant(b);
-            realmControl.modifyMemo(memo.getNo(),memo.isImportant(),memo.getDirCode(),memo.getContent());
+            realmController.modifyMemo(memo.getNo(),b,memo.getDirCode(),memo.getContent());
         }
     }
     private class CopyClickListener implements View.OnClickListener{
@@ -99,7 +110,7 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
             copyMemo(memoContent);
         }
     }
-
+    //출저 http://iw90.tistory.com/154
     private final String COPYCLIP_LABEL = "COPIED_MEMO";
     private void copyMemo(String content ){
         ClipboardManager clipboardManager = (ClipboardManager)this.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -117,7 +128,7 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         @Override
         public void onClick(View view) {
             String memoContent = content.getText().toString();
-            realmControl.modifyMemo(memo.getNo(),memo.isImportant(),memo.getDirCode(),memoContent);
+            realmController.modifyMemo(memo.getNo(),memo.isImportant(),memo.getDirCode(),memoContent);
             Toast.makeText(MemoEditorViewImpl.this, "Memo Saved", Toast.LENGTH_SHORT).show();
             contentChanged = false;
             view.setVisibility(View.GONE);

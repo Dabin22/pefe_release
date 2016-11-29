@@ -3,6 +3,8 @@ package com.pefe.pefememo.model.todo;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by dodoproject on 2016-11-07.
@@ -11,11 +13,17 @@ import io.realm.RealmObject;
 
 public class Todo extends RealmObject {
 
+    @Ignore
+    public static final String ONCE = "ONCE_TODO";
+    @Ignore
+    public static final String REPEAT = "REPEAT_TODO";
 
+
+    @PrimaryKey
     private long no;
     private String type;
     private String content;
-    private Date CreatDate;
+    private Date createDate;
     private boolean done;
 
     public boolean isDone() { return done; }
@@ -42,13 +50,8 @@ public class Todo extends RealmObject {
         this.content = content;
     }
 
-    public Date getCreatDate() {
-        return CreatDate;
-    }
+    public Date getCreateDate() {return createDate;}
 
-    public void setCreatDate(Date creatDate) {
-        CreatDate = creatDate;
-    }
-
+    public void setCreateDate(Date createDate) {this.createDate = createDate;}
 }
 

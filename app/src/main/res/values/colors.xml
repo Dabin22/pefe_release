@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
     <color name="greenPrimary">#00E676</color>>
     <color name="greenLight">#69F0AE</color>
     <color name="greenDark">#00C853</color>
     <color name="greenWhite">#e8f5e9</color>
     <color name ="greenAccent">#EEFF41</color>
+
+    <color name="blueRep">#5587fc</color>
+    <color name="blueBg">#f3f4fa</color>
+    <color name="blueBgLight">#7cf3f4fa</color>
+    <color name="blueDark">#3b6fff</color>
+    <color name="blueAccent">#7dccf9</color>
+    <color name="blueAccentBg">#98bfff</color>
+    <color name ="blueSearchBar">#54f3f4fa</color>
+
+    <color name="greyText">#3c3b3b</color>
+
 </resources>

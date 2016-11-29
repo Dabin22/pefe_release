@@ -16,8 +16,8 @@ import android.widget.Switch;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.Realm.RealmControl;
-import com.pefe.pefememo.Realm.RealmControlImpl;
+import com.pefe.pefememo.realm.RealmController;
+import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.fragments.memo.MemoFragment;
 import com.pefe.pefememo.app.fragments.setting.SettingsFragment;
 import com.pefe.pefememo.app.fragments.todo.TodoFragment;
@@ -44,6 +44,7 @@ public class MainViewImpl extends AppCompatActivity {
     SettingsFragment settingsFragment;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class MainViewImpl extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkRoot();
     }
 
     @Override
@@ -68,13 +70,13 @@ public class MainViewImpl extends AppCompatActivity {
     }
 
     private void addSamples(){
-        RealmControl realmControl = new RealmControlImpl(this);
+        RealmController realmController = new RealmControllerImpl(this);
         Sample sample = new Sample();
         for(Directory d : sample.getDirectories()){
-            realmControl.addDir(d.getNo(),d.getOrder(),d.getCode(),d.getName(),d.getPw());
+            realmController.createDir(d.getNo(),d.getOrder(),d.getCode(),d.getName(),d.getPw());
         }
         for(Memo m : sample.getMemos()){
-            realmControl.writeMemo(m.getNo(),m.isImportant(),m.getDirCode(),m.getContent());
+            realmController.writeMemo(m.getNo(),m.isImportant(),m.getDirCode(),m.getContent());
         }
 
     }
@@ -106,11 +108,21 @@ public class MainViewImpl extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
     }
 
-//    @Override
-//    public void changeSwitchCheck(){
-//        switchMemo.setChecked(preferenceControl.restoreMemoUse());
-//        switchLockScreen.setChecked(preferenceControl.restoreLockScreenUse());
-//    }
+    private void checkRoot(){
+        Intent intent = new Intent(MainViewImpl.this, RootService.class);
+        if(switchMemo.isChecked() || switchLockScreen.isChecked()){
+            if(!PefeMemo.isRootOn()){
+                startService(intent);
+            }
+        }else{
+            if(PefeMemo.isRootOn()){
+                stopService(intent);
+            }
+
+        }
+        intent = null;
+    }
+
 
     private class CheckChangeListener implements CompoundButton.OnCheckedChangeListener{
         @Override
@@ -125,17 +137,7 @@ public class MainViewImpl extends AppCompatActivity {
                     preferenceControl.saveLockScreenUse(b);
                 }catch (Exception e){e.printStackTrace();}
             }
-
-            Intent intent = new Intent(MainViewImpl.this, RootService.class);
-            if(switchMemo.isChecked() || switchLockScreen.isChecked()){
-                if(!PefeMemo.isRootOn()){
-                    startService(intent);
-                }
-            }else{
-                if(PefeMemo.isRootOn()){
-                    stopService(intent);
-                }
-            }
+            checkRoot();
         }
     }
     private void setupViewPager(ViewPager viewPager, ArrayList<Fragment> fragments, FragmentManager fragmentManager){

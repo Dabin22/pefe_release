@@ -7,11 +7,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -20,6 +18,7 @@ import android.widget.ToggleButton;
 
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.memo.rootservice.RootService;
+import com.pefe.pefememo.sample.Sample;
 
 import java.util.ArrayList;
 
@@ -50,14 +49,14 @@ public class MemoViewImpl implements MemoView {
     private View trnspBtn = null;
 
 //    private FrameLayout memoRoot = null;
-    View memoFrame;
+    private View memoFrame;
     private View innerMemo = null;
     private View innerTodo = null;
 
     private boolean memoOnOff = false;
 
-    public MemoViewImpl(Context context, WindowManager wm, LayoutInflater inflater, float displayHeight, float displayWidth) {
-        this.memoController = new MemoCotrollerImpl();
+    public MemoViewImpl(Context context,MemoController memoController,WindowManager wm, LayoutInflater inflater, float displayHeight, float displayWidth) {
+        this.memoController = memoController;
         this.context = context;
         this.wm = wm;
         this.inflater = inflater;
@@ -155,6 +154,8 @@ public class MemoViewImpl implements MemoView {
         exitBtn.setOnClickListener(new exitListener());
         saveBtn.setOnClickListener(new saveListener());
         purposeBtn.setOnClickListener(new purposeListener());
+        //TODO MEMO값 스트링 값으로 넣어주기
+        purposeBtn.setText("MEMO");
         trnspController.setOnSeekBarChangeListener(new TrnspChangeListener());
     }
     //메모 작성 뷰 초기화
@@ -210,11 +211,19 @@ public class MemoViewImpl implements MemoView {
         public void onClick(View view) {
             switch (innerType){
                 case MEMO:
+                    ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
+                    Spinner dirSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
+                    EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
+                    boolean important = importanceTBtn.isChecked();
+                    //TOdo dirCode넣기
+                    String dirCode = Sample.defaultCode;
+                    String content = memoContent.getText().toString();
+                    memoController.saveMemo(important,dirCode,content);
                     break;
                 case TODO:
+
                     break;
             }
-
         }
     }
 

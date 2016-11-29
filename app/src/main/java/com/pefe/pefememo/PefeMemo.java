@@ -1,10 +1,6 @@
 package com.pefe.pefememo;
 
 import android.app.Application;
-
-import com.pefe.pefememo.Realm.RealmControl;
-import com.pefe.pefememo.Realm.RealmControlImpl;
-
 import io.realm.Realm;
 
 
@@ -26,6 +22,6 @@ public class PefeMemo extends Application {
     */
     private static boolean isRootOn = false;
     public static boolean isRootOn() {return isRootOn;}
-    public static void setIsRootOn(boolean isRootOn) {PefeMemo.isRootOn = isRootOn;}
+    public static void setRootOn(boolean isRootOn) {PefeMemo.isRootOn = isRootOn;}
 
 }

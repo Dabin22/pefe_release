@@ -18,8 +18,12 @@ import android.view.WindowManager;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
+import com.pefe.pefememo.realm.RealmController;
+import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.main.MainViewImpl;
 import com.pefe.pefememo.lockscreen.LockScreenViewImpl;
+import com.pefe.pefememo.memo.memo.MemoController;
+import com.pefe.pefememo.memo.memo.MemoCotrollerImpl;
 import com.pefe.pefememo.memo.memo.MemoView;
 import com.pefe.pefememo.memo.memo.MemoViewImpl;
 import com.pefe.pefememo.preference.PreferenceControl;
@@ -36,9 +40,10 @@ import com.pefe.pefememo.preference.PreferenceControlImpl;
 public class RootService extends Service {
 
     private PreferenceControl preferenceControl;
+    private RealmController realmController;
+    private MemoController memoController;
     private MemoView memoView;
     private ScreenOnOffReciever screenOnOffReciever;
-
 
     public static boolean memoUse;
     public static boolean lockScreenUse;
@@ -55,24 +60,27 @@ public class RootService extends Service {
     public void onCreate() {
         super.onCreate();
         setPreferenceControl();
+        setControllers();
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        PefeMemo.setIsRootOn(true);
+        PefeMemo.setRootOn(true);
         setPixels();
         setViewBuilders();
         setSettings();
-        registerScreenOnOffReciever();
+        registerScreenOnOffReceiver();
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         memoView.terminateMemo();
+        realmController.realmClose();
         unregisterReceiver(screenOnOffReciever);
         stopForeground(true);
-        PefeMemo.setIsRootOn(false);
+        PefeMemo.setRootOn(false);
         super.onDestroy();
     }
 
@@ -87,6 +95,11 @@ public class RootService extends Service {
         preferenceControl = new PreferenceControlImpl(preferences);
         preferences.registerOnSharedPreferenceChangeListener(new OnStatusChangedListener());
     }
+    private void setControllers(){
+        realmController = new RealmControllerImpl(this);
+        realmController.realmInit();
+        memoController = new MemoCotrollerImpl(realmController);
+    }
     //화면 픽셀 크기 즉정
     private void setPixels(){
         widthPixel = getResources().getDisplayMetrics().widthPixels;
@@ -96,7 +109,7 @@ public class RootService extends Service {
     private void setViewBuilders(){
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        memoView = new MemoViewImpl(this,wm,inflater,heightPixel,widthPixel);
+        memoView = new MemoViewImpl(this,memoController,wm,inflater,heightPixel,widthPixel);
         memoView.initMemo();
     }
 
@@ -107,7 +120,7 @@ public class RootService extends Service {
         //Memo와 lockScreenUse의 변화마다 notification 사용 여부 변경
         onOffNotification();
     }
-    private void registerScreenOnOffReciever(){
+    private void registerScreenOnOffReceiver(){
         screenOnOffReciever = new ScreenOnOffReciever();
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenOnOffReciever, filter);
@@ -156,6 +169,7 @@ public class RootService extends Service {
             setSettings();
         }
     }
+    //todo 효율재고하기
     // 스크린 온오프 감지 브로드캐스트 리시버
     private class ScreenOnOffReciever extends BroadcastReceiver {
         boolean phoneCallStatus = false;

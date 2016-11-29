@@ -12,26 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.Realm.RealmControl;
+import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.app.editor.MemoEditorViewImpl;
 import com.pefe.pefememo.model.memo.Memo;
 
-import java.util.ArrayList;
-
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
-import rx.Observable;
-import rx.Subscriber;
-
-import static com.jakewharton.rxbinding.widget.RxTextView.textChangeEvents;
 
 /**
  * Created by dodoproject on 2016-11-25.
@@ -39,15 +31,15 @@ import static com.jakewharton.rxbinding.widget.RxTextView.textChangeEvents;
 
 public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapter.ViewHolder> {
     Context context;
-    RealmControl realmControl = null;
+    RealmController realmController = null;
 
-    private final int MAXLINES =3;
+    private final int MAXLINES = 5;
 
     public MemoViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Memo> data,
-                           boolean autoUpdate, RealmControl realmControl) {
+                           boolean autoUpdate, RealmController realmController) {
         super(context, data, autoUpdate);
         this.context = context;
-        this.realmControl = realmControl;
+        this.realmController = realmController;
     }
 
     @Override
@@ -62,12 +54,14 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         boolean isImportant = getData().get(position).isImportant();
         String dirCode = getData().get(position).getDirCode();
         String memoContent = getData().get(position).getContent();
+
         holder.importance.setChecked(isImportant);
+        holder.content.setText(memoContent);
+        holder.content.setMaxLines(MAXLINES);
+
         holder.importance.setOnCheckedChangeListener(new ImportanceChangeListener(no, dirCode, memoContent));
         holder.copy.setOnClickListener(new CopyClickListener(holder.content));
         holder.delete.setOnClickListener(new DeleteClickListener(no));
-        holder.content.setText(memoContent);
-        holder.content.setMaxLines(MAXLINES);
         holder.content.setOnClickListener(new ContentClickListener(no));
     }
 
@@ -102,7 +96,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            realmControl.modifyMemo(no,b,dirCode,content);
+            realmController.modifyMemo(no,b,dirCode,content);
         }
     }
     private class CopyClickListener implements View.OnClickListener{
@@ -138,7 +132,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
 
         @Override
         public void onClick(View view) {
-            realmControl.deleteMemo(no);
+            realmController.deleteMemo(no);
         }
     }
     public static final String MEMO_NO = "Memo_NO";
