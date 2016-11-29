@@ -62,6 +62,7 @@ public class MemoFragment extends Fragment {
         return memoFragment;
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
