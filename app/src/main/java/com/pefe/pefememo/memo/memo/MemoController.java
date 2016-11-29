@@ -6,4 +6,5 @@ package com.pefe.pefememo.memo.memo;
 
 public interface MemoController {
     void saveMemo(boolean importance, String dirCode, String content);
+    void saveTodo(boolean repeatOnce, String content);
 }

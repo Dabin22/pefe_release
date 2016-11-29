@@ -241,7 +241,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     private Todo modifi_selectedTodo(SelectedTodo todo) {
         Todo temp_todo = new Todo();
-        temp_todo.setCreatDate(today);
+        temp_todo.setCreateDate(today);
         temp_todo.setType(ONCE);
         temp_todo.setContent(todo.getContent());
         temp_todo.setDone(false);
