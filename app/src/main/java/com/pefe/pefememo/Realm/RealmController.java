@@ -27,6 +27,7 @@ public interface RealmController {
     
     long getLargestNo(String whose);
     void writeMemo( boolean importance, String dirCode, String content);
+    void writeMemoNT( boolean importance, String dirCode, String content);
     void modifyMemo(long no, boolean importance, String dirCode, String content);
     void modifyMemoinEditor(long no, boolean importance, String dirCode, String content);
     void deleteMemo(long no);
@@ -36,6 +37,7 @@ public interface RealmController {
     OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode);
     
     void writeTodo(String type, String content, Date createDate);
+    void writeTodoNT(String type, String content, Date createDate);
     void modifyTodo(long no, String type, String content, Date createDate, boolean done);
     void deleteTodo(long no);
     Todo readATodoByNO(long no);
@@ -43,6 +45,7 @@ public interface RealmController {
     OrderedRealmCollection<Todo> readTodoByType(String type);
 
     void writeSelectedTodo(String type, String content, Date belongDate, Date putDate);
+    void writeSelectedTodoNT(String type, String content, Date belongDate, Date putDate);
     void modifySelectedTodo(long no, boolean done, String type, String content, Date belongDate, Date putDate);
     void deleteSelectedTodo(long no);
     SelectedTodo readASelectedTodoByNO(long no);

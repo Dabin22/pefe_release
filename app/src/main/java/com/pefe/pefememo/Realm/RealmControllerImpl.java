@@ -151,6 +151,7 @@ public class RealmControllerImpl implements RealmController {
         }
         return  result;
     }
+
     @Override
     public void writeMemo(boolean importance, String dirCode, String content){
         long no = getLargestNo(RealmControllerImpl.MEMO)+1;
@@ -160,6 +161,13 @@ public class RealmControllerImpl implements RealmController {
 
         taskList.add(writeMemoTask);
     }
+    @Override
+    public void writeMemoNT(boolean importance, String dirCode, String content){
+        long no = getLargestNo(RealmControllerImpl.MEMO)+1;
+        pefeRealm.executeTransaction(new MemoWriteTransaction(no, importance, dirCode, content));
+
+    }
+
     @Override
     public void modifyMemo(long no, boolean importance, String dirCode, String content){
         RealmAsyncTask modifyMemoTask = pefeRealm.executeTransactionAsync(new MemoModifyTransaction(no, importance, dirCode, content)
@@ -210,6 +218,12 @@ public class RealmControllerImpl implements RealmController {
         taskList.add(writeTodoTask);
     }
     @Override
+    public void writeTodoNT(String type, String content, Date createDate) {
+        long no = getLargestNo(RealmControllerImpl.TODO)+1;
+        pefeRealm.executeTransaction(new TodoWriteTransaction(no,type,content,createDate));
+
+    }
+    @Override
     public void modifyTodo(long no, String type, String content, Date createDate, boolean done) {
         RealmAsyncTask modifyTodoTask = pefeRealm.executeTransactionAsync(new TodoModifyTransaction(no,type,content,createDate,done)
                 ,new OnTodoModifySuccess()
@@ -247,6 +261,11 @@ public class RealmControllerImpl implements RealmController {
                 ,new OnSelectedTodoWriteSuccess()
                 ,new OnSelectedTodoWriteError());
         taskList.add(writeSelectedTodoTask);
+    }
+    @Override
+    public void writeSelectedTodoNT(String type, String content, Date belongDate, Date putDate) {
+        long no = getLargestNo(RealmControllerImpl.SELECTED_TODO)+1;
+        pefeRealm.executeTransaction(new SelectedTodoWriteTransaction(no,type,content,belongDate,putDate));
     }
     @Override
     public void modifySelectedTodo(long no, boolean done, String type, String content, Date belongDate, Date putDate) {
