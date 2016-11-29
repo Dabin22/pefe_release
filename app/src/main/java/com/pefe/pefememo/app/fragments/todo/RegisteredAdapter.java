@@ -1,8 +1,10 @@
 package com.pefe.pefememo.app.fragments.todo;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -13,78 +15,51 @@ import android.widget.TextView;
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.model.todo.SelectedTodo;
 
-import java.util.ArrayList;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
 
 /**
  * Created by Dabin on 2016-11-27.
  */
 
-public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.ViewHolder> {
+public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, RegisteredAdapter.ViewHolder> {
 
 
-    private ArrayList<SelectedTodo> datas;
+//    private ArrayList<SelectedTodo> datas;
     private SelectedTodo todo;
     private int belong_day = -1;
     private TodoDragListener dragListener;
     private TodoLongClickListener longClickListener;
-    private TodoHandler handler;
+    private Context context;
+    private Calendar cal;
+    private Date today;
 
-
-    public RegisteredAdapter(TodoDragListener dragListener, TodoHandler handler) {
-        datas = new ArrayList<>();
+    public RegisteredAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<SelectedTodo> data, boolean autoUpdate,TodoDragListener dragListener) {
+        super(context, data, autoUpdate);
+        this.context =context;
         this.dragListener = dragListener;
         longClickListener = new TodoLongClickListener();
-        this.handler = handler;
+        today = modifi_customDate();
     }
+
 
     @Override
     public RegisteredAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_registered_todo_list, parent, false);
+        View view = View.inflate(context,R.layout.item_registered_todo_list, parent);
         return new ViewHolder(view);
     }
 
-    public void addData(SelectedTodo todo) {
-        datas.add(todo);
-        recycle();
-    }
-
-    public void addDatas(ArrayList<SelectedTodo> subDatas) {
-        datas.addAll(subDatas);
-        recycle();
-    }
-
-    public void removeData(SelectedTodo todo) {
-        datas.remove(todo);
-        recycle();
-    }
-
-    public void removeData(int pickedIndex) {
-        datas.remove(pickedIndex);
-        recycle();
-    }
-
-    public SelectedTodo pop(int pickedIndex) {
-        SelectedTodo pop_todo = datas.get(pickedIndex);
-        removeData(pop_todo);
-        recycle();
-        return pop_todo;
-    }
-
-    public String getType(int index) {
-        return datas.get(index).getType();
-    }
-
-    private void recycle() {
-        notifyDataSetChanged();
-    }
-
-
     @Override
     public void onBindViewHolder(RegisteredAdapter.ViewHolder holder, int position) {
-        todo = datas.get(position);
+        todo = getData().get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
-        if (!handler.compare_date(todo.getBelongDate()).equals("past")) {
+        if (!compare_date(todo.getBelongDate()).equals("past")) {
             holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean done) {
@@ -109,18 +84,29 @@ public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.Vi
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return datas.size();
+    public String compare_date(Date belongDate) {
+        if (today.compareTo(belongDate) == 0) {
+            return "same";
+        } else if (today.compareTo(belongDate) > 0) {
+            return "past";
+        } else {
+            return "future";
+        }
     }
 
-    public boolean isExistence(SelectedTodo sTodo) {
-        for(SelectedTodo todo : datas){
-            if(todo.getContent().equals(sTodo.getContent()))
-                return true;
-        }
-        return false;
+    //시,분,초를 모두 0으로 초기화 해주는 함수입니다.
+    private Date modifi_customDate() {
+        cal = Calendar.getInstance();
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-d");
+        ParsePosition pos = new ParsePosition(0);
+        return date_format.parse(date_format.format(cal.getTime()), pos);
     }
+
+    @Override
+    public int getItemCount() {
+        return getData().size();
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_unput_todo;

@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -28,10 +27,12 @@ import io.realm.RealmRecyclerViewAdapter;
 public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHolder> {
 
     Context context;
+    ArrayList<Todo> remove_datas;
 
     public OldAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Todo> data, boolean autoUpdate) {
         super(context, data, autoUpdate);
         this.context = context;
+        remove_datas = new ArrayList<>();
     }
 
 
@@ -53,13 +54,24 @@ public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHol
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    todo.setDone(true);
+                    stack_remove_datas(todo);
                 }else{
-                    todo.setDone(false);
+                    clear_remove_datas(todo);
                 }
             }
         });
 
+    }
+    private void stack_remove_datas(Todo todo){
+        remove_datas.add(todo);
+    }
+
+    private void clear_remove_datas(Todo todo){
+        remove_datas.remove(todo);
+    }
+
+    public ArrayList<Todo> pop_remove_Datas(){
+        return remove_datas;
     }
 
     @Override

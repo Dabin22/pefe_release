@@ -274,6 +274,12 @@ public class RealmControllerImpl implements RealmController {
         return selectedTodos;
     }
 
+    @Override
+    public OrderedRealmCollection<SelectedTodo> readSelectedTodoByBelongDate(Date date) {
+        RealmResults<SelectedTodo>selectedTodos = pefeRealm.where(SelectedTodo.class).equalTo("belongDate",date).findAll();
+        return selectedTodos;
+    }
+
     private class DirCreateTransaction implements Realm.Transaction{
         long no, order;
         String code,name,pw;

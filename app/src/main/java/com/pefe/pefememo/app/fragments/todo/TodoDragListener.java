@@ -72,9 +72,7 @@ public class TodoDragListener implements View.OnDragListener {
                     handler.delete(pickedType, pickedIndex, pickedBelongDate);
                 } else if (pickedType.equals("Once") || pickedType.equals("Repeat") || pickedType.equals("Old")) {
 
-                    if (targetType.equals(pickedType)) {
-                        handler.swapPosition(pickedIndex, targetIndex, targetType);
-                    } else if (targetType.equals("Today") || targetType.equals("Today_list")) {
+                    if (targetType.equals("Today") || targetType.equals("Today_list")) {
                         handler.register_todo(pickedType, pickedIndex, targetType);
                     }
 

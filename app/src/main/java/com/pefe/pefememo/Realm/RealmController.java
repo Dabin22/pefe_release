@@ -47,4 +47,5 @@ public interface RealmController {
     void deleteSelectedTodo(long no);
     SelectedTodo readASelectedTodoByNO(long no);
     OrderedRealmCollection<SelectedTodo> readSelectedTodoByContent(String keyWord);
+    OrderedRealmCollection<SelectedTodo> readSelectedTodoByBelongDate(Date date);
 }

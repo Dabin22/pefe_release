@@ -11,8 +11,6 @@ public interface TodoHandler {
 
     void moveDate(int bottonID);
 
-    void swapPosition(int src, int tar, String adapterType);
-
     void register_todo(String pickedType, int pickedIndex, String targetType);
 
     void stop();
@@ -29,5 +27,4 @@ public interface TodoHandler {
 
     void delete(String pickedType, int pickedIndex, Date pickedBelongDate);
 
-    String compare_date(Date belongDate);
 }
