@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/addTodoRoot">
-    <Button
+    <ToggleButton
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:ems="10"
         android:id="@+id/todoContent"
         android:hint="Content"/>
-    <Button
+    <ToggleButton
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"

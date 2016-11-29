@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.RadioGroup;
@@ -172,11 +173,13 @@ public class MemoViewImpl implements MemoView {
     private void setDefaultInnerTodo(View innerTodo){
         todoList = new ArrayList<>();
         GridLayout todoBoard = (GridLayout) innerTodo.findViewById(R.id.todoBoard);
-        View todoItem = inflater.inflate(R.layout.item_todo,todoBoard);
+//        Spinner todoDirSpinner = (Spinner) parent.findViewById(R.id.todoDirSpinner);
+        View todoItem = View.inflate(context,R.layout.item_todo,null);
+        ToggleButton repeatOnceBtn = (ToggleButton) todoItem.findViewById(R.id.todoOnceRepeatBtn);
+        ToggleButton addDeleteBtn = (ToggleButton)todoItem.findViewById(R.id.todoAddDelBtn);
+        addDeleteBtn.setOnCheckedChangeListener(new deleteAddTodoListener());
         todoItem.setAlpha(TEMP_TODOITEM_ALPHA);
-        Button addDeleteBtn = (Button)todoItem.findViewById(R.id.todoAddDelBtn);
-        addDeleteBtn.setOnClickListener(new AddDelListener());
-
+        todoBoard.addView(todoItem);
     }
     //투명버튼 터치 리스너, 동작으로 메모를 띄울 지 설정한다
 
@@ -221,7 +224,17 @@ public class MemoViewImpl implements MemoView {
                     memoController.saveMemo(important,dirCode,content);
                     break;
                 case TODO:
-
+                    for(View todoItem : todoList){
+                        ToggleButton repeatBtn = (ToggleButton) todoItem.findViewById(R.id.todoOnceRepeatBtn);
+                        EditText todoContent = (EditText) todoItem.findViewById(R.id.todoContent);
+                        boolean repeat = repeatBtn.isChecked();
+                        String tContent = todoContent.getText().toString();
+                        if(tContent.isEmpty()){
+                            continue;
+                        }else{
+                            memoController.saveTodo(repeat,tContent);
+                        }
+                    }
                     break;
             }
         }
@@ -251,37 +264,31 @@ public class MemoViewImpl implements MemoView {
             float trnsp = i/1000f;
             memoFrame.setAlpha(trnsp);
         }
-
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {}
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {}
     }
-    private class AddDelListener implements View.OnClickListener{
-        boolean addDel = false;
+    private class deleteAddTodoListener implements CompoundButton.OnCheckedChangeListener{
         @Override
-        public void onClick(View view) {
-            addDel = !addDel;
-            GridLayout todoBoard = (GridLayout) view.getParent().getParent();
-            View todoItem = (View) view.getParent();
-            if(addDel){
-                //TODO 회전 ObjectAnimator
-                //todoitem 활성화
-                todoItem.setAlpha(1f);
-                todoList.add(todoItem);
-                //새 todoitem 넣기
-                View newTodoItem = inflater.inflate(R.layout.item_todo,todoBoard);
-                todoItem.setAlpha(TEMP_TODOITEM_ALPHA);
-                Button addDeleteBtn = (Button)todoItem.findViewById(R.id.todoAddDelBtn);
-                addDeleteBtn.setOnClickListener(new AddDelListener());
-
-            }else{
-                todoItem.setAlpha(TEMP_TODOITEM_ALPHA);
-                todoBoard.removeView(todoItem);
-                todoItem = null;
-                todoBoard = null;
-            }
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            GridLayout todoBoard = (GridLayout) compoundButton.getParent().getParent();
+            View todoItem = (View) compoundButton.getParent();
+            if(!b){
+                EditText content = (EditText) todoItem.findViewById(R.id.todoContent);
+                content.setText("");
+                todoBoard.removeView(todoItem);}
+            else{
+                View parent =(View) compoundButton.getParent();
+                parent.setAlpha(1f);
+                todoList.add(parent);
+                View newAddTodo = inflater.inflate(R.layout.item_todo,null);
+                ToggleButton deleteAddBtn = (ToggleButton) newAddTodo.findViewById(R.id.todoAddDelBtn);
+                deleteAddBtn.setOnCheckedChangeListener(new deleteAddTodoListener());
+                todoBoard.addView(newAddTodo);
+                newAddTodo.setAlpha(0.3f);}
         }
     }
+
 
 }
