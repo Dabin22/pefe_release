@@ -17,7 +17,8 @@ public class Todo extends RealmObject {
     public static final String ONCE = "ONCE_TODO";
     @Ignore
     public static final String REPEAT = "REPEAT_TODO";
-
+    @Ignore
+    public static final String OLD = "OLD_TODO";
 
     @PrimaryKey
     private long no;

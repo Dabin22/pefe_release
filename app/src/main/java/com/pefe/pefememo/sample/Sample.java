@@ -97,21 +97,21 @@ public class Sample {
         todo1.setNo(1);
         todo1.setContent("밥 먹기");
         todo1.setCreateDate(Calendar.getInstance().getTime());
-        todo1.setType("Repeat");
+        todo1.setType(Todo.REPEAT);
         sample.add(todo1);
 
         Todo todo2 = new Todo();
         todo2.setNo(2);
         todo2.setContent("잠자기");
         todo2.setCreateDate(Calendar.getInstance().getTime());
-        todo2.setType("Repeat");
+        todo2.setType(Todo.REPEAT);
         sample.add(todo2);
 
         Todo todo3 = new Todo();
         todo3.setNo(3);
         todo3.setContent("Realm");
         todo3.setCreateDate(Calendar.getInstance().getTime());
-        todo3.setType("Once");
+        todo3.setType(Todo.ONCE);
         sample.add(todo3);
 
         return sample;
@@ -123,25 +123,25 @@ public class Sample {
         ArrayList<SelectedTodo> sample = new ArrayList<>();
         SelectedTodo sTodo1 = new SelectedTodo();
         sTodo1.setDone(false);
-        sTodo1.setType("Once");
+        sTodo1.setType(Todo.ONCE);
         sTodo1.setContent("계좌 이체");
         sTodo1.setBelongDate(cal.getTime());
         sample.add(sTodo1);
         SelectedTodo sTodo2 = new SelectedTodo();
         sTodo2.setDone(false);
-        sTodo2.setType("Repeat");
+        sTodo2.setType(Todo.REPEAT);
         sTodo2.setContent("잠자기");
         sTodo2.setBelongDate(cal.getTime());
         sample.add(sTodo2);
         SelectedTodo sTodo3 = new SelectedTodo();
         sTodo3.setDone(true);
-        sTodo3.setType("Repeat");
+        sTodo3.setType(Todo.REPEAT);
         sTodo3.setContent("잠자기");
         sTodo3.setBelongDate(cal.getTime());
         cal.add(Calendar.DATE,6);
         SelectedTodo sTodo4 = new SelectedTodo();
         sTodo4.setDone(false);
-        sTodo4.setType("Repeat");
+        sTodo4.setType(Todo.REPEAT);
         sTodo4.setContent("잠자기");
         sTodo4.setBelongDate(cal.getTime());
         sample.add(sTodo4);

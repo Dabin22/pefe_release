@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class RegisteredAdapter extends RecyclerView.Adapter<RegisteredAdapter.ViewHolder> {
 
+
     private ArrayList<SelectedTodo> datas;
     private SelectedTodo todo;
     private int belong_day = -1;

@@ -20,6 +20,10 @@ import java.util.Collections;
 
 public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.ViewHolder> {
 
+    private static final String ONCE = "ONCE_TODO";
+    private static final String REPEAT = "REPEAT_TODO";
+    private static final String OLD = "OLD_TODO";
+
     private ArrayList<Todo> datas;
     private TodoDragListener dragListener;
     private TodoLongClickListener longClickListener;
@@ -83,18 +87,18 @@ public class UnRegisterAdapter extends RecyclerView.Adapter<UnRegisterAdapter.Vi
 
     private void setViewTag(String type, View itemView, int position) {
         TodoViewType viewType = new TodoViewType();
-        if(type.equals("Once")){
-            viewType.setType("Once");
+        if(type.equals(ONCE)){
+            viewType.setType(ONCE);
             viewType.setIndex(position);
             itemView.setTag(viewType);
             Log.e("unputAdapter","once position =" + position);
-        }else if(type.equals("Repeat")){
-            viewType.setType("Repeat");
+        }else if(type.equals(REPEAT)){
+            viewType.setType(REPEAT);
             viewType.setIndex(position);
             itemView.setTag(viewType);
             Log.e("unputAdapter","repeat position =" + position);
-        }else if(type.equals("Old")){
-            viewType.setType("Old");
+        }else if(type.equals(OLD)){
+            viewType.setType(OLD);
             viewType.setIndex(position);
             itemView.setTag(viewType);
             Log.e("unputAdapter","old position =" + position);

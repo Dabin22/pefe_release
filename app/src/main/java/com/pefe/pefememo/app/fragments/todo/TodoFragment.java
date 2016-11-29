@@ -94,9 +94,9 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     private UnRegisterAdapter onceAdapter, repeatAdapter, oldAdapter;
     private HashMap<String, UnRegisterAdapter> map_unRegister_adapters;
-    private static final String ONCE = "Once";
-    private static final String REPEAT = "Repeat";
-    private static final String OLD = "Old";
+    private static final String ONCE = Todo.ONCE;
+    private static final String REPEAT = Todo.REPEAT;
+    private static final String OLD = Todo.OLD;
 
     private HashMap<Date, RegisteredAdapter> map_register_adapters;
 
@@ -241,7 +241,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     private Todo modifi_selectedTodo(SelectedTodo todo) {
         Todo temp_todo = new Todo();
-        temp_todo.setCreatDate(today);
+        temp_todo.setCreateDate(today);
         temp_todo.setType(ONCE);
         temp_todo.setContent(todo.getContent());
         temp_todo.setDone(false);
@@ -422,9 +422,21 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //선택한 아이템의 type에 맞는 어뎁터를 리스트뷰에 장착
     @Override
     public void setTodoType(String type) {
-        UnRegisterAdapter selected_adapter = map_unRegister_adapters.get(type);
-        if (selected_adapter != null)
-            unRegister_todoList.setAdapter(selected_adapter);
+        String type_transform = "";
+        if (type.equals("Once")) {
+            type_transform = ONCE;
+        } else if (type.equals("Repeat")) {
+            type_transform = REPEAT;
+        } else if (type.equals("Old")) {
+            type_transform = OLD;
+        }
+        if (!type_transform.equals("")) {
+
+            UnRegisterAdapter selected_adapter = map_unRegister_adapters.get(type_transform);
+            if (selected_adapter != null)
+                unRegister_todoList.setAdapter(selected_adapter);
+        }
+
     }
 
     private boolean alive = true;
@@ -510,10 +522,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         //날짜 데이트가 있고 올리려는 날짜가 과거가 아닐 시
         if (target_date != null && !compare_date(selcted_day).equals("past")) {
             Todo pop_todo = new Todo();
-            if (pickedType.equals("Once") || pickedType.equals("Old")) {
+            if (pickedType.equals(ONCE) || pickedType.equals(OLD)) {
                 pop_todo = map_unRegister_adapters.get(pickedType).pop(pickedIndex);
                 putTodo(pop_todo, target_date);
-            } else if (pickedType.equals("Repeat")) {
+            } else if (pickedType.equals(REPEAT)) {
                 pop_todo = map_unRegister_adapters.get(pickedType).get(pickedIndex);
                 putTodo(pop_todo, target_date);
             }
@@ -542,7 +554,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //중복 검사
     private boolean isExistence(SelectedTodo sTodo) {
         boolean result = false;
-        Log.e("tag",map_register_adapters.get(selcted_day).isExistence(sTodo)+"");
+        Log.e("tag", map_register_adapters.get(selcted_day).isExistence(sTodo) + "");
         if (map_register_adapters.get(selcted_day).isExistence(sTodo))
             result = true;
         return result;
@@ -552,8 +564,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     private SelectedTodo modifi_todo(Todo todo, Date target_date) {
         SelectedTodo temp_todo = new SelectedTodo();
         temp_todo.setDone(false);
-        if (todo.getType().equals("Old")) {
-            temp_todo.setType("Once");
+        if (todo.getType().equals(OLD)) {
+            temp_todo.setType(ONCE);
         } else {
             temp_todo.setType(todo.getType());
         }
@@ -569,9 +581,9 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     @Override
     public void setSpinner(int index) {
         String type = map_register_adapters.get(selcted_day).getType(index);
-        if (type.equals("Once")) {
+        if (type.equals(ONCE)) {
             sp_todoType.setSelection(0);
-        } else if (type.equals("Repeat")) {
+        } else if (type.equals(REPEAT)) {
             sp_todoType.setSelection(1);
         } else {
             Log.e("error", "type is not correct");
@@ -600,7 +612,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     public void unRegister_mode(Date pickedBelongDate, int pickedIndex) {
         SelectedTodo sTodo = map_register_adapters.get(pickedBelongDate).pop(pickedIndex);
         String type = sTodo.getType();
-        if (type.equals("Once")) {
+        if (type.equals(ONCE)) {
             Todo todo = modifi_selectedTodo(sTodo);
             map_unRegister_adapters.get(todo.getType()).addData(todo);
         }
@@ -634,7 +646,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //드래깅한 아이템을 삭제하는 함수
     @Override
     public void delete(String pickedType, int pickedIndex, Date pickedBelongDate) {
-        if (pickedType.equals("Once") || pickedType.equals("Repeat") || pickedType.equals("Old")) {
+        if (pickedType.equals(ONCE) || pickedType.equals(REPEAT) || pickedType.equals(OLD)) {
             map_unRegister_adapters.get(pickedType).removeData(pickedIndex);
         } else if (pickedType.equals("Today")) {
             if (pickedBelongDate != null) {
