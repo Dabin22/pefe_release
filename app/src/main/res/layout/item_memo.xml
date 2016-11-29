@@ -20,6 +20,7 @@
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:text="D"
             android:id="@+id/memoItemDelete" />
 
         <Button
@@ -27,6 +28,7 @@
             android:layout_height="40dp"
             android:layout_toStartOf="@id/memoItemDelete"
             android:layout_toLeftOf="@id/memoItemDelete"
+            android:text="C"
             android:id="@+id/memoItemCopy"/>
 
     </RelativeLayout>
