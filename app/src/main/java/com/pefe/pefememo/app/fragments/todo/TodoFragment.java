@@ -604,8 +604,11 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     @Override
     public void changeBelongDate(Date pickedBelongDate, int pickedIndex) {
         if (!compare_date(selcted_day).equals("past")) {
-            SelectedTodo temp_todo = map_seletedTodo_datas.get(selcted_day).get(pickedIndex);
+            SelectedTodo temp_todo = map_seletedTodo_datas.get(pickedBelongDate).get(pickedIndex);
+            Log.e("compare_date",temp_todo.getNo()+"pick = " + temp_todo.getBelongDate());
+            Log.e("compare_date","내가변화 시키고자 하는 데이트는 " +selcted_day);
             realmController.modifySelectedTodo(temp_todo.getNo(), temp_todo.isDone(), temp_todo.getType(), temp_todo.getContent(), selcted_day, temp_todo.getPutDate());
+            Log.e("compare_date",temp_todo.getNo()+"pick after = " + temp_todo.getBelongDate());
         } else {
             Toast.makeText(getContext(), "지난 날짜에 추가 할 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
