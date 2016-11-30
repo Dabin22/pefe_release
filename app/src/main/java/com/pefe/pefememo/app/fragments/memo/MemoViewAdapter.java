@@ -36,7 +36,8 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
     RealmController realmController = null;
 
     private OrderedRealmCollection<Memo> datas = null;
-    private final int MAXLINES = 5;
+    private final int MINLINES =3;
+    private final int MAXLINES = 6;
 
     public MemoViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Memo> data,
                            boolean autoUpdate, RealmController realmController) {
@@ -59,6 +60,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         String dirCode = datas.get(position).getDirCode();
         String memoContent = datas.get(position).getContent();
         holder.content.setText(memoContent);
+        holder.content.setMinLines(MINLINES);
         holder.content.setMaxLines(MAXLINES);
         if(isImportant){
             holder.importance.setVisibility(View.VISIBLE);

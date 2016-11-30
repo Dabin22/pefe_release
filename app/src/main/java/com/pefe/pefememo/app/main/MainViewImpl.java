@@ -35,9 +35,9 @@ import java.util.Date;
 
 public class MainViewImpl extends AppCompatActivity {
 
-    PreferenceControl preferenceControl;
 
-    Switch switchMemo, switchLockScreen;
+
+
     TabLayout tabs;
     ViewPager viewPager;
 
@@ -99,21 +99,13 @@ public class MainViewImpl extends AppCompatActivity {
         }
 
     private void init(){
-        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
-        preferenceControl = new PreferenceControlImpl(preferences);
         drawViews();
         checkRoot();
-
     }
 
     private void drawViews(){
         //메모와 잠금화면 사용 여부 설정 스위치
-        switchMemo =(Switch)findViewById(R.id.switchMemo);
-        switchMemo.setChecked(preferenceControl.restoreMemoUse());
-        switchMemo.setOnCheckedChangeListener( new CheckChangeListener());
-        switchLockScreen =(Switch)findViewById(R.id.switchLockScreen);
-        switchLockScreen.setChecked(preferenceControl.restoreLockScreenUse());
-        switchLockScreen.setOnCheckedChangeListener(new CheckChangeListener());
+
         tabs = (TabLayout) findViewById(R.id.tabs);
         memoFragment = MemoFragment.newInstance();
         todoFragment = TodoFragment.newInstance();
@@ -128,8 +120,10 @@ public class MainViewImpl extends AppCompatActivity {
     }
 
     private void checkRoot(){
+        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
+        PreferenceControl preferenceControl = new PreferenceControlImpl(preferences);
         Intent intent = new Intent(MainViewImpl.this, RootService.class);
-        if(switchMemo.isChecked() || switchLockScreen.isChecked()){
+        if(preferenceControl.restoreMemoUse()|| preferenceControl.restoreLockScreenUse()){
             if(!PefeMemo.isRootOn()){
                 startService(intent);
             }
@@ -142,23 +136,6 @@ public class MainViewImpl extends AppCompatActivity {
         intent = null;
     }
 
-
-    private class CheckChangeListener implements CompoundButton.OnCheckedChangeListener{
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if(compoundButton.equals(switchMemo)){
-                try {
-                    preferenceControl.saveMemoUse(b);
-                }catch (Exception e){e.printStackTrace();}
-
-            }else if(compoundButton.equals(switchLockScreen)){
-                try {
-                    preferenceControl.saveLockScreenUse(b);
-                }catch (Exception e){e.printStackTrace();}
-            }
-            checkRoot();
-        }
-    }
     private void setupViewPager(ViewPager viewPager, ArrayList<Fragment> fragments, FragmentManager fragmentManager){
         CustomPagerAdapter adapter = new CustomPagerAdapter( fragments, fragmentManager);
         viewPager.setAdapter(adapter);

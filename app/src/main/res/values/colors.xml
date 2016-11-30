@@ -7,13 +7,16 @@
     <color name ="greenAccent">#EEFF41</color>
 
     <color name="blueRep">#5587fc</color>
-    <color name="blueBg">#f5f6f9</color>
+    <color name="blueSecnd">#BBDEFB</color>
+    <color name="blueBg">#E3F2FD</color>
     <color name="blueBgLight">#7cf3f4fa</color>
     <color name="blueDark">#3b6fff</color>
-    <color name="blueAccent">#7dccf9</color>
+    <color name="blueAccent">#18FFFF</color>
     <color name="blueAccentBg">#98bfff</color>
     <color name ="blueSearchBar">#54f3f4fa</color>
 
+    <color name="white">#fafbfc</color>
+    <color name="whiteBar">#dbdfe8</color>
     <color name="greyText">#3c3b3b</color>
 
 </resources>

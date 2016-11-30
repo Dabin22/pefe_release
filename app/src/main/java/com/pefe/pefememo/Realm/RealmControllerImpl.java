@@ -793,7 +793,7 @@ public class RealmControllerImpl implements RealmController {
             modifySelectedTodo.setType(type);
             modifySelectedTodo.setContent(content);
             modifySelectedTodo.setBelongDate(belongDate);
-            modifySelectedTodo.setBelongDate(putDate);
+            modifySelectedTodo.setPutDate(putDate);
             modifySelectedTodo.setDone(done);
         }
     }

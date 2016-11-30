@@ -230,7 +230,7 @@ public class MemoViewImpl implements MemoView {
                     memoController.saveMemo(important,dirCode,content);
 
                     importanceTBtn.setChecked(false);
-                    memoContent.setText("");
+//                    memoContent.setText("");
                     break;
                 case TODO:
                     for(View todoItem : todoList){
@@ -318,7 +318,6 @@ public class MemoViewImpl implements MemoView {
             content.setFocusable(true);
             content.setFocusableInTouchMode(true);
             todoItem.setAlpha(1f);
-            todoList.add(todoItem);
 }
     }
 }
