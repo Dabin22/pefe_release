@@ -41,7 +41,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
     public MemoViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Memo> data,
                            boolean autoUpdate, RealmController realmController) {
         super(context, data, autoUpdate);
-        datas = data.sort("no", Sort.DESCENDING);
+        datas = data.sort("no", Sort.ASCENDING);
         this.context = context;
         this.realmController = realmController;
     }
@@ -63,17 +63,11 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         if(isImportant){
             holder.importance.setVisibility(View.VISIBLE);
         }
-//      holder.copy.setOnClickListener(new CopyClickListener(holder.content));
+        holder.copy.setOnClickListener(new CopyClickListener(holder.content));
         holder.delete.setOnClickListener(new DeleteClickListener(no));
         holder.content.setOnClickListener(new ContentClickListener(no));
     }
 
-    @Override
-    public void updateData(@Nullable OrderedRealmCollection<Memo> data) {
-        data.sort("no");
-        super.updateData(data);
-
-    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout memoItemRoot;
@@ -141,6 +135,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         @Override
         public void onClick(View view) {
             realmController.deleteMemo(no);
+            notifyItemRangeRemoved(0,1);
         }
     }
     public static final String MEMO_NO = "Memo_NO";
