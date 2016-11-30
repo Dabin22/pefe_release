@@ -17,18 +17,17 @@ import android.widget.Switch;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.model.todo.SelectedTodo;
-import com.pefe.pefememo.model.todo.Todo;
-import com.pefe.pefememo.realm.RealmController;
-import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.fragments.memo.MemoFragment;
 import com.pefe.pefememo.app.fragments.setting.SettingsFragment;
 import com.pefe.pefememo.app.fragments.todo.TodoFragment;
 import com.pefe.pefememo.memo.rootservice.RootService;
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
+import com.pefe.pefememo.model.todo.SelectedTodo;
+import com.pefe.pefememo.model.todo.Todo;
 import com.pefe.pefememo.preference.PreferenceControl;
 import com.pefe.pefememo.preference.PreferenceControlImpl;
+import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.sample.Sample;
 
 import java.util.ArrayList;
@@ -53,9 +52,9 @@ public class MainViewImpl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_view);
-        realmController = new RealmControllerImpl(this);
-        realmController.realmInit();
-        addSamples();
+//        realmController = new RealmControllerImpl(this);
+//        realmController.realmInit();
+        //addSamples();
         versionCheck();
     }
 
@@ -67,8 +66,8 @@ public class MainViewImpl extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        realmController.realmClose();
-        realmController = null;
+//        realmController.realmClose();
+//        realmController = null;
     }
 
     @Override
@@ -83,37 +82,37 @@ public class MainViewImpl extends AppCompatActivity {
 
     private void addSamples() {
         for (Directory d : Sample.getDirectories()) {
-            Log.e("Directory",d.getCode());
+            Log.e("Directory", d.getCode());
             realmController.createDir(d.getOrder(), d.getCode(), d.getName(), d.getPw());
         }
         for (Memo m : Sample.getMemos()) {
-            Log.e("Memo",m.getNo()+"");
+            Log.e("Memo", m.getNo() + "");
             realmController.writeMemoNT(m.isImportant(), m.getDirCode(), m.getContent());
         }
         for (Todo t : Sample.createSampleTodo()) {
-            Log.e("todo",t.getNo()+"");
+            Log.e("todo", t.getNo() + "");
             realmController.writeTodoNT(t.getType(), t.getContent(), t.getCreateDate());
         }
-        for (SelectedTodo st : Sample.createSampleSelectedTodo()){
-            Log.e("stodo",st.getNo()+"");
-            realmController.writeSelectedTodoNT(st.getType(),st.getContent(),st.getBelongDate(),st.getPutDate());
+        for (SelectedTodo st : Sample.createSampleSelectedTodo()) {
+            Log.e("stodo", st.getNo() + "");
+            realmController.writeSelectedTodoNT(st.getType(), st.getContent(), st.getBelongDate(), st.getPutDate());
         }
-        }
+    }
 
-    private void init(){
-        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
+    private void init() {
+        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS, 0);
         preferenceControl = new PreferenceControlImpl(preferences);
         drawViews();
         checkRoot();
 
     }
 
-    private void drawViews(){
+    private void drawViews() {
         //메모와 잠금화면 사용 여부 설정 스위치
-        switchMemo =(Switch)findViewById(R.id.switchMemo);
+        switchMemo = (Switch) findViewById(R.id.switchMemo);
         switchMemo.setChecked(preferenceControl.restoreMemoUse());
-        switchMemo.setOnCheckedChangeListener( new CheckChangeListener());
-        switchLockScreen =(Switch)findViewById(R.id.switchLockScreen);
+        switchMemo.setOnCheckedChangeListener(new CheckChangeListener());
+        switchLockScreen = (Switch) findViewById(R.id.switchLockScreen);
         switchLockScreen.setChecked(preferenceControl.restoreLockScreenUse());
         switchLockScreen.setOnCheckedChangeListener(new CheckChangeListener());
         tabs = (TabLayout) findViewById(R.id.tabs);
@@ -123,20 +122,20 @@ public class MainViewImpl extends AppCompatActivity {
         fragments.add(memoFragment);
         fragments.add(todoFragment);
         fragments.add(settingsFragment);
-        viewPager=(ViewPager)findViewById(R.id.viewPager);
-        setupViewPager(viewPager,fragments,getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        setupViewPager(viewPager, fragments, getSupportFragmentManager());
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
     }
 
-    private void checkRoot(){
+    private void checkRoot() {
         Intent intent = new Intent(MainViewImpl.this, RootService.class);
-        if(switchMemo.isChecked() || switchLockScreen.isChecked()){
-            if(!PefeMemo.isRootOn()){
+        if (switchMemo.isChecked() || switchLockScreen.isChecked()) {
+            if (!PefeMemo.isRootOn()) {
                 startService(intent);
             }
-        }else{
-            if(PefeMemo.isRootOn()){
+        } else {
+            if (PefeMemo.isRootOn()) {
                 stopService(intent);
             }
 
@@ -145,43 +144,52 @@ public class MainViewImpl extends AppCompatActivity {
     }
 
 
-    private class CheckChangeListener implements CompoundButton.OnCheckedChangeListener{
+    private class CheckChangeListener implements CompoundButton.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if(compoundButton.equals(switchMemo)){
+            if (compoundButton.equals(switchMemo)) {
                 try {
                     preferenceControl.saveMemoUse(b);
-                }catch (Exception e){e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-            }else if(compoundButton.equals(switchLockScreen)){
+            } else if (compoundButton.equals(switchLockScreen)) {
                 try {
                     preferenceControl.saveLockScreenUse(b);
-                }catch (Exception e){e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             checkRoot();
         }
     }
-    private void setupViewPager(ViewPager viewPager, ArrayList<Fragment> fragments, FragmentManager fragmentManager){
-        CustomPagerAdapter adapter = new CustomPagerAdapter( fragments, fragmentManager);
+
+    private void setupViewPager(ViewPager viewPager, ArrayList<Fragment> fragments, FragmentManager fragmentManager) {
+        CustomPagerAdapter adapter = new CustomPagerAdapter(fragments, fragmentManager);
         viewPager.setAdapter(adapter);
     }
 
 
     //퍼미션
-    private void versionCheck(){
+    private void versionCheck() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            init();} else {checkPermissions();}
+            init();
+        } else {
+            checkPermissions();
+        }
     }
 
-    private final int PERMISSION_REQUEST_CODE =333;
+    private final int PERMISSION_REQUEST_CODE = 333;
+
     @TargetApi(Build.VERSION_CODES.M)
     private void checkPermissions() {
         //출저 http://stackoverflow.com/questions/32652533/android-system-overlay-window
         if (!android.provider.Settings.canDrawOverlays(this)) {
             Intent permission_request = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
-            startActivityForResult(permission_request,PERMISSION_REQUEST_CODE);
-        } else if(android.provider.Settings.canDrawOverlays(this)){
+            startActivityForResult(permission_request, PERMISSION_REQUEST_CODE);
+        } else if (android.provider.Settings.canDrawOverlays(this)) {
             init();
         }
     }
@@ -189,8 +197,8 @@ public class MainViewImpl extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == PERMISSION_REQUEST_CODE){
-            if(android.provider.Settings.canDrawOverlays(this)){
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (android.provider.Settings.canDrawOverlays(this)) {
                 this.init();
             }
         }

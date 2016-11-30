@@ -287,6 +287,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         dragListener = new TodoDragListener(this);
         selectItemListener = new TodoTypeSelectItemListener(this);
 
+        delete_layout.setOnDragListener(dragListener);
         ib_before.setOnDragListener(dragListener);
         ib_next.setOnDragListener(dragListener);
         sp_todoType.setOnItemSelectedListener(selectItemListener);
@@ -634,8 +635,22 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //드래깅한 아이템을 삭제하는 함수
     @Override
     public void delete(String pickedType, int pickedIndex, Date pickedBelongDate) {
+        Log.e("tag","delete");
+        final int tmep = pickedIndex;
         if (pickedType.equals(ONCE)){
-            realmController.deleteTodo(once_type_datas.get(pickedIndex).getNo());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Long no = once_type_datas.get(tmep).getNo();
+                            realmController.deleteTodo(no);
+                        }
+                    });
+                }
+            }).start();
+
         }else if(pickedType.equals(REPEAT)){
             realmController.deleteTodo(repeat_type_datas.get(pickedIndex).getNo());
         }else if(pickedType.equals(OLD)) {

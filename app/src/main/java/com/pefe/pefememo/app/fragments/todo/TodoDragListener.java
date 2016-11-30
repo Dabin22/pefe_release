@@ -50,6 +50,7 @@ public class TodoDragListener implements View.OnDragListener {
                     handler.isEntered(true);
                     targetIndex = -1;
                     targetType = "";
+                    Log.e("draglistener", "entered delete layout");
                 } else {
                     if (view.getTag() != null) {
                         targetIndex = ((TodoViewType) view.getTag()).getIndex();
@@ -69,6 +70,7 @@ public class TodoDragListener implements View.OnDragListener {
             case DragEvent.ACTION_DROP:
                 handler.stop();
                 if (view.getId() == R.id.delete_layout) {
+                    Log.e("delete","enterend delete_layout");
                     handler.delete(pickedType, pickedIndex, pickedBelongDate);
                 } else if (pickedType.equals("Once") || pickedType.equals("Repeat") || pickedType.equals("Old")) {
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -38,7 +39,7 @@ public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHol
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(context,R.layout.item_registered_todo_list,parent);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_registered_todo_list,parent,false);
         Log.e("view",view+"");
         return new ViewHolder(view);
     }
