@@ -25,6 +25,7 @@ import com.pefe.pefememo.model.memo.Memo;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.Sort;
 
 /**
  * Created by dodoproject on 2016-11-25.
@@ -34,11 +35,13 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
     Context context;
     RealmController realmController = null;
 
+    private OrderedRealmCollection<Memo> datas = null;
     private final int MAXLINES = 5;
 
     public MemoViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Memo> data,
                            boolean autoUpdate, RealmController realmController) {
         super(context, data, autoUpdate);
+        datas = data.sort("no", Sort.DESCENDING);
         this.context = context;
         this.realmController = realmController;
     }
@@ -51,10 +54,10 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        long no = getData().get(position).getNo();
-        boolean isImportant = getData().get(position).isImportant();
-        String dirCode = getData().get(position).getDirCode();
-        String memoContent = getData().get(position).getContent();
+        long no = datas.get(position).getNo();
+        boolean isImportant = datas.get(position).isImportant();
+        String dirCode = datas.get(position).getDirCode();
+        String memoContent = datas.get(position).getContent();
         holder.content.setText(memoContent);
         holder.content.setMaxLines(MAXLINES);
         if(isImportant){
@@ -65,6 +68,12 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         holder.content.setOnClickListener(new ContentClickListener(no));
     }
 
+    @Override
+    public void updateData(@Nullable OrderedRealmCollection<Memo> data) {
+        data.sort("no");
+        super.updateData(data);
+
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout memoItemRoot;

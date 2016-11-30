@@ -9,6 +9,9 @@ import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.sample.Sample;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import io.realm.OrderedRealmCollection;
 
 /**
@@ -48,11 +51,13 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
     @Override
     public void addFolder(int position){
         Directory d1 = Sample.getDirectories().get(position);
-        realmController.createDir(d1.getOrder(),d1.getCode(),d1.getName(),d1.getPw());
+        Date nDate = Calendar.getInstance().getTime();
+        realmController.createDir(d1.getName(),d1.getPw(),nDate);
     }
     @Override
     public void addFolder(long no, long order, String dirCode,String name, String pw){
-        realmController.createDir(order,dirCode,name,pw);
+        Date nDate = Calendar.getInstance().getTime();
+        realmController.createDir(name,pw,nDate);
     }
 
     @Override

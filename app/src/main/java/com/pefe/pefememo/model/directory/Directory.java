@@ -2,6 +2,8 @@ package com.pefe.pefememo.model.directory;
 
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -21,6 +23,7 @@ public class Directory extends RealmObject {
 
     private String name;
     private String pw;
+    private Date createDate;
 
 
     public long getNo() {return no;}
@@ -33,4 +36,6 @@ public class Directory extends RealmObject {
     public void setPw(String pw) {this.pw = pw;}
     public long getOrder() {return order;}
     public void setOrder(long order) {this.order = order;}
+    public Date getCreateDate() {return createDate;}
+    public void setCreateDate(Date createDate) {this.createDate = createDate;}
 }

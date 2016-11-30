@@ -29,6 +29,7 @@ public class RealmControllerImpl implements RealmController {
     Context context;
 
     public static final String DIR = "DIR";
+    public static final String DIR_ORDER = "DIR_ORDER";
     public static final String MEMO = "MEMO";
     public static final String TODO = "TODO";
     public static final String SELECTED_TODO = "SELECTED_TODO";
@@ -88,44 +89,20 @@ public class RealmControllerImpl implements RealmController {
             }
         }
     }
-
-    @Override
-    public void createDir(long order, String code, String name, String pw){
-        long no = getLargestNo(RealmControllerImpl.DIR)+1;
-        RealmAsyncTask addDirTask = pefeRealm.executeTransactionAsync(new DirCreateTransaction(no,order,code,name,pw)
-                            ,new OnDirCreateSuccess()
-                            ,new OnDirCreateError());
-        taskList.add(addDirTask);
-    }
-    @Override
-    public void modifyDir(String code,long order, String name, String pw){
-        RealmAsyncTask modifyDirTask = pefeRealm.executeTransactionAsync(new DirModifyTransaction(order,code,name,pw)
-                ,new OnDirModifySuccess()
-                ,new OnDirModifyError());
-        taskList.add(modifyDirTask);
-    }
-    @Override
-    public void deleteDir(String code){
-        RealmAsyncTask deleteDirTask = pefeRealm.executeTransactionAsync(new DirDeleteTransaction(code)
-                ,new OnDirDeleteSuccess()
-                ,new OnDirDeleteError());
-        taskList.add(deleteDirTask);
-    }
-
-    @Override
-    public OrderedRealmCollection<Directory> readDirAll() {
-        RealmResults<Directory> result = pefeRealm.where(Directory.class).findAll();
-        return result;
-    }
-
-
     @Override
     public long getLargestNo(String whose){
         long result = 0;
         Number temp;
+        try{
         switch (whose){
             case DIR:
                 temp = pefeRealm.where(Directory.class).max("no");
+                if(temp != null){
+                    result = temp.longValue();
+                }
+                break;
+            case DIR_ORDER:
+                temp = pefeRealm.where(Directory.class).max("order");
                 if(temp != null){
                     result = temp.longValue();
                 }
@@ -148,39 +125,125 @@ public class RealmControllerImpl implements RealmController {
                     result = temp.longValue();
                 }
                 break;
-        }
+        }}catch (Exception e){throw  e;}
         return  result;
     }
 
     @Override
-    public void writeMemo(boolean importance, String dirCode, String content){
+    public void createDir(String name, String pw, Date createDate) {
+        try {
+            long no = getLargestNo(DIR) + 1;
+            long order = getLargestNo(DIR_ORDER) + 1;
+            String code = ("dir_" + no + "_" + name);
+            pefeRealm.executeTransaction(new DirCreateTransaction(no, order, code, name, pw, createDate));
+            Toast.makeText(context, "Folder Created", Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Creating Folder has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void modifyDir(String code, long order, String name, String pw) {
+        try{
+            pefeRealm.executeTransaction(new DirModifyTransaction(order, code, name, pw));
+            Toast.makeText(context, "Folder Settings Changed", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Changing folder settings has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void deleteDir(String code) {
+        try{
+            pefeRealm.executeTransaction(new DirDeleteTransaction(code));
+            Toast.makeText(context, "Folder Deleted", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Deleting folder has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void createDirAsync(long order, String code, String name, String pw, Date createDate){
+        long no = getLargestNo(RealmControllerImpl.DIR)+1;
+        RealmAsyncTask addDirTask = pefeRealm.executeTransactionAsync(new DirCreateTransaction(no,order,code,name,pw, createDate)
+                            ,new OnDirCreateSuccess()
+                            ,new OnDirCreateError());
+        taskList.add(addDirTask);
+    }
+    @Override
+    public void modifyDirAsync(String code,long order, String name, String pw){
+        RealmAsyncTask modifyDirTask = pefeRealm.executeTransactionAsync(new DirModifyTransaction(order,code,name,pw)
+                ,new OnDirModifySuccess()
+                ,new OnDirModifyError());
+        taskList.add(modifyDirTask);
+    }
+    @Override
+    public void deleteDirAsync(String code){
+        RealmAsyncTask deleteDirTask = pefeRealm.executeTransactionAsync(new DirDeleteTransaction(code)
+                ,new OnDirDeleteSuccess()
+                ,new OnDirDeleteError());
+        taskList.add(deleteDirTask);
+    }
+
+    @Override
+    public OrderedRealmCollection<Directory> readDirAll() {
+        RealmResults<Directory> result = pefeRealm.where(Directory.class).findAll();
+        return result;
+    }
+
+
+    @Override
+    public void writeMemo(boolean importance, String dirCode, String content, Date createDate){
+        try {
+            long no = getLargestNo(RealmControllerImpl.MEMO) + 1;
+            pefeRealm.executeTransaction(new MemoWriteTransaction(no, importance, dirCode, content, createDate));
+            Toast.makeText(context, "Memo Saved", Toast.LENGTH_SHORT).show();
+        }catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Saving memo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void modifyMemo(long no, boolean importance, String dirCode, String content) {
+        try {
+            pefeRealm.executeTransaction(new MemoModifyTransaction(no, importance, dirCode, content));
+            Toast.makeText(context, "Memo Modified", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Modifying memo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void deleteMemo(long no) {
+        try{
+            pefeRealm.executeTransaction(new MemoDeleteTransaction(no));
+            Toast.makeText(context, "Memo Deleted", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Deleting memo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void writeMemoAsync(boolean importance, String dirCode, String content,Date createDate){
         long no = getLargestNo(RealmControllerImpl.MEMO)+1;
-        RealmAsyncTask writeMemoTask = pefeRealm.executeTransactionAsync(new MemoWriteTransaction(no, importance, dirCode, content)
+        RealmAsyncTask writeMemoTask = pefeRealm.executeTransactionAsync(new MemoWriteTransaction(no, importance, dirCode, content, createDate)
                         , new OnMemoWriteSuccess()
                         , new OnMemoWriteError());
 
         taskList.add(writeMemoTask);
     }
     @Override
-    public void writeMemoNT(boolean importance, String dirCode, String content){
-        long no = getLargestNo(RealmControllerImpl.MEMO)+1;
-        pefeRealm.executeTransaction(new MemoWriteTransaction(no, importance, dirCode, content));
-
-    }
-
-    @Override
-    public void modifyMemo(long no, boolean importance, String dirCode, String content){
+    public void modifyMemoAsync(long no, boolean importance, String dirCode, String content){
         RealmAsyncTask modifyMemoTask = pefeRealm.executeTransactionAsync(new MemoModifyTransaction(no, importance, dirCode, content)
                         , new OnMemoModifySuccess()
                         , new OnMemoModifyError());
         taskList.add(modifyMemoTask);
     }
     @Override
-    public void modifyMemoinEditor(long no, boolean importance, String dirCode, String content){
-        pefeRealm.executeTransaction(new MemoModifyTransaction(no,importance,dirCode,content));
-    }
-    @Override
-    public void deleteMemo(long no){
+    public void deleteMemoAsync(long no){
         RealmAsyncTask deleteMemoTask = pefeRealm
                 .executeTransactionAsync(new MemoDeleteTransaction(no)
                         , new OnMemoDeleteSuccess()
@@ -209,8 +272,43 @@ public class RealmControllerImpl implements RealmController {
         return result;
     }
 
+
     @Override
     public void writeTodo(String type, String content, Date createDate) {
+        try {
+            long no = getLargestNo(RealmControllerImpl.TODO) + 1;
+            pefeRealm.executeTransaction(new TodoWriteTransaction(no, type, content, createDate));
+            Toast.makeText(context, "Todo Saved", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Saving todo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void modifyTodo(long no, String type, String content, Date createDate, boolean done) {
+        try{
+            pefeRealm.executeTransaction(new TodoModifyTransaction(no, type, content, createDate, done));
+            Toast.makeText(context, "Todo Modified", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Modifying todo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void deleteTodo(long no) {
+        try{
+            pefeRealm.executeTransaction(new TodoDeleteTransaction(no));
+            Toast.makeText(context, "Todo Deleted", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Deleting todo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void writeTodoAsync(String type, String content, Date createDate) {
         long no = getLargestNo(RealmControllerImpl.TODO)+1;
         RealmAsyncTask writeTodoTask = pefeRealm.executeTransactionAsync(new TodoWriteTransaction(no,type,content,createDate)
                         ,new OnTodoWriteSuccess()
@@ -218,20 +316,14 @@ public class RealmControllerImpl implements RealmController {
         taskList.add(writeTodoTask);
     }
     @Override
-    public void writeTodoNT(String type, String content, Date createDate) {
-        long no = getLargestNo(RealmControllerImpl.TODO)+1;
-        pefeRealm.executeTransaction(new TodoWriteTransaction(no,type,content,createDate));
-
-    }
-    @Override
-    public void modifyTodo(long no, String type, String content, Date createDate, boolean done) {
+    public void modifyTodoAsync(long no, String type, String content, Date createDate, boolean done) {
         RealmAsyncTask modifyTodoTask = pefeRealm.executeTransactionAsync(new TodoModifyTransaction(no,type,content,createDate,done)
                 ,new OnTodoModifySuccess()
                 ,new OnTodoModifyError());
         taskList.add(modifyTodoTask);
     }
     @Override
-    public void deleteTodo(long no) {
+    public void deleteTodoAsync(long no) {
         RealmAsyncTask deleteTodoTask = pefeRealm.executeTransactionAsync(new TodoDeleteTransaction(no)
                 ,new OnTodoDeleteSuccess()
                 ,new OnTodoDeleteError());
@@ -254,8 +346,43 @@ public class RealmControllerImpl implements RealmController {
         return todos;
     }
 
+
     @Override
-    public void writeSelectedTodo(String type, String content, Date belongDate, Date putDate) {
+    public void writeSelectedTodo(long todoNo,String type, String content, Date belongDate, Date putDate) {
+        try {
+            long no = getLargestNo(RealmControllerImpl.SELECTED_TODO) + 1;
+            pefeRealm.executeTransaction(new SelectedTodoWriteTransaction(no, type, content, belongDate, putDate));
+            if(!type.equals(Todo.REPEAT)){
+                deleteTodo(todoNo);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Register on calendar has benn cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void modifySelectedTodo(long no, boolean done, String type, String content, Date belongDate, Date putDate) {
+        try{
+            pefeRealm.executeTransaction(new SelectedTodoModifyTransaction(no, done, type, content, belongDate, putDate));
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Modifying Stodo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void deleteSelectedTodo(long no) {
+        try{
+            pefeRealm.executeTransaction(new SelectedTodoDeleteTransaction(no));
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Deleting Stodo has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+     }
+
+    @Override
+    public void writeSelectedTodoAsync(String type, String content, Date belongDate, Date putDate) {
         long no = getLargestNo(RealmControllerImpl.SELECTED_TODO)+1;
         RealmAsyncTask writeSelectedTodoTask = pefeRealm.executeTransactionAsync(new SelectedTodoWriteTransaction(no,type,content,belongDate,putDate)
                 ,new OnSelectedTodoWriteSuccess()
@@ -263,19 +390,14 @@ public class RealmControllerImpl implements RealmController {
         taskList.add(writeSelectedTodoTask);
     }
     @Override
-    public void writeSelectedTodoNT(String type, String content, Date belongDate, Date putDate) {
-        long no = getLargestNo(RealmControllerImpl.SELECTED_TODO)+1;
-        pefeRealm.executeTransaction(new SelectedTodoWriteTransaction(no,type,content,belongDate,putDate));
-    }
-    @Override
-    public void modifySelectedTodo(long no, boolean done, String type, String content, Date belongDate, Date putDate) {
+    public void modifySelectedTodoAsync(long no, boolean done, String type, String content, Date belongDate, Date putDate) {
         RealmAsyncTask modifySelectedTodoTask = pefeRealm.executeTransactionAsync(new SelectedTodoModifyTransaction(no,done,type,content,belongDate,putDate)
                 ,new OnSelectedTodoModifySuccess()
                 ,new OnSelectedTodoModifyError());
         taskList.add(modifySelectedTodoTask);
     }
     @Override
-    public void deleteSelectedTodo(long no) {
+    public void deleteSelectedTodoAsync(long no) {
         RealmAsyncTask deleteSelectedTodoTask = pefeRealm.executeTransactionAsync(new SelectedTodoDeleteTransaction(no)
                 ,new OnSelectedTodoDeleteSuccess()
                 ,new OnSelectedTodoDeleteError());
@@ -292,7 +414,6 @@ public class RealmControllerImpl implements RealmController {
         RealmResults<SelectedTodo>selectedTodos = pefeRealm.where(SelectedTodo.class).equalTo("content",keyWord).findAll();
         return selectedTodos;
     }
-
     @Override
     public OrderedRealmCollection<SelectedTodo> readSelectedTodoByBelongDate(Date date) {
         RealmResults<SelectedTodo>selectedTodos = pefeRealm.where(SelectedTodo.class).equalTo("belongDate",date).findAll();
@@ -302,13 +423,15 @@ public class RealmControllerImpl implements RealmController {
     private class DirCreateTransaction implements Realm.Transaction{
         long no, order;
         String code,name,pw;
+        Date createDate;
 
-        public DirCreateTransaction(long no, long order, String code, String name, String pw) {
+        public DirCreateTransaction(long no, long order, String code, String name, String pw, Date createDate) {
             this.no = no;
             this.order = order;
             this.code = code;
             this.name = name;
             this.pw = pw;
+            this.createDate = createDate;
         }
 
         @Override
@@ -318,6 +441,7 @@ public class RealmControllerImpl implements RealmController {
             dir.setOrder(order);
             dir.setName(name);
             dir.setPw(pw);
+            dir.setCreateDate(createDate);
         }
     }
     private class OnDirCreateSuccess implements Realm.Transaction.OnSuccess {
@@ -400,12 +524,14 @@ public class RealmControllerImpl implements RealmController {
         boolean importance;
         String dirCode;
         String content;
+        Date createDate;
 
-        private MemoWriteTransaction(long no, boolean importance, String dirCode , String content) {
+        private MemoWriteTransaction(long no, boolean importance, String dirCode , String content, Date createDate) {
             this.no = no;
             this.importance = importance;
             this.content = content;
             this.dirCode = dirCode;
+            this.createDate = createDate;
         }
 
         @Override
@@ -414,6 +540,7 @@ public class RealmControllerImpl implements RealmController {
             newMemo.setImportant(importance);
             newMemo.setContent(content);
             newMemo.setDirCode(dirCode);
+            newMemo.setCreateDate(createDate);
         }
     }
     private class OnMemoWriteSuccess implements Realm.Transaction.OnSuccess {

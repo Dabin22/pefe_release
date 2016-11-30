@@ -19,35 +19,56 @@ public interface RealmController {
     void realmInit();
     void realmClose();
     void taskClose();
-    
-    void createDir(long order, String code, String name, String pw);
+
+
+    void createDir(String name, String pw, Date createDate);
     void modifyDir(String code, long order, String name, String pw);
     void deleteDir(String code);
+
+    void createDirAsync(long order, String code, String name, String pw, Date createDate);
+    void modifyDirAsync(String code, long order, String name, String pw);
+    void deleteDirAsync(String code);
     OrderedRealmCollection<Directory> readDirAll();
-    
+
+
     long getLargestNo(String whose);
-    void writeMemo( boolean importance, String dirCode, String content);
-    void writeMemoNT( boolean importance, String dirCode, String content);
+
+
+    void writeMemo( boolean importance, String dirCode, String content, Date createDate);
     void modifyMemo(long no, boolean importance, String dirCode, String content);
-    void modifyMemoinEditor(long no, boolean importance, String dirCode, String content);
     void deleteMemo(long no);
+
+    void writeMemoAsync( boolean importance, String dirCode, String content, Date createDate);
+    void modifyMemoAsync(long no, boolean importance, String dirCode, String content);
+    void deleteMemoAsync(long no);
+
     Memo readAMemoByNO(long no);
     OrderedRealmCollection<Memo> readMemoByImportance(String dirCode);
     OrderedRealmCollection<Memo> readMemoByDirCode(String dirCode);
     OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode);
-    
+
+
     void writeTodo(String type, String content, Date createDate);
-    void writeTodoNT(String type, String content, Date createDate);
     void modifyTodo(long no, String type, String content, Date createDate, boolean done);
     void deleteTodo(long no);
+
+    void writeTodoAsync(String type, String content, Date createDate);
+    void modifyTodoAsync(long no, String type, String content, Date createDate, boolean done);
+    void deleteTodoAsync(long no);
+
     Todo readATodoByNO(long no);
     OrderedRealmCollection<Todo> readTodoByContent(String keyWord);
     OrderedRealmCollection<Todo> readTodoByType(String type);
 
-    void writeSelectedTodo(String type, String content, Date belongDate, Date putDate);
-    void writeSelectedTodoNT(String type, String content, Date belongDate, Date putDate);
+
+    void writeSelectedTodo(long todoNo,String type, String content, Date belongDate, Date putDate);
     void modifySelectedTodo(long no, boolean done, String type, String content, Date belongDate, Date putDate);
     void deleteSelectedTodo(long no);
+
+    void writeSelectedTodoAsync(String type, String content, Date belongDate, Date putDate);
+    void modifySelectedTodoAsync(long no, boolean done, String type, String content, Date belongDate, Date putDate);
+    void deleteSelectedTodoAsync(long no);
+
     SelectedTodo readASelectedTodoByNO(long no);
     OrderedRealmCollection<SelectedTodo> readSelectedTodoByContent(String keyWord);
     OrderedRealmCollection<SelectedTodo> readSelectedTodoByBelongDate(Date date);

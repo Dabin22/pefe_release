@@ -536,7 +536,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         Log.e("sTodo", "stodo =" + sTodo.getContent());
         //있는지 중복 검사
         if (!isExistence(sTodo)) {
-            realmController.writeSelectedTodo(sTodo.getType(),sTodo.getContent(),selcted_day,selcted_day);
+            realmController.writeSelectedTodo(pop_todo.getNo(),sTodo.getType(),sTodo.getContent(),selcted_day,selcted_day);
         } else {
             Toast.makeText(getContext(), "이미 올라간 메모입니다!!", Toast.LENGTH_SHORT).show();
         }

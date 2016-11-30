@@ -1,5 +1,7 @@
 package com.pefe.pefememo.model.memo;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -15,6 +17,7 @@ public class Memo extends RealmObject {
     private String dirCode;
     private boolean important;
     private String content;
+    private Date createDate;
 
     public long getNo() { return no;}
     public void setNo(long no) {this.no = no;}
@@ -24,4 +27,6 @@ public class Memo extends RealmObject {
     public void setImportant(boolean important) {this.important = important;}
     public String getContent() {return content;}
     public void setContent(String content) {this.content = content;}
+    public Date getCreateDate() {return createDate;}
+    public void setCreateDate(Date createDate) {this.createDate = createDate;}
 }

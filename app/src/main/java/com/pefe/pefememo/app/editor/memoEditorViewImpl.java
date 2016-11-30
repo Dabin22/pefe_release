@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,7 +66,16 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         realmController.realmClose();
     }
 
-
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        switch (action){
+            case KeyEvent.KEYCODE_BACK:
+                finish();
+                break;
+        }
+        return super.dispatchKeyEvent(event);
+    }
 
     private class CopyClickListener implements View.OnClickListener{
         EditText content = null;

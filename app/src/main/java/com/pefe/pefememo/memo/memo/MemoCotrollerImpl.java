@@ -20,7 +20,8 @@ public class MemoCotrollerImpl implements MemoController {
     @Override
     public void saveMemo(boolean importance, String dirCode, String content){
 //        long no = realmController.getLargestNo(RealmControllerImpl.MEMO)+1;
-        realmController.writeMemo(importance,dirCode,content);
+        Date nDate = Calendar.getInstance().getTime();
+        realmController.writeMemo(importance,dirCode,content,nDate);
     }
 
     @Override
