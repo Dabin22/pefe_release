@@ -1,5 +1,7 @@
 package com.pefe.pefememo.app.fragments.todo;
 
+import com.pefe.pefememo.model.todo.SelectedTodo;
+
 import java.util.Date;
 
 /**
@@ -27,4 +29,5 @@ public interface TodoHandler {
 
     void delete(String pickedType, int pickedIndex, Date pickedBelongDate);
 
+    void change_done(SelectedTodo todo, boolean done);
 }

@@ -17,18 +17,16 @@ import android.widget.Switch;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
-import com.pefe.pefememo.model.todo.SelectedTodo;
-import com.pefe.pefememo.model.todo.Todo;
-import com.pefe.pefememo.realm.RealmController;
-import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.fragments.memo.MemoFragment;
 import com.pefe.pefememo.app.fragments.setting.SettingsFragment;
 import com.pefe.pefememo.app.fragments.todo.TodoFragment;
 import com.pefe.pefememo.memo.rootservice.RootService;
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
+import com.pefe.pefememo.model.todo.Todo;
 import com.pefe.pefememo.preference.PreferenceControl;
 import com.pefe.pefememo.preference.PreferenceControlImpl;
+import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.sample.Sample;
 
 import java.util.ArrayList;

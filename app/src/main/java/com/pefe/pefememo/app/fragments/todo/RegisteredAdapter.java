@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import io.realm.RealmRecyclerViewAdapter;
 public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, RegisteredAdapter.ViewHolder> {
 
 
-//    private ArrayList<SelectedTodo> datas;
+    //    private ArrayList<SelectedTodo> datas;
     private SelectedTodo todo;
     private int belong_day = -1;
     private TodoDragListener dragListener;
@@ -39,19 +38,21 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
     private Context context;
     private Calendar cal;
     private Date today;
+    private TodoHandler handler;
 
-    public RegisteredAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<SelectedTodo> data, boolean autoUpdate,TodoDragListener dragListener) {
+    public RegisteredAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<SelectedTodo> data, boolean autoUpdate, TodoDragListener dragListener, TodoHandler handler) {
         super(context, data, autoUpdate);
-        this.context =context;
+        this.context = context;
         this.dragListener = dragListener;
         longClickListener = new TodoLongClickListener();
         today = modifi_customDate();
+        this.handler = handler;
     }
 
 
     @Override
     public RegisteredAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_registered_todo_list,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_registered_todo_list, parent, false);
         return new ViewHolder(view);
     }
 
@@ -60,29 +61,24 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
         todo = getData().get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
+        holder.ck_todo_done.setChecked(todo.isDone());
         if (!compare_date(todo.getBelongDate()).equals("past")) {
             holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean done) {
-                    todo.setDone(done);
+                handler.change_done(todo,done);
                 }
             });
-        }else{
+        } else {
             holder.ck_todo_done.setVisibility(View.GONE);
+            holder.itemView.setOnLongClickListener(null);
         }
         TodoViewType viewType = new TodoViewType();
-        if (belong_day == 0) {
-            viewType.setType("Today");
-            viewType.setIndex(position);
-            viewType.setBelongDate(todo.getBelongDate());
-            holder.itemView.setTag(viewType);
-        } else if (belong_day == -1) {
-            viewType.setType("Tommorow");
-            viewType.setIndex(position);
-            holder.itemView.setTag(viewType);
-        } else {
-            Log.e("error", "belong_day is null!");
-        }
+
+        viewType.setType("Today");
+        viewType.setIndex(position);
+        viewType.setBelongDate(todo.getBelongDate());
+        holder.itemView.setTag(viewType);
     }
 
     public String compare_date(Date belongDate) {

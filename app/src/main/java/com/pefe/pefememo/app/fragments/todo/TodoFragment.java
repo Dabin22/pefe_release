@@ -42,6 +42,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener, TodoHandler {
 
     RealmController realmController;
+
     public TodoFragment() {
         // Required empty public constructor
     }
@@ -95,7 +96,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     private TodoDragListener dragListener;
     private TodoTypeSelectItemListener selectItemListener;
-    private HashMap<Date,OrderedRealmCollection<SelectedTodo>> map_seletedTodo_datas;
+    private HashMap<Date, OrderedRealmCollection<SelectedTodo>> map_seletedTodo_datas;
     private UnRegisterAdapter once_type_adapter, repeat_type_adapter, old_type_adapter;
     private HashMap<String, UnRegisterAdapter> map_unRegister_adapters;
     private static final String ONCE = Todo.ONCE;
@@ -170,7 +171,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             oldTodoView = inflater.inflate(R.layout.dialog_old_todos, null);
             old_list = (RecyclerView) oldTodoView.findViewById(R.id.old_todo_list);
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            final OldAdapter oldAdapter = new OldAdapter(getContext(),old_type_datas,true);
+            final OldAdapter oldAdapter = new OldAdapter(getContext(), old_type_datas, true);
             RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             old_list.setLayoutManager(manager);
             old_list.setAdapter(oldAdapter);
@@ -182,7 +183,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     ArrayList<Todo> remove_datas = oldAdapter.pop_remove_Datas();
-                    for(Todo todo : remove_datas){
+                    for (Todo todo : remove_datas) {
                         realmController.deleteSelectedTodo(todo.getNo());
                     }
                 }
@@ -198,15 +199,31 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //데이트와 맞는 어뎁터가 없을시 생성하고 불러온 데이터를 현재 선택한 날짜의 어뎁터에 추가합니다.
     private void init_topAdapter() {
         if (!map_register_adapters.containsKey(selcted_day)) {
-            if(!map_seletedTodo_datas.containsKey(selcted_day)){
-                map_seletedTodo_datas.put(selcted_day,realmController.readSelectedTodoByBelongDate(selcted_day));
+            if (!map_seletedTodo_datas.containsKey(selcted_day)) {
+                map_seletedTodo_datas.put(selcted_day, realmController.readSelectedTodoByBelongDate(selcted_day));
+                Log.e("map", "before size = " + map_seletedTodo_datas.get(selcted_day).size());
             }
-            map_register_adapters.put(selcted_day, new RegisteredAdapter(getContext(),map_seletedTodo_datas.get(selcted_day),true,dragListener));
+            if (compare_date(selcted_day).equals("past")) {
+                for (SelectedTodo todo : map_seletedTodo_datas.get(selcted_day)) {
+                    if (!todo.isDone()) {
+                        if (todo.getType().equals(ONCE
+                        )) {
+                            Todo temp_todo = modifi_selectedTodo(todo);
+                            realmController.writeTodo(OLD, temp_todo.getContent(), selcted_day);
+                            realmController.deleteSelectedTodo(todo.getNo());
+                        } else {
+                            realmController.deleteSelectedTodo(todo.getNo());
+                        }
+                    }
+                }
+            }
+
+            map_register_adapters.put(selcted_day, new RegisteredAdapter(getContext(), map_seletedTodo_datas.get(selcted_day), true, dragListener,this));
         }
         registered_todoList.setAdapter(map_register_adapters.get(selcted_day));
+        Log.e("map", "after adpater = " + registered_todoList.getAdapter());
+        Log.e("map", "after size = " + map_seletedTodo_datas.get(selcted_day).size());
     }
-
-
 
 
     //private HashMap<Date, ArrayList<SelectedTodo>> map_selected_datas;
@@ -220,11 +237,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     private void init_todoData() {
         //todo 데이터 가져오기
         once_type_datas = realmController.readTodoByType(ONCE);
-        Log.e("datas",once_type_datas.size()+"");
-        repeat_type_datas= realmController.readTodoByType(REPEAT);
-        Log.e("datas",repeat_type_datas.get(0).getContent()+"");
+        Log.e("datas", once_type_datas.size() + "");
+        repeat_type_datas = realmController.readTodoByType(REPEAT);
         old_type_datas = realmController.readTodoByType(OLD);
-        Log.e("datas",old_type_datas.size()+"");
+        Log.e("datas", old_type_datas.size() + "");
 
     }
 
@@ -240,9 +256,9 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     //아래 어뎁터 생성후 맵에 연결합니다.
     private void init_bottomAdapter() {
-        once_type_adapter = new UnRegisterAdapter(getContext(),once_type_datas,true,dragListener);
-        repeat_type_adapter = new UnRegisterAdapter(getContext(),repeat_type_datas,true,dragListener);
-        old_type_adapter = new UnRegisterAdapter(getContext(),old_type_datas,true,dragListener);
+        once_type_adapter = new UnRegisterAdapter(getContext(), once_type_datas, true, dragListener);
+        repeat_type_adapter = new UnRegisterAdapter(getContext(), repeat_type_datas, true, dragListener);
+        old_type_adapter = new UnRegisterAdapter(getContext(), old_type_datas, true, dragListener);
         map_unRegister_adapters.put(ONCE, once_type_adapter);
         map_unRegister_adapters.put(REPEAT, repeat_type_adapter);
         map_unRegister_adapters.put(OLD, old_type_adapter);
@@ -421,11 +437,11 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             type_transform = OLD;
         }
         if (!type_transform.equals("")) {
-            Log.e("type","type = " + type_transform);
+            Log.e("type", "type = " + type_transform);
             UnRegisterAdapter selected_adapter = map_unRegister_adapters.get(type_transform);
             if (selected_adapter != null)
-                Log.e("type","adpater = " + selected_adapter);
-                unRegister_todoList.setAdapter(selected_adapter);
+                Log.e("type", "adpater = " + selected_adapter);
+            unRegister_todoList.setAdapter(selected_adapter);
         }
 
     }
@@ -506,18 +522,16 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         //날짜 데이트가 있고 올리려는 날짜가 과거가 아닐 시
         if (!compare_date(selcted_day).equals("past")) {
             Todo pop_todo;
-            if (pickedType.equals(ONCE)){
+            if (pickedType.equals(ONCE)) {
                 pop_todo = once_type_datas.get(pickedIndex);
                 putTodo(pop_todo, selcted_day);
-                realmController.deleteTodo(pop_todo.getNo());
 
-            } else if(pickedType.equals(OLD)) {
+            } else if (pickedType.equals(OLD)) {
                 pop_todo = old_type_datas.get(pickedIndex);
                 putTodo(pop_todo, selcted_day);
-                realmController.deleteTodo(pop_todo.getNo());
 
             } else if (pickedType.equals(REPEAT)) {
-                pop_todo = old_type_datas.get(pickedIndex);
+                pop_todo = repeat_type_datas.get(pickedIndex);
                 putTodo(pop_todo, selcted_day);
             }
             //과거일시
@@ -531,12 +545,15 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     //todo를 sTodo 형태로 바꾸어서 register adapter에 올린다.
     private void putTodo(Todo pop_todo, Date target_date) {
+        Log.e("put", "puttodo run");
         SelectedTodo sTodo = null;
         sTodo = modifi_todo(pop_todo, target_date);
         Log.e("sTodo", "stodo =" + sTodo.getContent());
         //있는지 중복 검사
         if (!isExistence(sTodo)) {
-            realmController.writeSelectedTodo(pop_todo.getNo(),sTodo.getType(),sTodo.getContent(),selcted_day,selcted_day);
+
+            realmController.writeSelectedTodo(pop_todo.getNo(), sTodo.getType(), sTodo.getContent(), selcted_day, selcted_day);
+
         } else {
             Toast.makeText(getContext(), "이미 올라간 메모입니다!!", Toast.LENGTH_SHORT).show();
         }
@@ -544,8 +561,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     //중복 검사
     private boolean isExistence(SelectedTodo sTodo) {
-        for(SelectedTodo todos : map_seletedTodo_datas.get(selcted_day)){
-            if(todos.getContent().equals(sTodo.getContent()) && todos.getType().equals(sTodo.getType())){
+        for (SelectedTodo todos : map_seletedTodo_datas.get(selcted_day)) {
+            if (todos.getContent().equals(sTodo.getContent()) && todos.getType().equals(sTodo.getType())) {
                 return true;
             }
         }
@@ -588,7 +605,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     public void changeBelongDate(Date pickedBelongDate, int pickedIndex) {
         if (!compare_date(selcted_day).equals("past")) {
             SelectedTodo temp_todo = map_seletedTodo_datas.get(selcted_day).get(pickedIndex);
-            realmController.modifySelectedTodo(temp_todo.getNo(),temp_todo.isDone(),temp_todo.getType(),temp_todo.getContent(),selcted_day,selcted_day);
+            realmController.modifySelectedTodo(temp_todo.getNo(), temp_todo.isDone(), temp_todo.getType(), temp_todo.getContent(), selcted_day, temp_todo.getPutDate());
         } else {
             Toast.makeText(getContext(), "지난 날짜에 추가 할 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
@@ -599,13 +616,15 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     @Override
     public void unRegister_mode(Date pickedBelongDate, int pickedIndex) {
         SelectedTodo sTodo = map_seletedTodo_datas.get(pickedBelongDate).get(pickedIndex);
-        realmController.deleteSelectedTodo(sTodo.getNo());
+
         String type = sTodo.getType();
+
         if (type.equals(ONCE)) {
             Todo todo = modifi_selectedTodo(sTodo);
-            realmController.writeTodo(todo.getType(),todo.getContent(),modifi_customDate(today));
-        }
+            realmController.writeTodo(todo.getType(), todo.getContent(), selcted_day);
 
+        }
+        realmController.deleteSelectedTodo(sTodo.getNo());
     }
 
     @Override
@@ -620,6 +639,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     }
 
+    @Override
+    public void change_done(SelectedTodo todo, boolean done) {
+        realmController.modifySelectedTodo(todo.getNo(),done,todo.getType(),todo.getContent(),todo.getBelongDate(),todo.getPutDate());
+    }
 
     //드래깅한 아이템이 삭제버튼의 레이아웃으로 다가왔을시 색변화와 벗어났을시 원래대로 돌아가는 함수
     @Override
@@ -635,25 +658,14 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //드래깅한 아이템을 삭제하는 함수
     @Override
     public void delete(String pickedType, int pickedIndex, Date pickedBelongDate) {
-        Log.e("tag","delete");
+        Log.e("tag", "delete");
         final int tmep = pickedIndex;
-        if (pickedType.equals(ONCE)){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Long no = once_type_datas.get(tmep).getNo();
-                            realmController.deleteTodo(no);
-                        }
-                    });
-                }
-            }).start();
-
-        }else if(pickedType.equals(REPEAT)){
+        if (pickedType.equals(ONCE)) {
+            Long no = once_type_datas.get(tmep).getNo();
+            realmController.deleteTodo(no);
+        } else if (pickedType.equals(REPEAT)) {
             realmController.deleteTodo(repeat_type_datas.get(pickedIndex).getNo());
-        }else if(pickedType.equals(OLD)) {
+        } else if (pickedType.equals(OLD)) {
             realmController.deleteTodo(old_type_datas.get(pickedIndex).getNo());
         } else if (pickedType.equals("Today")) {
             realmController.deleteSelectedTodo(map_seletedTodo_datas.get(pickedBelongDate).get(pickedIndex).getNo());

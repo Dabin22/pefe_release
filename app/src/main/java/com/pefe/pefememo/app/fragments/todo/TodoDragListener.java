@@ -5,6 +5,7 @@ import android.view.DragEvent;
 import android.view.View;
 
 import com.pefe.pefememo.R;
+import com.pefe.pefememo.model.todo.Todo;
 
 import java.util.Date;
 
@@ -72,7 +73,7 @@ public class TodoDragListener implements View.OnDragListener {
                 if (view.getId() == R.id.delete_layout) {
                     Log.e("delete","enterend delete_layout");
                     handler.delete(pickedType, pickedIndex, pickedBelongDate);
-                } else if (pickedType.equals("Once") || pickedType.equals("Repeat") || pickedType.equals("Old")) {
+                } else if (pickedType.equals(Todo.ONCE) || pickedType.equals(Todo.REPEAT) || pickedType.equals(Todo.OLD)) {
 
                     if (targetType.equals("Today") || targetType.equals("Today_list")) {
                         handler.register_todo(pickedType, pickedIndex, targetType);
@@ -84,7 +85,7 @@ public class TodoDragListener implements View.OnDragListener {
                         if (pickedBelongDate != null) {
                             handler.changeBelongDate(pickedBelongDate, pickedIndex);
                         }
-                    } else if (targetType.equals("Bottom") || targetType.equals("Once") || targetType.equals("Repeat")) {
+                    } else if (targetType.equals("Bottom") || targetType.equals(Todo.ONCE) || targetType.equals(Todo.REPEAT)) {
                         if (pickedBelongDate != null) {
                             handler.unRegister_mode(pickedBelongDate, pickedIndex);
                         }
