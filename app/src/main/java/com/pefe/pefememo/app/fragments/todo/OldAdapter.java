@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.Sort;
 
 /**
  * Created by Dabin on 2016-11-28.
@@ -29,10 +30,12 @@ public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHol
 
     Context context;
     ArrayList<Todo> remove_datas;
+    OrderedRealmCollection<Todo>datas;
 
     public OldAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Todo> data, boolean autoUpdate) {
         super(context, data, autoUpdate);
         this.context = context;
+        datas = data.sort("no", Sort.ASCENDING);
         remove_datas = new ArrayList<>();
     }
 
@@ -47,8 +50,8 @@ public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHol
     private Todo todo;
     @Override
     public void onBindViewHolder(OldAdapter.ViewHolder holder, int position) {
-        Log.e("oldAdapter","data = " + getData().get(position));
-        todo = getData().get(position);
+        Log.e("oldAdapter","data = " + datas.get(position));
+        todo = datas.get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
         holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -77,12 +80,12 @@ public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHol
 
     @Override
     public int getItemCount() {
-        return getData().size();
+        return datas.size();
     }
 
     public ArrayList<Todo> popData() {
         ArrayList<Todo> recycleDatas = new ArrayList<>();
-        for (Todo todo : getData()){
+        for (Todo todo : datas){
             if(todo.isDone()){
                 todo.setDone(false);
                 recycleDatas.add(todo);

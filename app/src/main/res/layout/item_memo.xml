@@ -1,47 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/memoItemRoot">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/memoItemImportance"
-            android:visibility="invisible"/>
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="D"
-            android:id="@+id/memoItemDelete" />
+    card:cardCornerRadius="5dp"
+    android:layout_margin="5dp">
 
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toStartOf="@id/memoItemDelete"
-            android:layout_toLeftOf="@id/memoItemDelete"
-            android:text="C"
-            android:id="@+id/memoItemCopy"/>
-
-    </RelativeLayout>
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/memoItemContent"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:ems="10"
-        android:textIsSelectable="true"
-        android:focusable="false"
-        android:focusableInTouchMode="true"/>
-</ScrollView>
-</LinearLayout>
+        android:id="@+id/memoItemRoot"
+        android:background="@color/white">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whiteBar">
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/memoItemImportance"
+                android:visibility="invisible"/>
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="D"
+                android:id="@+id/memoItemDelete" />
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_toStartOf="@id/memoItemDelete"
+                android:layout_toLeftOf="@id/memoItemDelete"
+                android:text="C"
+                android:id="@+id/memoItemCopy"/>
+
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/memoItemContent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:ems="10"
+                android:textIsSelectable="true"
+                android:focusable="false"
+                android:focusableInTouchMode="true"/>
+        </ScrollView>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

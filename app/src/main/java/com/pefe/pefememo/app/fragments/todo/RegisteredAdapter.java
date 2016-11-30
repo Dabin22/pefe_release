@@ -22,6 +22,7 @@ import java.util.Date;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.Sort;
 
 /**
  * Created by Dabin on 2016-11-27.
@@ -30,7 +31,7 @@ import io.realm.RealmRecyclerViewAdapter;
 public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, RegisteredAdapter.ViewHolder> {
 
 
-    //    private ArrayList<SelectedTodo> datas;
+    private OrderedRealmCollection<SelectedTodo> datas;
     private SelectedTodo todo;
     private int belong_day = -1;
     private TodoDragListener dragListener;
@@ -43,6 +44,7 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
     public RegisteredAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<SelectedTodo> data, boolean autoUpdate, TodoDragListener dragListener, TodoHandler handler) {
         super(context, data, autoUpdate);
         this.context = context;
+        datas = data.sort("no", Sort.ASCENDING);
         this.dragListener = dragListener;
         longClickListener = new TodoLongClickListener();
         today = modifi_customDate();
@@ -58,7 +60,7 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
 
     @Override
     public void onBindViewHolder(RegisteredAdapter.ViewHolder holder, int position) {
-        todo = getData().get(position);
+        todo = datas.get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
         holder.ck_todo_done.setChecked(todo.isDone());
@@ -101,7 +103,7 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
 
     @Override
     public int getItemCount() {
-        return getData().size();
+        return datas.size();
     }
 
 
