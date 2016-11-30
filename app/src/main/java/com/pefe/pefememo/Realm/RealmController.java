@@ -29,6 +29,7 @@ public interface RealmController {
     void modifyDirAsync(String code, long order, String name, String pw);
     void deleteDirAsync(String code);
     OrderedRealmCollection<Directory> readDirAll();
+    Directory readADir(String name);
 
 
     long getLargestNo(String whose);

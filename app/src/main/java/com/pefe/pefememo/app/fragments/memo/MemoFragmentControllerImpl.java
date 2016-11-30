@@ -3,6 +3,7 @@ package com.pefe.pefememo.app.fragments.memo;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.model.directory.Directory;
@@ -37,7 +38,9 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
         this.memoRecyclerView = memoRecyclerView;
         this.dirRecyclerView = dirRecyclerView;
         setDirRecyclerView();
-        setMemosByDirCode(Sample.defaultCode);
+        //Directory first =realmController.readDirFirst();
+        String firstCode = "";
+        setMemosByDirCode(firstCode);
     }
     @Override
     public void setCustomResult(String keyWord){

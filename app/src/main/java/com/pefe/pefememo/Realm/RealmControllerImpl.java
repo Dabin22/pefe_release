@@ -20,6 +20,7 @@ import io.realm.RealmAsyncTask;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.annotations.RealmModule;
 
 //TODO REALM주석 달기
@@ -193,6 +194,11 @@ public class RealmControllerImpl implements RealmController {
         return result;
     }
 
+    @Override
+    public Directory readADir(String name) {
+        Directory dir = pefeRealm.where(Directory.class).equalTo("name",name).findFirst();
+        return dir;
+    }
 
     @Override
     public void writeMemo(boolean importance, String dirCode, String content, Date createDate){

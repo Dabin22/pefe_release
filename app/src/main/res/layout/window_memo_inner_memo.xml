@@ -15,31 +15,20 @@
         android:background="@color/blueSecnd">
 
         <ToggleButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:id="@+id/memoImportance"
             android:textOn="Imp"
             android:textOff="nImp"/>
 
-        <ScrollView
-            android:layout_width="160dp"
-            android:layout_height="match_parent">
-            <GridLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/colorPallet">
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"/>
+    <Spinner
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent"
+        android:id="@+id/dirSpinner"/>
 
-            </GridLayout>
-        </ScrollView>
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/dirSpinner">
 
-        </Spinner>
     </LinearLayout>
 
     <ScrollView

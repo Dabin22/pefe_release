@@ -9,11 +9,25 @@ import android.content.SharedPreferences;
 public class PreferenceControlImpl implements PreferenceControl{
 
     private SharedPreferences preferences = null;
-
+    public static final String FIRST ="FIRST";
     public static final String SAVE_SETTINGS = "SAVE_SETTINGS";
     private final String MEMO_USE ="MEMO_USE";
     private final String LOCKSCREEN_USE ="LOCKSCREEN_USE";
     public PreferenceControlImpl(SharedPreferences preferences){this.preferences = preferences;}
+
+    @Override
+    public boolean isFirst() {
+        boolean result;
+        result = preferences.getBoolean(FIRST,true);
+        return result;
+    }
+
+    @Override
+    public void notFirst() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(FIRST,false);
+        editor.apply();
+    }
 
     @Override
     public void saveMemoUse(boolean memoUse){

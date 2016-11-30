@@ -47,14 +47,16 @@ public class MainViewImpl extends AppCompatActivity {
     SettingsFragment settingsFragment;
 
     RealmController realmController;
-
+    PreferenceControl preferenceControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_view);
-//        addSamples();
+        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
+        preferenceControl = new PreferenceControlImpl(preferences);
         versionCheck();
+
     }
 
     @Override
@@ -120,8 +122,6 @@ public class MainViewImpl extends AppCompatActivity {
     }
 
     private void checkRoot(){
-        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
-        PreferenceControl preferenceControl = new PreferenceControlImpl(preferences);
         Intent intent = new Intent(MainViewImpl.this, RootService.class);
         if(preferenceControl.restoreMemoUse()|| preferenceControl.restoreLockScreenUse()){
             if(!PefeMemo.isRootOn()){

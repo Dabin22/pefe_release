@@ -1,8 +1,11 @@
 package com.pefe.pefememo.app.fragments.memo;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.realm.RealmControllerImpl;
+
+import java.util.Date;
 
 
 public class MemoFragment extends Fragment {
@@ -106,13 +113,61 @@ public class MemoFragment extends Fragment {
         }
     }
 
-    private class AddFolderBtnClickListener implements View.OnClickListener{
-        int i = 0;
+    private class AddFolderBtnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            if(i<2){
-            memoFragmentController.addFolder(i);
-            i++;}
+            AlertDialog dirCreateDialog = createDirCreateDialog();
+            dirCreateDialog.show();
+
+        }
+
+        private AlertDialog createDirCreateDialog() {
+            final LinearLayout windowCreateDir = (LinearLayout) View.inflate(getContext(), R.layout.dialog_create_dir, null);
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setView(windowCreateDir)
+                    .setTitle("New Folder")
+                    .setNegativeButton("Cancel", new DirDialogCancelListener())
+                    .setPositiveButton("Create", new DirDialogOnClickListener(windowCreateDir))
+                    .setCancelable(true)
+                    .create();
+            return dialog;
+        }
+
+        private class DirDialogOnClickListener implements DialogInterface.OnClickListener {
+            LinearLayout windowCreateDir = null;
+
+            DirDialogOnClickListener(LinearLayout windowCreateDir) {
+                this.windowCreateDir = windowCreateDir;
+            }
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                EditText name = (EditText) windowCreateDir.findViewById(R.id.createDirName);
+                EditText pw = (EditText) windowCreateDir.findViewById(R.id.createDirPw);
+                EditText pwConfirm = (EditText) windowCreateDir.findViewById(R.id.createDirPwConf);
+                String inputName = name.getText().toString();
+                String inputPw = pw.getText().toString();
+                String inputPwConfirm = pwConfirm.getText().toString();
+
+                if (!inputName.isEmpty()) {
+                    if (inputPw.equals(inputPwConfirm)) {
+                        Date nDate = java.util.Calendar.getInstance().getTime();
+                        realmController.createDir(inputName, inputPw, nDate);
+                    } else {
+                        Toast.makeText(getContext(), "Please recheck password", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "More than one letter is required for name", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        private class DirDialogCancelListener implements DialogInterface.OnClickListener {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
         }
     }
 }

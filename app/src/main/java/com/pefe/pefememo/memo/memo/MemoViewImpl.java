@@ -1,27 +1,45 @@
 package com.pefe.pefememo.memo.memo;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.database.DataSetObserver;
 import android.graphics.PixelFormat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.pefe.pefememo.R;
+import com.pefe.pefememo.app.fragments.memo.DirViewAdapter;
+import com.pefe.pefememo.app.fragments.memo.MemoFragment;
 import com.pefe.pefememo.memo.rootservice.RootService;
+import com.pefe.pefememo.model.directory.Directory;
+import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.sample.Sample;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import io.realm.OrderedRealmCollection;
 
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
@@ -161,11 +179,17 @@ public class MemoViewImpl implements MemoView {
     }
     //메모 작성 뷰 초기화
     private void setDefaultInnerMemo(View innerMemo){
-        RadioGroup colorParllet;
+        defaultingMemo(innerMemo);
+    }
+    private void defaultingMemo(View innerMemo){
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
-        Spinner dirSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
         EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
-        //TODO 각 요소 상태 초기화(필요할 경우)
+        Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
+
+//        Button folderImg = (Button)innerMemo.findViewById(R.id.folderImg);
+//        TextView folderName = (TextView)innerMemo.findViewById(R.id.folderText);
+//        folderImg.setOnClickListener(new FolderSetListener(folderName));
+//        folderName.setOnClickListener(new FolderSetListener(folderName));
     }
     //todo메모 작성 뷰 초기화화
     private ArrayList<View>todoList;
@@ -173,7 +197,6 @@ public class MemoViewImpl implements MemoView {
     private void setDefaultInnerTodo(View innerTodo){
         todoList = new ArrayList<>();
         GridLayout todoBoard = (GridLayout) innerTodo.findViewById(R.id.todoBoard);
-//        Spinner todoDirSpinner = (Spinner) parent.findViewById(R.id.todoDirSpinner);
         defaultingTodo(todoBoard);
     }
     private void defaultingTodo(GridLayout todoBoard){
@@ -185,7 +208,6 @@ public class MemoViewImpl implements MemoView {
         content.setOnClickListener(new AddTodoItemListener());
         todoItem.setAlpha(TEMP_TODOITEM_ALPHA);
         todoBoard.addView(todoItem);
-
     }
     //투명버튼 터치 리스너, 동작으로 메모를 띄울 지 설정한다
 
@@ -221,15 +243,17 @@ public class MemoViewImpl implements MemoView {
             switch (innerType){
                 case MEMO:
                     ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
-                    Spinner dirSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
                     EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
                     boolean important = importanceTBtn.isChecked();
-                    //TOdo dirCode넣기
-                    String dirCode = Sample.defaultCode;
+                    String dirName = ""; //folderName.getText().toString();
+                    String dirCode = "";
+                    if(!dirName.isEmpty()){
+                        dirCode = memoController.getDir(dirName);
+                    }
                     String content = memoContent.getText().toString();
                     memoController.saveMemo(important,dirCode,content);
 
-                    importanceTBtn.setChecked(false);
+//                    importanceTBtn.setChecked(false);
 //                    memoContent.setText("");
                     break;
                 case TODO:
@@ -282,6 +306,59 @@ public class MemoViewImpl implements MemoView {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {}
     }
+
+//    private class FolderSetListener implements View.OnClickListener{
+//        TextView folderName = null;
+//        int who;
+//        OrderedRealmCollection<Directory> dirs;
+//
+//        public FolderSetListener(TextView folderName) {
+//            this.folderName = folderName;
+//            dirs = memoController.getDirs();
+//        }
+//
+//        @Override
+//        public void onClick(View view) {
+//            AlertDialog dirSetDialog = setDirCreateDialog();
+//            dirSetDialog.show();
+//
+//        }
+//        private void setTextOnName(){
+//            if(who != -1){
+//                folderName.setText(dirs.get(who).getName());
+//            }
+//        }
+//
+//        private AlertDialog setDirCreateDialog() {
+//            ArrayList<String> folders = new ArrayList<>();
+//            for(Directory d : dirs){
+//                folders.add(d.getName());
+//            }
+//            String[] fList = new String[folders.size()];
+//            fList = folders.toArray(fList);
+//            AlertDialog dialog = new AlertDialog.Builder(context)
+//                    .setTitle("Set Folder")
+//                    .setSingleChoiceItems(fList, -1, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            who = i;
+//                        }
+//                    })
+//                    .setNegativeButton("Confirm", new DirDialogCancelListener())
+//                    .setCancelable(true)
+//                    .create();
+//            return dialog;
+//        }
+//        private class DirDialogCancelListener implements DialogInterface.OnClickListener {
+//
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.dismiss();
+//            }
+//        }
+//    }
+
+
     private class DeleteAddTodoListener implements CompoundButton.OnCheckedChangeListener{
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -318,6 +395,7 @@ public class MemoViewImpl implements MemoView {
             content.setFocusable(true);
             content.setFocusableInTouchMode(true);
             todoItem.setAlpha(1f);
-}
+        }
     }
 }
+

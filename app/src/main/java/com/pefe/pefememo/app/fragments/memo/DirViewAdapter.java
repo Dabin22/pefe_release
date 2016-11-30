@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.pefe.pefememo.model.directory.Directory;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.Sort;
 
 /**
  * Created by dodoproject on 2016-11-25.
@@ -29,9 +31,11 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
 
     private RealmController realmController;
     private MemoFragmentController memoDistributor;
+    private OrderedRealmCollection<Directory> datas;
 
     public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);
+        datas = data.sort("order", Sort.ASCENDING);
         this.realmController = realmController;
         this.memoDistributor = memoDistributor;
     }
@@ -47,9 +51,9 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        String name = getData().get(position).getName();
-        String dirCode = getData().get(position).getCode();
-        String dirPw = getData().get(position).getPw();
+        String name = datas.get(position).getName();
+        String dirCode = datas.get(position).getCode();
+        String dirPw = datas.get(position).getPw();
 
         holder.dirBtn.setOnClickListener(new dirClickListener(dirCode,dirPw));
         holder.dirName.setText(name);
@@ -91,10 +95,11 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         pwDialog.show();
     }
     private AlertDialog createPWDialog(String pw, String code){
-        final View windowPw = View.inflate(context,R.layout.dialog_pw,null);
+        final LinearLayout windowPw = (LinearLayout) View.inflate(context,R.layout.dialog_pw,null);
         AlertDialog pwDialog = new AlertDialog.Builder(context)
                 .setView(windowPw)
-                .setPositiveButton("확인", new PWDialogOnClickListener(windowPw, pw, code))
+                .setTitle("Password")
+                .setPositiveButton("Open", new PWDialogOnClickListener(windowPw, pw, code))
                 .setCancelable(true)
                 .create();
         return pwDialog;
