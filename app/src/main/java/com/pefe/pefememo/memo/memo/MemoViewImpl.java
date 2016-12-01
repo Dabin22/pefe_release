@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -35,11 +37,13 @@ import com.pefe.pefememo.memo.rootservice.RootService;
 import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.sample.Sample;
+import com.pefe.pefememo.tools.CopyTool;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.Sort;
 
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
@@ -56,7 +60,7 @@ public class MemoViewImpl implements MemoView {
 
     private Context context = null;
     private WindowManager wm = null;
-    private LayoutInflater inflater = null;
+    //private LayoutInflater inflater = null;
     private float displayHeight;
     private float displayWidth;
 
@@ -74,11 +78,10 @@ public class MemoViewImpl implements MemoView {
 
     private boolean memoOnOff = false;
 
-    public MemoViewImpl(Context context,MemoController memoController,WindowManager wm, LayoutInflater inflater, float displayHeight, float displayWidth) {
+    public MemoViewImpl(Context context,MemoController memoController,WindowManager wm, float displayHeight, float displayWidth) {
         this.memoController = memoController;
         this.context = context;
         this.wm = wm;
-        this.inflater = inflater;
         this.displayHeight = displayHeight;
         this.displayWidth = displayWidth;
     }
@@ -184,12 +187,57 @@ public class MemoViewImpl implements MemoView {
     private void defaultingMemo(View innerMemo){
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
         EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
+        Button cleanBtn = (Button) innerMemo.findViewById(R.id.cleanBtn);
+        Button copyBtn = (Button) innerMemo.findViewById(R.id.copyBtn);
+        Button pasteBtn = (Button) innerMemo.findViewById(R.id.pasteBtn);
+        Button selectAllBtn = (Button) innerMemo.findViewById(R.id.selectAllBtn);
+        cleanBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
+        copyBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
+        pasteBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
+        selectAllBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
         Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
+        setFolderSpinner(folderSpinner);
+        folderSpinner.setSelection(-1);
+    }
+    private class onInnerMemoMenuClick implements View.OnClickListener{
+        EditText content;
 
-//        Button folderImg = (Button)innerMemo.findViewById(R.id.folderImg);
-//        TextView folderName = (TextView)innerMemo.findViewById(R.id.folderText);
-//        folderImg.setOnClickListener(new FolderSetListener(folderName));
-//        folderName.setOnClickListener(new FolderSetListener(folderName));
+        public onInnerMemoMenuClick(EditText content) {
+            this.content = content;
+        }
+
+        @Override
+        public void onClick(View view) {
+            switch(view.getId()){
+                case R.id.cleanBtn:
+                    content.setText("");
+                    break;
+                case R.id.copyBtn:
+                    CopyTool.copyMemo(content);
+                    break;
+                case R.id.pasteBtn:
+                    CopyTool.pasteText(content);
+                    break;
+                case R.id.selectAllBtn:
+                    content.selectAll();
+                    break;
+            }
+        }
+    }
+    OrderedRealmCollection<Directory> dirs;
+    private void setFolderSpinner(Spinner spinner){
+        dirs = memoController.getDirs().sort("order", Sort.ASCENDING);
+        String[] fList = new String[(dirs.size()+1)];
+        for(int i = 0; i < fList.length; i++){
+            if(i == 0){
+                fList[0] = "No Folder";
+                continue;
+            }
+            fList[i] = dirs.get(i-1).getName();
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,fList);
+        spinner.setAdapter(adapter);
+
     }
     //todo메모 작성 뷰 초기화화
     private ArrayList<View>todoList;
@@ -217,6 +265,8 @@ public class MemoViewImpl implements MemoView {
             if(RootService.memoUse){
                 switch (motionEvent.getAction()){
                     case MotionEvent.ACTION_DOWN:
+                        view.setBackgroundColor(0x111111) ;
+
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float motionX = motionEvent.getX();
@@ -244,11 +294,13 @@ public class MemoViewImpl implements MemoView {
                 case MEMO:
                     ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
                     EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
+                    Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
+
                     boolean important = importanceTBtn.isChecked();
-                    String dirName = ""; //folderName.getText().toString();
                     String dirCode = "";
-                    if(!dirName.isEmpty()){
-                        dirCode = memoController.getDir(dirName);
+                    int i = folderSpinner.getSelectedItemPosition();
+                    if(i > 0){
+                        dirCode = dirs.get(i-1).getCode();
                     }
                     String content = memoContent.getText().toString();
                     memoController.saveMemo(important,dirCode,content);
@@ -375,7 +427,7 @@ public class MemoViewImpl implements MemoView {
                 View parent =(View) compoundButton.getParent();
                 parent.setAlpha(1f);
                 todoList.add(parent);
-                View newAddTodo = inflater.inflate(R.layout.item_todo,null);
+                View newAddTodo = View.inflate(context,R.layout.item_todo,null);
                 ToggleButton deleteAddBtn = (ToggleButton) newAddTodo.findViewById(R.id.todoAddDelBtn);
                 EditText content = (EditText)newAddTodo.findViewById(R.id.todoContent);
                 content.setOnClickListener(new AddTodoItemListener());

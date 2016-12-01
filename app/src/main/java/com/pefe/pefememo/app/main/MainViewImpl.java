@@ -131,7 +131,6 @@ public class MainViewImpl extends AppCompatActivity {
             if(PefeMemo.isRootOn()){
                 stopService(intent);
             }
-
         }
         intent = null;
     }

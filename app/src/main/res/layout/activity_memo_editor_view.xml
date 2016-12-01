@@ -73,7 +73,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true" />
     </ScrollView>
 
 </LinearLayout>

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.pefe.pefememo.R;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.app.editor.MemoEditorViewImpl;
 import com.pefe.pefememo.model.memo.Memo;
+import com.pefe.pefememo.tools.CopyTool;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
@@ -42,7 +44,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
     public MemoViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Memo> data,
                            boolean autoUpdate, RealmController realmController) {
         super(context, data, autoUpdate);
-        datas = data.sort("no", Sort.ASCENDING);
+        datas = data.sort("no", Sort.DESCENDING);
         this.context = context;
         this.realmController = realmController;
     }
@@ -114,16 +116,8 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
 
         @Override
         public void onClick(View view) {
-            copyMemo(memoContent);
+            CopyTool.copyMemo(content);
         }
-    }
-
-    private final String COPYCLIP_LABEL = "COPIED_MEMO";
-    private void copyMemo(String content ){
-        ClipboardManager clipboardManager = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clipData = ClipData.newPlainText(COPYCLIP_LABEL, content);
-        clipboardManager.setPrimaryClip(clipData);
-        Toast.makeText(context,"memo copied", Toast.LENGTH_SHORT).show();
     }
 
 

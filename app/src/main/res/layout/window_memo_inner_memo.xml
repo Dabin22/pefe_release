@@ -22,12 +22,37 @@
             android:textOn="Imp"
             android:textOff="nImp"/>
 
-    <Spinner
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:id="@+id/dirSpinner"/>
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:id="@+id/dirSpinner"/>
 
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/cleanBtn"
+            android:text="cl"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/copyBtn"
+            android:text="cp"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/pasteBtn"
+            android:text="ps"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/selectAllBtn"
+            android:text="sA"/>
 
     </LinearLayout>
 
@@ -41,8 +66,10 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:textIsSelectable="true"
+            android:textColor="@color/greyText"
+            android:textIsSelectable="false"
             android:id="@+id/memoContent"/>
+
     </ScrollView>
 
-</LinearLayout>
+    </LinearLayout>

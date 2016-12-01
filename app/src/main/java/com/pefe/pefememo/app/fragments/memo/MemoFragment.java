@@ -77,11 +77,17 @@ public class MemoFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
         memoFragmentController = null;
         realmController.realmClose();
         realmController = null;
-        super.onDetach();
+        super.onDestroy();
     }
+
     private class FolderBtnClickListener implements CompoundButton.OnCheckedChangeListener{
         ScrollView folderList = null;
 

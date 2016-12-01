@@ -109,7 +109,7 @@ public class RootService extends Service {
     private void setViewBuilders(){
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        memoView = new MemoViewImpl(this,memoController,wm,inflater,heightPixel,widthPixel);
+        memoView = new MemoViewImpl(this,memoController,wm,heightPixel,widthPixel);
         memoView.initMemo();
     }
 

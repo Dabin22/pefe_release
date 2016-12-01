@@ -22,6 +22,7 @@ import com.pefe.pefememo.model.directory.Directory;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.realm.RealmControllerImpl;
+import com.pefe.pefememo.tools.CopyTool;
 
 import java.util.ArrayList;
 
@@ -100,16 +101,8 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
 
         @Override
         public void onClick(View view) {
-            copyMemo(memoContent);
+            CopyTool.copyMemo(content);
         }
-    }
-    //출저 http://iw90.tistory.com/154
-    private final String COPYCLIP_LABEL = "COPIED_MEMO";
-    private void copyMemo(String content ){
-        ClipboardManager clipboardManager = (ClipboardManager)this.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clipData = ClipData.newPlainText(COPYCLIP_LABEL, content);
-        clipboardManager.setPrimaryClip(clipData);
-        Toast.makeText(this,"Memo Copied", Toast.LENGTH_SHORT).show();
     }
 
     private class SaveClickListener implements View.OnClickListener{
@@ -157,12 +150,10 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         }
 
         private AlertDialog setDirCreateDialog() {
-            ArrayList<String> folders = new ArrayList<>();
-            for(Directory d : dirs){
-                folders.add(d.getName());
+            String[] fList = new String[dirs.size()];
+            for(int i = 0; i < fList.length; i++){
+                fList[i] = dirs.get(i).getName();
             }
-            String[] fList = new String[folders.size()];
-            fList = folders.toArray(fList);
             AlertDialog dialog = new AlertDialog.Builder(MemoEditorViewImpl.this)
                     .setTitle("Set Folder")
                     .setSingleChoiceItems(fList, -1, new DialogInterface.OnClickListener() {
