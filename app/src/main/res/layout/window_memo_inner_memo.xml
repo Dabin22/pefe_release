@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rglrRoot"
-    android:focusable="true"
     tools:showIn="@layout/window_memo">
 
     <LinearLayout
@@ -67,7 +66,6 @@
             android:inputType="textMultiLine"
             android:ems="10"
             android:textColor="@color/greyText"
-            android:textIsSelectable="false"
             android:id="@+id/memoContent"/>
 
     </ScrollView>

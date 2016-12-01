@@ -153,11 +153,20 @@ public class RealmControllerImpl implements RealmController {
             Toast.makeText(context, "Changing folder settings has been cancelled", Toast.LENGTH_SHORT).show();
         }
     }
-
     @Override
-    public void deleteDir(String code) {
+    public void modifyDir(String code, String name, String pw) {
         try{
-            pefeRealm.executeTransaction(new DirDeleteTransaction(code));
+            pefeRealm.executeTransaction(new DirModifyWoOrderTransaction(code, name, pw));
+            Toast.makeText(context, "Folder Settings Changed", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Changing folder settings has been cancelled", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void deleteDir(String code, Date deletedDate) {
+        try{
+            pefeRealm.executeTransaction(new DirDeleteTransaction(code,deletedDate));
             Toast.makeText(context, "Folder Deleted", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
@@ -180,9 +189,10 @@ public class RealmControllerImpl implements RealmController {
                 ,new OnDirModifyError());
         taskList.add(modifyDirTask);
     }
+
     @Override
-    public void deleteDirAsync(String code){
-        RealmAsyncTask deleteDirTask = pefeRealm.executeTransactionAsync(new DirDeleteTransaction(code)
+    public void deleteDirAsync(String code, Date deletedDate){
+        RealmAsyncTask deleteDirTask = pefeRealm.executeTransactionAsync(new DirDeleteTransaction(code,deletedDate)
                 ,new OnDirDeleteSuccess()
                 ,new OnDirDeleteError());
         taskList.add(deleteDirTask);
@@ -222,15 +232,63 @@ public class RealmControllerImpl implements RealmController {
         }
     }
     @Override
-    public void deleteMemo(long no) {
+    public void deleteMemo(long no, Date deletedDate) {
         try{
-            pefeRealm.executeTransaction(new MemoDeleteTransaction(no));
+            pefeRealm.executeTransaction(new MemoDeleteTransaction(no, deletedDate));
             Toast.makeText(context, "Memo Deleted", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Deleting memo has been cancelled", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void deleteMemoForever(long no) {
+        try{
+            pefeRealm.executeTransaction(new MemoDeleteForeverTransaction(no));
+            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+        }catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void emptyTrashCan() {
+        try{
+            pefeRealm.executeTransaction(new EmptyTrashCanTransaction());
+            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+        }catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
+    @Override
+    public void recycleMemo(long no) {
+        try{
+            pefeRealm.executeTransaction(new RecycleMemoTransaction(no));
+            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+        }catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void recycleAll() {
+        try{
+            pefeRealm.executeTransaction(new RecycleAllMemoTransaction());
+            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+        }catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public void writeMemoAsync(boolean importance, String dirCode, String content,Date createDate){
@@ -249,12 +307,29 @@ public class RealmControllerImpl implements RealmController {
         taskList.add(modifyMemoTask);
     }
     @Override
-    public void deleteMemoAsync(long no){
+    public void deleteMemoAsync(long no, Date deletedDate){
         RealmAsyncTask deleteMemoTask = pefeRealm
-                .executeTransactionAsync(new MemoDeleteTransaction(no)
+                .executeTransactionAsync(new MemoDeleteTransaction(no,deletedDate)
                         , new OnMemoDeleteSuccess()
                         , new OnMemoDeleteError());
         taskList.add(deleteMemoTask);
+    }
+
+    @Override
+    public void emptyTrashCanAsync() {
+        RealmAsyncTask emptyTask = pefeRealm.executeTransactionAsync(
+                new EmptyTrashCanTransaction(),
+                new OnMemoDeleteSuccess(),
+                new OnMemoDeleteError());
+        taskList.add(emptyTask);
+    }
+    @Override
+    public void recycleAllAsync() {
+        RealmAsyncTask recycleTask = pefeRealm.executeTransactionAsync(
+                new RecycleAllMemoTransaction(),
+                new OnMemoWriteSuccess(),
+                new OnMemoWriteError());
+        taskList.add(recycleTask);
     }
 
     @Override
@@ -269,7 +344,7 @@ public class RealmControllerImpl implements RealmController {
     }
     @Override
     public OrderedRealmCollection<Memo> readMemoByDirCode(String dirCode) {
-        RealmResults<Memo> result = pefeRealm.where(Memo.class).equalTo("dirCode",dirCode).findAll();
+        RealmResults<Memo> result = pefeRealm.where(Memo.class).equalTo("deleted",false).equalTo("dirCode",dirCode).findAll();
         return result;
     }
     @Override
@@ -278,6 +353,11 @@ public class RealmControllerImpl implements RealmController {
         return result;
     }
 
+    @Override
+    public OrderedRealmCollection<Memo> readDeletedMemo() {
+        RealmResults<Memo> result = pefeRealm.where(Memo.class).equalTo("deleted",true).findAll();
+        return result;
+    }
 
     @Override
     public void writeTodo(String type, String content, Date createDate) {
@@ -483,6 +563,21 @@ public class RealmControllerImpl implements RealmController {
             dir.setPw(pw);
         }
     }
+    private class DirModifyWoOrderTransaction implements Realm.Transaction{
+        String code,name,pw;
+        public DirModifyWoOrderTransaction(String code, String name, String pw) {
+            this.code = code;
+            this.name = name;
+            this.pw = pw;
+        }
+
+        @Override
+        public void execute(Realm realm) {
+            Directory dir = realm.where(Directory.class).equalTo("code",code).findFirst();
+            dir.setName(name);
+            dir.setPw(pw);
+        }
+    }
     private class OnDirModifySuccess implements Realm.Transaction.OnSuccess {
 
         @Override
@@ -500,15 +595,23 @@ public class RealmControllerImpl implements RealmController {
     private class DirDeleteTransaction implements Realm.Transaction{
 
         String code;
+        Date deletedDate;
 
-        public DirDeleteTransaction(String code) {
+        public DirDeleteTransaction(String code, Date deletedDate) {
             this.code = code;
+            this.deletedDate = deletedDate;
         }
 
         @Override
         public void execute(Realm realm) {
             Directory dir = realm.where(Directory.class).equalTo("code",code).findFirst();
             dir.deleteFromRealm();
+            RealmResults<Memo> memos = realm.where(Memo.class).equalTo("dirCode",code).findAll();
+            for(Memo m : memos){
+                m.setDirCode("");
+                m.setDeleted(true);
+                m.setDeletedDate(deletedDate);
+            }
         }
     }
     private class OnDirDeleteSuccess implements Realm.Transaction.OnSuccess {
@@ -547,6 +650,7 @@ public class RealmControllerImpl implements RealmController {
             newMemo.setContent(content);
             newMemo.setDirCode(dirCode);
             newMemo.setCreateDate(createDate);
+            newMemo.setDeleted(false);
         }
     }
     private class OnMemoWriteSuccess implements Realm.Transaction.OnSuccess {
@@ -605,16 +709,20 @@ public class RealmControllerImpl implements RealmController {
         }
     }
 
+
     private class MemoDeleteTransaction implements Realm.Transaction {
-        Long no;
-        private MemoDeleteTransaction(long no) {
+        long no;
+        Date deletedDate;
+        private MemoDeleteTransaction(long no, Date deletedDate) {
             this.no = no;
+            this.deletedDate = deletedDate;
         }
 
         @Override
         public void execute(Realm realm) {
-            Memo deleteMemo = realm.where(Memo.class).equalTo("no",no).findFirst();
-            deleteMemo.deleteFromRealm();
+            Memo deletedMemo = realm.where(Memo.class).equalTo("no",no).findFirst();
+            deletedMemo.setDeleted(true);
+            deletedMemo.setDeletedDate(deletedDate);
         }
     }
     private class OnMemoDeleteSuccess implements Realm.Transaction.OnSuccess {
@@ -631,6 +739,52 @@ public class RealmControllerImpl implements RealmController {
 
         }
     }
+
+    private class MemoDeleteForeverTransaction implements Realm.Transaction{
+        long no;
+
+        public MemoDeleteForeverTransaction(long no) {
+            this.no = no;
+        }
+
+        @Override
+        public void execute(Realm realm) {
+            Memo deletedMemo = realm.where(Memo.class).equalTo("no",no).findFirst();
+            deletedMemo.deleteFromRealm();
+        }
+    }
+    private class EmptyTrashCanTransaction implements Realm.Transaction{
+
+        @Override
+        public void execute(Realm realm) {
+            RealmResults<Memo> trashes = realm.where(Memo.class).equalTo("deleted",true).findAll();
+            trashes.deleteAllFromRealm();
+        }
+    }
+
+    private class RecycleMemoTransaction implements  Realm.Transaction{
+        long no ;
+
+        public RecycleMemoTransaction(long no) {
+            this.no = no;
+        }
+
+        @Override
+        public void execute(Realm realm) {
+            Memo recycleMemo = realm.where(Memo.class).equalTo("no",no).findFirst();
+            recycleMemo.setDeleted(false);
+        }
+    }
+    private class RecycleAllMemoTransaction implements  Realm.Transaction{
+        @Override
+        public void execute(Realm realm) {
+            RealmResults<Memo> trashes = realm.where(Memo.class).equalTo("deleted",true).findAll();
+            for(Memo m : trashes){
+                m.setDeleted(false);
+            }
+        }
+    }
+
 
     private class TodoWriteTransaction implements Realm.Transaction {
         private long no;

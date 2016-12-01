@@ -53,12 +53,16 @@ public class MemoFragment extends Fragment {
         EditText searchBar = (EditText)memoFragment.findViewById(R.id.searchBar);
         Button searchBtn = (Button)memoFragment.findViewById(R.id.searchBtn);
         ToggleButton folderBtn = (ToggleButton)memoFragment.findViewById(R.id.folderBtn);
-        ScrollView folderList = (ScrollView)memoFragment.findViewById(R.id.folderList);
+        LinearLayout folderList = (LinearLayout) memoFragment.findViewById(R.id.folderList);
         searchBtn.setOnClickListener(new SearchBtnClickListener(searchBar));
         folderBtn.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
 
         Button addFolder = (Button) memoFragment.findViewById(R.id.addFolderBtn);
         addFolder.setOnClickListener(new AddFolderBtnClickListener() );
+        Button noFolderBtn = (Button) memoFragment.findViewById(R.id.noFolderBtn);
+        noFolderBtn.setOnClickListener(new FolderClickListener());
+        Button trashCanBtn =(Button) memoFragment.findViewById(R.id.trashCanBtn);
+        trashCanBtn.setOnClickListener(new FolderClickListener());
 
         memoView =(RecyclerView)memoFragment.findViewById(R.id.memoRecyclerView);
         dirView =(RecyclerView)memoFragment.findViewById(R.id.dirRecyclerView);
@@ -89,9 +93,9 @@ public class MemoFragment extends Fragment {
     }
 
     private class FolderBtnClickListener implements CompoundButton.OnCheckedChangeListener{
-        ScrollView folderList = null;
+        LinearLayout folderList = null;
 
-        public FolderBtnClickListener(ScrollView folderList) {
+        public FolderBtnClickListener(LinearLayout folderList) {
             this.folderList = folderList;
         }
 
@@ -173,6 +177,19 @@ public class MemoFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+            }
+        }
+    }
+    private class FolderClickListener implements  View.OnClickListener{
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.noFolderBtn:
+                    memoFragmentController.setMemosByDirCode("");
+                    break;
+                case R.id.trashCanBtn:
+                    memoFragmentController.setTrashCan();
+                    break;
             }
         }
     }

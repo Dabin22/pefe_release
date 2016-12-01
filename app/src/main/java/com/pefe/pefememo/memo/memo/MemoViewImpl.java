@@ -6,6 +6,8 @@ import android.database.DataSetObserver;
 import android.graphics.PixelFormat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,6 +47,7 @@ import java.util.Date;
 import io.realm.OrderedRealmCollection;
 import io.realm.Sort;
 
+import static android.content.Context.TELEPHONY_SERVICE;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
 import static android.view.WindowManager.LayoutParams.FLAG_SECURE;
@@ -60,6 +63,7 @@ public class MemoViewImpl implements MemoView {
 
     private Context context = null;
     private WindowManager wm = null;
+    private TelephonyManager telephonyManager = null;
     //private LayoutInflater inflater = null;
     private float displayHeight;
     private float displayWidth;
@@ -74,8 +78,10 @@ public class MemoViewImpl implements MemoView {
 //    private FrameLayout memoRoot = null;
     private View memoFrame;
     private View innerMemo = null;
+    Spinner folderSpinner = null;
     private View innerTodo = null;
 
+    private boolean phoneCallStatus = false;
     private boolean memoOnOff = false;
 
     public MemoViewImpl(Context context,MemoController memoController,WindowManager wm, float displayHeight, float displayWidth) {
@@ -88,11 +94,12 @@ public class MemoViewImpl implements MemoView {
 
     @Override
     public void initMemo() {
-        trnspBtn = new View(context);
+        trnspBtn = new Button(context);
+        trnspBtn.setAlpha(0.0f);
         trnspBtn.setOnTouchListener(new TrnspBtnListener());
         setTrnspBtn();
-
         setDefaultMemo();
+        setTelephonyManager();
     }
 
     @Override
@@ -112,6 +119,10 @@ public class MemoViewImpl implements MemoView {
             wm.addView(trnspBtn, setTrnspBtnParams());
         }
     }
+    private void setTrnspBtnImmediate(){
+            wm.removeViewImmediate(memoFrame);
+            wm.addView(trnspBtn, setTrnspBtnParams());
+    }
 
 
     //wm에 메모 뷰를 넣는 역할, 투명버튼에서 메모로 전환도 담당
@@ -119,7 +130,16 @@ public class MemoViewImpl implements MemoView {
         if(!memoOnOff){
             wm.removeViewImmediate(trnspBtn);
             wm.addView(memoFrame,setMemoParams());
+            setFolderSpinner(folderSpinner);
             memoOnOff= true;
+        }else{
+            if(memoBeforePhone){
+                memoBeforePhone = false;
+                wm.removeViewImmediate(trnspBtn);
+                wm.addView(memoFrame,setMemoParams());
+                setFolderSpinner(folderSpinner);
+                memoOnOff= true;
+            }
         }
     }
 
@@ -195,9 +215,14 @@ public class MemoViewImpl implements MemoView {
         copyBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
         pasteBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
         selectAllBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
-        Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
+        folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
         setFolderSpinner(folderSpinner);
-        folderSpinner.setSelection(-1);
+    }
+    private void setTelephonyManager(){
+        if (telephonyManager == null) {
+            telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
+            telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
     }
     private class onInnerMemoMenuClick implements View.OnClickListener{
         EditText content;
@@ -236,6 +261,7 @@ public class MemoViewImpl implements MemoView {
             fList[i] = dirs.get(i-1).getName();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,fList);
+        adapter.notifyDataSetChanged();
         spinner.setAdapter(adapter);
 
     }
@@ -265,15 +291,18 @@ public class MemoViewImpl implements MemoView {
             if(RootService.memoUse){
                 switch (motionEvent.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        view.setBackgroundColor(0x111111) ;
-
+                        trnspBtn.setAlpha(0.7f);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float motionX = motionEvent.getX();
                         float motionRange = -(displayWidth/3);
                         if (motionX < motionRange) {
                             setMemo();
+                            trnspBtn.setAlpha(0.0f);
                         }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        trnspBtn.setAlpha(0.0f);
                         break;
                 }
             }
@@ -449,5 +478,33 @@ public class MemoViewImpl implements MemoView {
             todoItem.setAlpha(1f);
         }
     }
+    private boolean memoBeforePhone = false;
+    private PhoneStateListener phoneListener = new PhoneStateListener() {
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            switch (state) {
+                //전화 올 때
+                case TelephonyManager.CALL_STATE_RINGING:
+                    phoneCallStatus = true;
+                        if(memoOnOff){
+                            memoBeforePhone = true;
+                            setTrnspBtnImmediate();
+                        }
+                    break;
+                //전화 받음
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    phoneCallStatus = true;
+                    break;
+                //전화 끊음
+                case TelephonyManager.CALL_STATE_IDLE:
+                    phoneCallStatus = false;
+                    if(memoBeforePhone&&memoOnOff){
+                        setMemo();
+                    }
+                    break;
+            }
+        }
+    };
 }
 

@@ -21,7 +21,6 @@ import com.pefe.pefememo.R;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.main.MainViewImpl;
-import com.pefe.pefememo.lockscreen.LockScreenViewImpl;
 import com.pefe.pefememo.memo.memo.MemoController;
 import com.pefe.pefememo.memo.memo.MemoCotrollerImpl;
 import com.pefe.pefememo.memo.memo.MemoView;
@@ -43,7 +42,8 @@ public class RootService extends Service {
     private RealmController realmController;
     private MemoController memoController;
     private MemoView memoView;
-    private ScreenOnOffReciever screenOnOffReciever;
+    //private ScreenOnOffReciever screenOnOffReciever;
+
 
     public static boolean memoUse;
     public static boolean lockScreenUse;
@@ -70,7 +70,7 @@ public class RootService extends Service {
         setPixels();
         setViewBuilders();
         setSettings();
-        registerScreenOnOffReceiver();
+        //registerScreenOnOffReceiver();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -78,7 +78,7 @@ public class RootService extends Service {
     public void onDestroy() {
         memoView.terminateMemo();
         realmController.realmClose();
-        unregisterReceiver(screenOnOffReciever);
+        //unregisterReceiver(screenOnOffReciever);
         stopForeground(true);
         PefeMemo.setRootOn(false);
         super.onDestroy();
@@ -120,11 +120,13 @@ public class RootService extends Service {
         //Memo와 lockScreenUse의 변화마다 notification 사용 여부 변경
         onOffNotification();
     }
-    private void registerScreenOnOffReceiver(){
-        screenOnOffReciever = new ScreenOnOffReciever();
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(screenOnOffReciever, filter);
-    }
+
+    //Todo 락스크린 리시버
+//    private void registerScreenOnOffReceiver(){
+//        screenOnOffReciever = new ScreenOnOffReciever();
+//        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+//        registerReceiver(screenOnOffReciever, filter);
+//    }
     //Notification 달기
     private static final int NOTI_ID = 3223;
     private void onOffNotification(){
@@ -169,47 +171,29 @@ public class RootService extends Service {
             setSettings();
         }
     }
-    //todo 효율재고하기
-    // 스크린 온오프 감지 브로드캐스트 리시버
-    private class ScreenOnOffReciever extends BroadcastReceiver {
-        boolean phoneCallStatus = false;
-        TelephonyManager telephonyManager = null;
+    //Todo View넣기
+//    private class ScreenOnOffReciever extends BroadcastReceiver {
+//
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (telephonyManager == null) {
+//                telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+//                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+//            }
+//            if (lockScreenUse) {
+//                if (action.equals(Intent.ACTION_SCREEN_OFF) && !phoneCallStatus) {
+//                    Intent lockScreenIntent = new Intent(RootService.this, LockScreenViewImpl.class);
+//                    lockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                    lockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    startActivity(lockScreenIntent);
+//                }
+//            }
+//        }
+//        // 핸드폰이 통화중일 경우 반응하지 않도록 설정
+//
+//    }
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (telephonyManager == null) {
-                telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-            }
-            if (lockScreenUse) {
-                if (action.equals(Intent.ACTION_SCREEN_OFF) && !phoneCallStatus) {
-                    Intent lockScreenIntent = new Intent(RootService.this, LockScreenViewImpl.class);
-                    lockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    lockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(lockScreenIntent);
-                }
-            }
-        }
-        // 핸드폰이 통화중일 경우 반응하지 않도록 설정
-        private PhoneStateListener phoneListener = new PhoneStateListener() {
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                switch (state) {
-                    //전화 올 때
-                    case TelephonyManager.CALL_STATE_RINGING:
-                        phoneCallStatus = true;
-                        break;
-                    //전화 받음
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        phoneCallStatus = true;
-                        break;
-                    //전화 끊음
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        phoneCallStatus = false;
-                        break;
-                }
-            }
-        };
-    }
+
 }

@@ -3,9 +3,11 @@ package com.pefe.pefememo.app.fragments.memo;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,9 @@ import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.app.editor.MemoEditorViewImpl;
 import com.pefe.pefememo.model.memo.Memo;
 import com.pefe.pefememo.tools.CopyTool;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
@@ -59,6 +64,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
 
         long no = datas.get(position).getNo();
         boolean isImportant = datas.get(position).isImportant();
+        boolean isDeleted = datas.get(position).isDeleted();
         String dirCode = datas.get(position).getDirCode();
         String memoContent = datas.get(position).getContent();
         holder.content.setText(memoContent);
@@ -67,8 +73,12 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         if(isImportant){
             holder.importance.setVisibility(View.VISIBLE);
         }
+        if(isDeleted){
+            holder.back.setVisibility(View.VISIBLE);
+        }
         holder.copy.setOnClickListener(new CopyClickListener(holder.content));
-        holder.delete.setOnClickListener(new DeleteClickListener(no));
+        holder.delete.setOnClickListener(new DeleteClickListener(no,isDeleted));
+        holder.back.setOnClickListener(new BackClickListener(no));
         holder.content.setOnClickListener(new ContentClickListener(no));
     }
 
@@ -78,6 +88,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         View importance;
         Button copy;
         Button delete;
+        Button back;
         TextView content;
 
         private ViewHolder(View itemView) {
@@ -86,6 +97,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
             importance = itemView.findViewById(R.id.memoItemImportance);
             copy = (Button) itemView.findViewById(R.id.memoItemCopy);
             delete = (Button) itemView.findViewById(R.id.memoItemDelete);
+            back =(Button)itemView.findViewById(R.id.memoItemBack);
             content = (TextView) itemView.findViewById(R.id.memoItemContent);
         }
     }
@@ -123,15 +135,34 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
 
     private class DeleteClickListener implements View.OnClickListener{
         long no;
+        boolean isDeleted;
 
-        public DeleteClickListener(long no) {
+        public DeleteClickListener(long no,boolean isDeleted) {
             this.no = no;
+            this.isDeleted = isDeleted;
         }
 
         @Override
         public void onClick(View view) {
-            realmController.deleteMemo(no);
-            notifyItemRangeRemoved(0,1);
+            if(isDeleted){
+                AlertDialog deletDialog = new AlertDialog.Builder(context)
+                        .setTitle("Delete Memo")
+                        .setMessage("Memo will be deleted permanently")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                realmController.deleteMemoForever(no);
+                            }
+                        })
+                        .setNeutralButton("Cancel",null)
+                        .setCancelable(true)
+                        .create();
+                deletDialog.show();
+            }else{
+                Date nDate = Calendar.getInstance().getTime();
+                realmController.deleteMemo(no,nDate);
+                notifyItemRangeRemoved(0,1);
+            }
         }
     }
     public static final String MEMO_NO = "Memo_NO";
@@ -150,6 +181,18 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
+        }
+    }
+    private class BackClickListener implements View.OnClickListener{
+        long no;
+
+        public BackClickListener(long no) {
+            this.no = no;
+        }
+
+        @Override
+        public void onClick(View view) {
+            realmController.recycleMemo(no);
         }
     }
 }

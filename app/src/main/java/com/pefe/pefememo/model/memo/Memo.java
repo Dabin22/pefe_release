@@ -18,6 +18,8 @@ public class Memo extends RealmObject {
     private boolean important;
     private String content;
     private Date createDate;
+    private boolean deleted;
+    private Date deletedDate;
 
     public long getNo() { return no;}
     public void setNo(long no) {this.no = no;}
@@ -29,4 +31,8 @@ public class Memo extends RealmObject {
     public void setContent(String content) {this.content = content;}
     public Date getCreateDate() {return createDate;}
     public void setCreateDate(Date createDate) {this.createDate = createDate;}
+    public boolean isDeleted(){return deleted;}
+    public void setDeleted(boolean deleted){this.deleted = deleted;}
+    public Date getDeletedDate() {return deletedDate;}
+    public void setDeletedDate(Date deletedDate) {this.deletedDate = deletedDate;}
 }

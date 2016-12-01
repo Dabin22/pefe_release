@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.model.directory.Directory;
@@ -14,6 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.Sort;
 
 /**
  * Created by dodoproject on 2016-11-25.
@@ -50,7 +52,17 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
         memoRecyclerView.setAdapter(memoAdapter);
         memoRecyclerView.setLayoutManager(gridLayoutManager);
     }
-    //TODO sample testing 지우기
+
+    @Override
+    public void setTrashCan() {
+        memos = realmController.readDeletedMemo().sort("deletedDate", Sort.DESCENDING);
+        MemoViewAdapter memoAdapter = new MemoViewAdapter(context,memos,true,realmController);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
+        memoRecyclerView.setAdapter(memoAdapter);
+        memoRecyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+
     @Override
     public void addFolder(int position){
         Directory d1 = Sample.getDirectories().get(position);
@@ -66,7 +78,7 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
     @Override
     public void setMemosByDirCode(String code){
         currentFolderCode = code;
-        memos = realmController.readMemoByDirCode(code);
+        memos = realmController.readMemoByDirCode(code).sort("important",Sort.DESCENDING,"no",Sort.DESCENDING);
         MemoViewAdapter memoAdapter = new MemoViewAdapter(context,memos,true, realmController);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
         memoRecyclerView.setAdapter(memoAdapter);

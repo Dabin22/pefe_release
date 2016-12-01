@@ -23,11 +23,12 @@ public interface RealmController {
 
     void createDir(String name, String pw, Date createDate);
     void modifyDir(String code, long order, String name, String pw);
-    void deleteDir(String code);
+    void modifyDir(String code, String name, String pw);
+    void deleteDir(String code, Date deletedDate);
 
     void createDirAsync(long order, String code, String name, String pw, Date createDate);
     void modifyDirAsync(String code, long order, String name, String pw);
-    void deleteDirAsync(String code);
+    void deleteDirAsync(String code, Date deletedDate);
     OrderedRealmCollection<Directory> readDirAll();
     Directory readADir(String name);
 
@@ -37,17 +38,23 @@ public interface RealmController {
 
     void writeMemo( boolean importance, String dirCode, String content, Date createDate);
     void modifyMemo(long no, boolean importance, String dirCode, String content);
-    void deleteMemo(long no);
+    void deleteMemo(long no, Date deletedDate);
+    void deleteMemoForever(long no);
+    void emptyTrashCan();
+    void recycleMemo(long no);
+    void recycleAll();
 
     void writeMemoAsync( boolean importance, String dirCode, String content, Date createDate);
     void modifyMemoAsync(long no, boolean importance, String dirCode, String content);
-    void deleteMemoAsync(long no);
+    void deleteMemoAsync(long no, Date deletedDate);
+    void emptyTrashCanAsync();
+    void recycleAllAsync();
 
     Memo readAMemoByNO(long no);
     OrderedRealmCollection<Memo> readMemoByImportance(String dirCode);
     OrderedRealmCollection<Memo> readMemoByDirCode(String dirCode);
     OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode);
-
+    OrderedRealmCollection<Memo> readDeletedMemo();
 
     void writeTodo(String type, String content, Date createDate);
     void modifyTodo(long no, String type, String content, Date createDate, boolean done);

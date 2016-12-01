@@ -39,6 +39,14 @@
                 android:layout_height="40dp"
                 android:layout_toStartOf="@id/memoItemDelete"
                 android:layout_toLeftOf="@id/memoItemDelete"
+                android:text="B"
+                android:id="@+id/memoItemBack"
+                android:visibility="gone"/>
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_toStartOf="@id/memoItemBack"
+                android:layout_toLeftOf="@id/memoItemBack"
                 android:text="C"
                 android:id="@+id/memoItemCopy"/>
 

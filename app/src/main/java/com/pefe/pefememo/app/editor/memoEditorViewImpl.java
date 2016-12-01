@@ -38,6 +38,7 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     TextView folderName;
     EditText content;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
