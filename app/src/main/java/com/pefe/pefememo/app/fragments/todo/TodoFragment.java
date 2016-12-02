@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -73,6 +75,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
                                      안보여진다.
      */
     private TextView tv_goal, tv_yearMonth, tv_nDate;
+    private Button btn_calendar;
     private ImageButton ib_before, ib_next;
     private RecyclerView unRegister_todoList, registered_todoList;
     private Spinner sp_todoType;
@@ -129,6 +132,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         sp_todoType = (Spinner) view.findViewById(R.id.sp_todoType);
         delete_layout = (LinearLayout) view.findViewById(R.id.delete_layout);
         menu_layout = (LinearLayout) view.findViewById(R.id.menu_layout);
+        btn_calendar = (Button)view.findViewById(R.id.btn_calendar);
 
         map_register_adapters = new HashMap<>();
         map_unRegister_adapters = new HashMap<>();
@@ -284,8 +288,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //받은 날짜를 각각 텍스트뷰에 값을 세팅하는 함수입니다.
     private void setDate() {
         selcted_day = modifi_customDate(cal.getTime());
-        SimpleDateFormat yearMonth_format = new SimpleDateFormat("yyyy MM");
-        SimpleDateFormat day_format = new SimpleDateFormat("E요일 \n d  ");
+        SimpleDateFormat yearMonth_format = new SimpleDateFormat("MM");
+        SimpleDateFormat day_format = new SimpleDateFormat("d(E)");
 
         tv_yearMonth.setText(yearMonth_format.format(selcted_day));
         tv_nDate.setText(day_format.format(selcted_day));
@@ -296,7 +300,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     //각종 리스너를 생성 및 설정하는 함수 입니다.
     private void init_listener() {
         tv_goal.setOnClickListener(this);
-        tv_yearMonth.setOnClickListener(this);
+        btn_calendar.setOnClickListener(this);
         ib_before.setOnClickListener(this);
         ib_next.setOnClickListener(this);
 
@@ -306,10 +310,22 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         delete_layout.setOnDragListener(dragListener);
         ib_before.setOnDragListener(dragListener);
         ib_next.setOnDragListener(dragListener);
+        init_spinnerAdapter();
         sp_todoType.setOnItemSelectedListener(selectItemListener);
+
         registered_todoList.setOnDragListener(dragListener);
         unRegister_todoList.setOnDragListener(dragListener);
 
+    }
+
+    private void init_spinnerAdapter(){
+        ArrayList<String> items = new ArrayList<>();
+        items.add("Once");
+        items.add("Repeat");
+        items.add("Old");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner_white,items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_todoType.setAdapter(adapter);
     }
 
     // tv_goal에 저장한 내용이 sharedPrefefences에 있으면 화면에 세팅해주는 함수 입니다.
@@ -350,7 +366,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
                 setGoal();
                 parent.removeView(dialogView);
                 break;
-            case R.id.tv_yearMonth:
+            case R.id.btn_calendar:
                 showDatePick();
                 break;
         }

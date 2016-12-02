@@ -14,110 +14,151 @@
             android:id="@+id/menu_layout"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:background="@color/blueRep">
+            android:background="@color/blueRep"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_goal"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:hint="좌우명이나 목표"/>
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:gravity="center_vertical"
+                android:hint="좌우명이나 목표"
+                android:paddingLeft="5dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
+
             <TextView
                 android:id="@+id/tv_yearMonth"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center" />
+                android:text="11"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/btn_calendar"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/ic_date_range_white_36dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/delete_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
             android:visibility="gone">
 
             <ImageView
+                android:id="@+id/iv_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@android:drawable/ic_menu_delete"
-                android:id="@+id/iv_delete"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_marginTop="10dp"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:elevation="5dp"
+            app:cardCornerRadius="5dp">
 
-            <ImageButton
-                android:id="@+id/ib_before"
-                android:layout_width="20dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:elevation="0dp"
-                app:srcCompat="?android:attr/actionModeCloseDrawable" />
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/ib_before"
+                    android:layout_width="18dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/blueSecnd"
+                    app:srcCompat="@drawable/ic_chevron_left_white_18dp" />
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:elevation="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_nDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/greyText"
+                        android:textSize="25dp" />
+
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/greyTextHint"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/registered_todoList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white">
+
+                    </android.support.v7.widget.RecyclerView>
+
+
+                </LinearLayout>
+
+
+                <ImageButton
+                    android:id="@+id/ib_next"
+                    android:layout_width="18dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/blueSecnd"
+                    android:rotation="180"
+                    app:srcCompat="@drawable/ic_chevron_left_white_18dp" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@color/blueBg"
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:elevation="10dp"
-                android:background="@color/white">
+                android:orientation="vertical">
 
-                <TextView
+                <Spinner
+                    android:id="@+id/sp_todoType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textSize="25dp"
-                    android:id="@+id/tv_nDate"
-                    />
+                    android:background="@color/blueSecnd" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/unRegister_todoList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/registered_todoList">
+                    android:background="@color/blueBgLight" />
 
-                </android.support.v7.widget.RecyclerView>
             </LinearLayout>
+        </android.support.v7.widget.CardView>
 
 
-            <ImageButton
-                android:id="@+id/ib_next"
-                android:layout_width="20dp"
-                android:layout_height="match_parent"
-                android:rotation="180"
-                android:elevation="0dp"
-                app:srcCompat="?android:attr/actionModeCloseDrawable" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/sp_todoType"
-                android:layout_weight="1"
-                android:entries="@array/todo_type"/>
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/unRegister_todoList"/>
     </LinearLayout>
 
 </FrameLayout>

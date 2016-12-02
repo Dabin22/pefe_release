@@ -1,5 +1,6 @@
 package com.pefe.pefememo.app.fragments.todo;
 
+import com.pefe.pefememo.R;
 import com.pefe.pefememo.model.todo.Todo;
 
 /**
@@ -11,11 +12,11 @@ public class TodoTypeImg {
     {
         int imgSrc=0;
         if(type.equals(Todo.REPEAT)){
-            imgSrc =android.R.drawable.ic_menu_rotate;
+            imgSrc = R.drawable.ic_loop_whiteblue_36dp;
         }else if(type.equals(Todo.ONCE)){
-            imgSrc = android.R.drawable.ic_menu_info_details;
+            imgSrc = R.drawable.ic_exposure_plus_1_whiteblue_36dp;
         }else if(type.equals(Todo.OLD)){
-            imgSrc = android.R.drawable.ic_menu_agenda;
+            imgSrc = R.drawable.ic_access_time_white_36dp;
         }
 
         return imgSrc;
