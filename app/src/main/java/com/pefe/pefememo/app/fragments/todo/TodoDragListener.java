@@ -114,6 +114,6 @@ public class TodoDragListener implements View.OnDragListener {
         pickedBelongDate = null;
         pickedIndex = -1;
         pickedType = "";
-        
+
     }
 }
