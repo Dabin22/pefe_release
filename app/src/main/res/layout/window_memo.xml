@@ -7,43 +7,53 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     card:cardCornerRadius="7dp"    >
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/memoOutLayer"
         android:background="@color/white">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="24dp"
         android:gravity="center_vertical"
-        android:background="@color/blueSecnd">
+        android:background="@color/blueSecnd"
+        android:id="@+id/memoBar">
         <SeekBar
-            android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:id="@+id/trnspController"
-            android:max="1000"
-            android:progress="1000" />
+            android:max="700"
+            android:progress="700"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            />
+
         <Button
-            android:layout_width="0dp"
+            android:layout_width="24dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/purposeBtn"/>
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_exit"
+            android:id="@+id/exitBtn"/>
+
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="24dp"
             android:layout_height="match_parent"
-            android:text="Save"
-            android:alpha="10"
+            android:layout_toLeftOf="@id/exitBtn"
+            android:layout_toStartOf="@id/exitBtn"
+            android:background="@drawable/btn_save"
             android:id="@+id/saveBtn"/>
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Exit"
-            android:id="@+id/exitBtn"/>
-    </LinearLayout>
+            android:layout_toLeftOf="@id/saveBtn"
+            android:layout_toStartOf="@id/saveBtn"
+            android:background="@color/transparent"
+            android:textColor="@color/white"
+            android:id="@+id/purposeBtn"/>
+    </RelativeLayout>
 
     <include layout="@layout/window_memo_inner_memo"
         android:id="@+id/innerMemo"

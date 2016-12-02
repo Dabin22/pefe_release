@@ -7,51 +7,69 @@
     android:id="@+id/rglrRoot"
     tools:showIn="@layout/window_memo">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/blueSecnd">
+        android:background="@color/blueSecnd"
+        android:id="@+id/innerMemoBar"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <ToggleButton
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:id="@+id/memoImportance"
-            android:textOn="Imp"
-            android:textOff="nImp"/>
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:textOff=""
+            android:textOn=""
+            android:background="@drawable/tbtn_importance"/>
+
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/cleanBtn"
+            android:background="@drawable/btn_clean"/>
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_toLeftOf="@id/cleanBtn"
+            android:layout_toStartOf="@id/cleanBtn"
+            android:id="@+id/pasteBtn"
+            android:background="@drawable/btn_paste"/>
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_toLeftOf="@id/pasteBtn"
+            android:layout_toStartOf="@id/pasteBtn"
+            android:id="@+id/copyBtn"
+            android:background="@drawable/btn_copy"/>
+
+
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/greyText"
+            android:id="@id/title"
+            android:hint="Title"
+            android:textColorHint="@color/greyTextHint"/>
 
         <Spinner
             android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="match_parent"
-            android:id="@+id/dirSpinner"/>
-
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/cleanBtn"
-            android:text="cl"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/copyBtn"
-            android:text="cp"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/pasteBtn"
-            android:text="ps"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/selectAllBtn"
-            android:text="sA"/>
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:id="@+id/dirSpinner" />
 
     </LinearLayout>
 
@@ -66,7 +84,9 @@
             android:inputType="textMultiLine"
             android:ems="10"
             android:textColor="@color/greyText"
-            android:id="@+id/memoContent"/>
+            android:id="@+id/memoContent"
+            android:hint="Content"
+            android:textColorHint="@color/greyTextHint"/>
 
     </ScrollView>
 

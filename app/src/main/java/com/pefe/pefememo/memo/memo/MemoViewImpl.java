@@ -24,6 +24,7 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
@@ -75,7 +76,7 @@ public class MemoViewImpl implements MemoView {
 
     private View trnspBtn = null;
 
-//    private FrameLayout memoRoot = null;
+    private WindowManager.LayoutParams memoParams;
     private View memoFrame;
     private View innerMemo = null;
     Spinner folderSpinner = null;
@@ -94,12 +95,14 @@ public class MemoViewImpl implements MemoView {
 
     @Override
     public void initMemo() {
-        trnspBtn = new Button(context);
+        trnspBtn = View.inflate(context,R.layout.item_trnspbtn,null);
         trnspBtn.setAlpha(0.0f);
         trnspBtn.setOnTouchListener(new TrnspBtnListener());
         setTrnspBtn();
         setDefaultMemo();
         setTelephonyManager();
+
+        memoParams = setMemoParams();
     }
 
     @Override
@@ -129,14 +132,16 @@ public class MemoViewImpl implements MemoView {
     private void setMemo(){
         if(!memoOnOff){
             wm.removeViewImmediate(trnspBtn);
-            wm.addView(memoFrame,setMemoParams());
+            memoParams = setMemoParams();
+            wm.addView(memoFrame,memoParams);
             setFolderSpinner(folderSpinner);
             memoOnOff= true;
         }else{
             if(memoBeforePhone){
                 memoBeforePhone = false;
+                memoParams = setMemoParams();
                 wm.removeViewImmediate(trnspBtn);
-                wm.addView(memoFrame,setMemoParams());
+                wm.addView(memoFrame,memoParams);
                 setFolderSpinner(folderSpinner);
                 memoOnOff= true;
             }
@@ -157,11 +162,11 @@ public class MemoViewImpl implements MemoView {
 
     //투명버튼 파라미터 설정 값 세팅
     private WindowManager.LayoutParams setTrnspBtnParams(){
-        int btnHeight = (int) displayHeight/3;
+        float btnHeight = (int) displayHeight/2.5f;
         int btnWidth = (int) displayWidth/40;
         WindowManager.LayoutParams params= new WindowManager.LayoutParams(
                 btnWidth,
-                btnHeight,
+                (int)btnHeight,
                 WindowManager.LayoutParams.TYPE_PHONE, FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.BOTTOM | Gravity.END;
@@ -170,13 +175,14 @@ public class MemoViewImpl implements MemoView {
 
     private WindowManager.LayoutParams setMemoParams(){
         //TODO 사용자에게 정의된 비율 사용
-        int memoHeight = (int) displayHeight/2;
+        float memoHeight = (int) displayHeight/2.5f;
         WindowManager.LayoutParams memoParams  = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
-                memoHeight,
+                (int) memoHeight,
                 WindowManager.LayoutParams.TYPE_PHONE
                 ,FLAG_NOT_TOUCH_MODAL|FLAG_SPLIT_TOUCH|FLAG_SECURE
                 , PixelFormat.TRANSLUCENT);
-        memoParams.gravity= Gravity.BOTTOM | Gravity.END;
+        memoParams.y = (int)(displayHeight/2.5f);
+//        memoParams.gravity= Gravity.BOTTOM | Gravity.END;
         return memoParams;
     }
     //메모 내부 초기화
@@ -188,11 +194,14 @@ public class MemoViewImpl implements MemoView {
         innerTodo = memoFrame.findViewById(R.id.innerTodo);
         setDefaultInnerTodo(innerTodo);
 
+        RelativeLayout memoBar = (RelativeLayout) memoFrame.findViewById(R.id.memoBar);
+
         Button exitBtn = (Button) memoFrame.findViewById(R.id.exitBtn);
         Button saveBtn = (Button) memoFrame.findViewById(R.id.saveBtn);
         Button purposeBtn = (Button) memoFrame.findViewById(R.id.purposeBtn);
         SeekBar trnspController = (SeekBar) memoFrame.findViewById(R.id.trnspController);
 
+        memoBar.setOnTouchListener(new BarTouchListener());
         exitBtn.setOnClickListener(new exitListener());
         saveBtn.setOnClickListener(new saveListener());
         purposeBtn.setOnClickListener(new purposeListener());
@@ -202,19 +211,20 @@ public class MemoViewImpl implements MemoView {
     }
     //메모 작성 뷰 초기화
     private void setDefaultInnerMemo(View innerMemo){
-        defaultingMemo(innerMemo);
+        defaultingInnerMemo(innerMemo);
     }
-    private void defaultingMemo(View innerMemo){
+    private void defaultingInnerMemo(View innerMemo){
+        RelativeLayout innerMemoBar = (RelativeLayout) innerMemo.findViewById(R.id.innerMemoBar);
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
         EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
         Button cleanBtn = (Button) innerMemo.findViewById(R.id.cleanBtn);
         Button copyBtn = (Button) innerMemo.findViewById(R.id.copyBtn);
         Button pasteBtn = (Button) innerMemo.findViewById(R.id.pasteBtn);
-        Button selectAllBtn = (Button) innerMemo.findViewById(R.id.selectAllBtn);
+
+        innerMemoBar.setOnTouchListener(new BarTouchListener());
         cleanBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
         copyBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
         pasteBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
-        selectAllBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
         folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
         setFolderSpinner(folderSpinner);
     }
@@ -243,9 +253,6 @@ public class MemoViewImpl implements MemoView {
                 case R.id.pasteBtn:
                     CopyTool.pasteText(content);
                     break;
-                case R.id.selectAllBtn:
-                    content.selectAll();
-                    break;
             }
         }
     }
@@ -260,8 +267,8 @@ public class MemoViewImpl implements MemoView {
             }
             fList[i] = dirs.get(i-1).getName();
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,android.R.layout.simple_spinner_dropdown_item,fList);
-        adapter.notifyDataSetChanged();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,R.layout.item_spinner,fList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
     }
@@ -380,12 +387,46 @@ public class MemoViewImpl implements MemoView {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             float trnsp = i/1000f;
-            memoFrame.setAlpha(trnsp);
+            memoFrame.setAlpha(trnsp + 0.3f);
         }
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {}
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {}
+    }
+    private float mTouchX, mTouchY;
+    private int mViewX, mViewY;
+    private class BarTouchListener implements View.OnTouchListener{
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if(RootService.memoUse){
+
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        mTouchX = motionEvent.getRawX();
+                        mTouchY = motionEvent.getRawY();
+                        mViewX = memoParams.x;
+                        mViewY = memoParams.y;
+                        memoParams.gravity = 0;
+                        wm.updateViewLayout(memoFrame,memoParams);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        int x = (int)(motionEvent.getRawX() - mTouchX);
+                        int y = (int) (motionEvent.getRawY() - mTouchY);
+                        memoParams.x = mViewX + x;
+                        memoParams.y = mViewY + y;
+                        wm.updateViewLayout(memoFrame,memoParams);
+                        float motionX = motionEvent.getX();
+                        float motionRange = -(displayWidth/3);
+                        if (motionX < motionRange) {
+
+//                            setMemo();
+                        }
+                        break;
+                }
+            }
+            return true;
+        }
     }
 
 //    private class FolderSetListener implements View.OnClickListener{

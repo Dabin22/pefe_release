@@ -21,7 +21,6 @@
         </activity>
 
 
-        <activity android:name=".lockscreen.LockScreenViewImpl" />
         <activity android:name=".app.editor.MemoEditorViewImpl"/>
 
         <receiver

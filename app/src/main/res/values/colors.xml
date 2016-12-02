@@ -18,5 +18,7 @@
     <color name="white">#fafbfc</color>
     <color name="whiteBar">#64dbdfe8</color>
     <color name="greyText">#3c3b3b</color>
+    <color name="greyTextHint">#463c3b3b</color>
+    <color name="transparent">#00000000</color>
 
 </resources>
