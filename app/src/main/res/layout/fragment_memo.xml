@@ -43,38 +43,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/memoRecyclerView"/>
-        <LinearLayout
-            android:layout_width="70dp"
+
+        <RelativeLayout
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="end"
             android:id="@+id/folderList"
-            android:background="@color/blueSecnd"
-            android:visibility="gone">
+            android:background="@color/blueAccentBg"
+            android:visibility="visible">
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 android:id="@+id/trashCanBtn"
-                android:text="TrashCan"/>
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/btn_trashcan"/>
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 android:id="@+id/noFolderBtn"
-                android:text="default"/>
+                android:layout_alignParentTop="true"
+                android:background="@drawable/btn_no_folders"/>
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 android:id="@+id/addFolderBtn"
-                android:text="+"/>
+                android:layout_above="@id/trashCanBtn"
+                android:background="@drawable/btn_new_folder"/>
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/dirRecyclerView"/>
+                android:id="@+id/dirRecyclerView"
+                android:layout_below="@id/noFolderBtn"/>
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </FrameLayout>
 </LinearLayout>

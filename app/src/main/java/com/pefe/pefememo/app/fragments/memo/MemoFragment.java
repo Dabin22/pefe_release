@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -53,7 +54,7 @@ public class MemoFragment extends Fragment {
         EditText searchBar = (EditText)memoFragment.findViewById(R.id.searchBar);
         Button searchBtn = (Button)memoFragment.findViewById(R.id.searchBtn);
         ToggleButton folderBtn = (ToggleButton)memoFragment.findViewById(R.id.folderBtn);
-        LinearLayout folderList = (LinearLayout) memoFragment.findViewById(R.id.folderList);
+        RelativeLayout folderList = (RelativeLayout) memoFragment.findViewById(R.id.folderList);
         searchBtn.setOnClickListener(new SearchBtnClickListener(searchBar));
         folderBtn.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
 
@@ -93,9 +94,9 @@ public class MemoFragment extends Fragment {
     }
 
     private class FolderBtnClickListener implements CompoundButton.OnCheckedChangeListener{
-        LinearLayout folderList = null;
+        RelativeLayout folderList = null;
 
-        public FolderBtnClickListener(LinearLayout folderList) {
+        public FolderBtnClickListener(RelativeLayout folderList) {
             this.folderList = folderList;
         }
 

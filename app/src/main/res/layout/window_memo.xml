@@ -16,10 +16,11 @@
         android:background="@color/white">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="24dp"
+        android:layout_height="36dp"
         android:gravity="center_vertical"
         android:background="@color/blueSecnd"
-        android:id="@+id/memoBar">
+        android:id="@+id/memoBar"
+        android:padding="3dp">
         <SeekBar
             android:layout_width="120dp"
             android:layout_height="match_parent"
@@ -31,7 +32,7 @@
             />
 
         <Button
-            android:layout_width="24dp"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -39,7 +40,7 @@
             android:id="@+id/exitBtn"/>
 
         <Button
-            android:layout_width="24dp"
+            android:layout_width="30dp"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/exitBtn"
             android:layout_toStartOf="@id/exitBtn"

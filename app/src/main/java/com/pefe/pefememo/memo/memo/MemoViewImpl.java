@@ -6,6 +6,7 @@ import android.database.DataSetObserver;
 import android.graphics.PixelFormat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -429,63 +430,12 @@ public class MemoViewImpl implements MemoView {
         }
     }
 
-//    private class FolderSetListener implements View.OnClickListener{
-//        TextView folderName = null;
-//        int who;
-//        OrderedRealmCollection<Directory> dirs;
-//
-//        public FolderSetListener(TextView folderName) {
-//            this.folderName = folderName;
-//            dirs = memoController.getDirs();
-//        }
-//
-//        @Override
-//        public void onClick(View view) {
-//            AlertDialog dirSetDialog = setDirCreateDialog();
-//            dirSetDialog.show();
-//
-//        }
-//        private void setTextOnName(){
-//            if(who != -1){
-//                folderName.setText(dirs.get(who).getName());
-//            }
-//        }
-//
-//        private AlertDialog setDirCreateDialog() {
-//            ArrayList<String> folders = new ArrayList<>();
-//            for(Directory d : dirs){
-//                folders.add(d.getName());
-//            }
-//            String[] fList = new String[folders.size()];
-//            fList = folders.toArray(fList);
-//            AlertDialog dialog = new AlertDialog.Builder(context)
-//                    .setTitle("Set Folder")
-//                    .setSingleChoiceItems(fList, -1, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            who = i;
-//                        }
-//                    })
-//                    .setNegativeButton("Confirm", new DirDialogCancelListener())
-//                    .setCancelable(true)
-//                    .create();
-//            return dialog;
-//        }
-//        private class DirDialogCancelListener implements DialogInterface.OnClickListener {
-//
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                dialogInterface.dismiss();
-//            }
-//        }
-//    }
-
 
     private class DeleteAddTodoListener implements CompoundButton.OnCheckedChangeListener{
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            GridLayout todoBoard = (GridLayout) compoundButton.getParent().getParent();
-            View todoItem = (View) compoundButton.getParent();
+            GridLayout todoBoard = (GridLayout) compoundButton.getParent().getParent().getParent();
+            View todoItem = (View) compoundButton.getParent().getParent();
             if(!b){
                 EditText content = (EditText) todoItem.findViewById(R.id.todoContent);
                 content.setText("");
@@ -494,9 +444,13 @@ public class MemoViewImpl implements MemoView {
                 todoItem = null;
             }
             else{
-                View parent =(View) compoundButton.getParent();
+                View parent =(View) compoundButton.getParent().getParent();
                 parent.setAlpha(1f);
+                ToggleButton repeatOnceBtn = (ToggleButton) parent.findViewById(R.id.todoOnceRepeatBtn);
+                repeatOnceBtn.setClickable(true);
                 todoList.add(parent);
+
+
                 View newAddTodo = View.inflate(context,R.layout.item_todo,null);
                 ToggleButton deleteAddBtn = (ToggleButton) newAddTodo.findViewById(R.id.todoAddDelBtn);
                 EditText content = (EditText)newAddTodo.findViewById(R.id.todoContent);
@@ -510,7 +464,7 @@ public class MemoViewImpl implements MemoView {
 
         @Override
         public void onClick(View view) {
-            View todoItem = (View) view.getParent();
+            View todoItem = (View) view.getParent().getParent();
             ToggleButton deleteAddButton = (ToggleButton) todoItem.findViewById(R.id.todoAddDelBtn);
             deleteAddButton.setChecked(true);
             EditText content = (EditText)view;
