@@ -95,6 +95,7 @@ public class TodoDragListener implements View.OnDragListener {
                 break;
             case DragEvent.ACTION_DRAG_ENDED:
                 handler.stop();
+                clear_tag();
                 handler.change_mode(false);
                 if (view_dragging != null)
                     view_dragging.setVisibility(View.VISIBLE);
@@ -105,5 +106,14 @@ public class TodoDragListener implements View.OnDragListener {
         }
 
         return true;
+    }
+
+    private void clear_tag() {
+        targetIndex = -1;
+        targetType = "";
+        pickedBelongDate = null;
+        pickedIndex = -1;
+        pickedType = "";
+        
     }
 }
