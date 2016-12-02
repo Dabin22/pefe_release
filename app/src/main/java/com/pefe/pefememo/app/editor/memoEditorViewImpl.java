@@ -1,11 +1,7 @@
 package com.pefe.pefememo.app.editor;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -26,12 +22,10 @@ import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.tools.CopyTool;
 
-import java.util.ArrayList;
-
 import io.realm.OrderedRealmCollection;
 import io.realm.Sort;
 
-public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorView {
+public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorView {
     RealmController realmController;
 
     Memo memo;
