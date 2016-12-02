@@ -31,7 +31,7 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
     Memo memo;
 
     ToggleButton importance;
-    Button close,save,copy;
+    Button close,save,copy,paste;
     Spinner folderName;
     EditText title,content;
 
@@ -58,10 +58,12 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
         close = (Button) findViewById(R.id.memoEditorClose);
         save = (Button) findViewById(R.id.memoEditorSave);
         copy = (Button) findViewById(R.id.memoEditorCopy);
+        paste =(Button) findViewById(R.id.memoEditorPaste);
         folderName =(Spinner)findViewById(R.id.memoEditorDirSpinner);
         close.setOnClickListener(new CloseClickListener());
         save.setOnClickListener(new SaveClickListener());
         copy.setOnClickListener(new CopyClickListener(content));
+        paste.setOnClickListener(new PasteClickListener(content));
         setFolderSpinner(folderName);
     }
 
@@ -99,7 +101,21 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
 
         @Override
         public void onClick(View view) {
+
             CopyTool.copyMemo(content);
+        }
+    }
+
+    private class PasteClickListener implements  View.OnClickListener{
+        EditText content = null;
+
+        public PasteClickListener(EditText content) {
+            this.content = content;
+        }
+
+        @Override
+        public void onClick(View view) {
+            CopyTool.pasteText(content);
         }
     }
 
