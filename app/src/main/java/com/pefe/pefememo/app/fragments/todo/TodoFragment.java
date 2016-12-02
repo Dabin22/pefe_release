@@ -3,7 +3,6 @@ package com.pefe.pefememo.app.fragments.todo;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -79,6 +79,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     private ImageButton ib_before, ib_next;
     private RecyclerView unRegister_todoList, registered_todoList;
     private Spinner sp_todoType;
+    private ImageView iv_delete;
     private LinearLayout delete_layout, menu_layout;
 
     //goal dialog 창에 관련된 것들
@@ -133,7 +134,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         delete_layout = (LinearLayout) view.findViewById(R.id.delete_layout);
         menu_layout = (LinearLayout) view.findViewById(R.id.menu_layout);
         btn_calendar = (Button)view.findViewById(R.id.btn_calendar);
-
+        iv_delete = (ImageView)view.findViewById(R.id.iv_delete);
         map_register_adapters = new HashMap<>();
         map_unRegister_adapters = new HashMap<>();
         map_seletedTodo_datas = new HashMap<>();
@@ -180,10 +181,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             old_list.setLayoutManager(manager);
             old_list.setAdapter(oldAdapter);
             old_list.setHasFixedSize(true);
-            builder.setTitle("Old Todos......");
+            builder.setTitle("Delete Old Todos......");
             builder.setIcon(R.drawable.pflargeicon_two);
             builder.setView(oldTodoView);
-            builder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     ArrayList<Todo> remove_datas = oldAdapter.pop_remove_Datas();
@@ -199,6 +200,11 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        init_dateData();
+    }
 
     //데이트와 맞는 어뎁터가 없을시 생성하고 불러온 데이터를 현재 선택한 날짜의 어뎁터에 추가합니다.
     private void init_topAdapter() {
@@ -230,21 +236,15 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     }
 
 
-    //private HashMap<Date, ArrayList<SelectedTodo>> map_selected_datas;
-    private ArrayList<SelectedTodo> total_datas;
-    private ArrayList<Todo> old_datas;
     private OrderedRealmCollection<Todo> once_type_datas;
     private OrderedRealmCollection<Todo> repeat_type_datas;
     private OrderedRealmCollection<Todo> old_type_datas;
 
     //기존의 디비를 불러와 입력합니다.
     private void init_todoData() {
-        //todo 데이터 가져오기
         once_type_datas = realmController.readTodoByType(ONCE);
-        Log.e("datas", once_type_datas.size() + "");
         repeat_type_datas = realmController.readTodoByType(REPEAT);
         old_type_datas = realmController.readTodoByType(OLD);
-        Log.e("datas", old_type_datas.size() + "");
 
     }
 
@@ -453,10 +453,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             type_transform = OLD;
         }
         if (!type_transform.equals("")) {
-            Log.e("type", "type = " + type_transform);
             UnRegisterAdapter selected_adapter = map_unRegister_adapters.get(type_transform);
-            if (selected_adapter != null)
-                Log.e("type", "adpater = " + selected_adapter);
             unRegister_todoList.setAdapter(selected_adapter);
         }
 
@@ -524,14 +521,6 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         alive = false;
     }
 
-
-    //드래그한 아이템의 순서를 바꿔주는 함수 입니다.
-//    @Override
-//    public void swapPosition(int src, int tar, String adapterType) {
-//        map_unRegister_adapters.get(adapterType).swapPosition(src, tar);
-//    }
-
-
     //bottom 아이템을 이제 날짜에 종속시키는데 데이터 부분입니다.
     @Override
     public void register_todo(String pickedType, int pickedIndex, String targetType) {
@@ -552,8 +541,6 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             }
             //과거일시
         } else {
-
-            Log.e("error", "target_date is null!");
             Toast.makeText(getContext(), "지난 날짜에 추가 할 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
 
@@ -561,10 +548,8 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     //todo를 sTodo 형태로 바꾸어서 register adapter에 올린다.
     private void putTodo(Todo pop_todo, Date target_date) {
-        Log.e("put", "puttodo run");
         SelectedTodo sTodo = null;
         sTodo = modifi_todo(pop_todo, target_date);
-        Log.e("sTodo", "stodo =" + sTodo.getContent());
         //있는지 중복 검사
         if (!isExistence(sTodo)) {
 
@@ -667,9 +652,11 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     @Override
     public void isEntered(boolean check) {
         if (check) {
-            delete_layout.setBackgroundColor(Color.BLUE);
+            //delete_layout.setBackgroundResource(R.color.blueSecond);
+            iv_delete.setImageResource(R.drawable.ic_delete_red_36dp);
         } else {
-            delete_layout.setBackgroundColor(Color.WHITE);
+            //delete_layout.setBackgroundColor(Color.WHITE);
+            iv_delete.setImageResource(R.drawable.ic_delete_white_36dp);
         }
 
     }

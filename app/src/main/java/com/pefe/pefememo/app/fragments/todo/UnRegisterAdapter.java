@@ -47,38 +47,6 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
         return new ViewHolder(view);
     }
 
-//    public void addData(Todo todo){
-//        datas.add(todo);
-//        recycle();
-//    }
-//    public void addDatas(ArrayList<Todo> subDatas){
-//        datas.addAll(subDatas);
-//        recycle();
-//    }
-//    public void removeData(Todo todo){
-//        datas.remove(todo);
-//        recycle();
-//    }
-//    public void removeData(int pickedIndex) {
-//        datas.remove(pickedIndex);
-//        recycle();
-//    }
-//    public void swapPosition(int tar, int src){
-//        Collections.swap(datas,tar,src);
-//        recycle();
-//    }
-//    public Todo pop(int pickedIndex) {
-//        Todo pop_todo =datas.get(pickedIndex);
-//        datas.get(pickedIndex).setDone(true);
-//        recycle();
-//        return pop_todo;
-//    }
-
-    private void recycle() {
-        notifyDataSetChanged();
-    }
-
-
     @Override
     public void onBindViewHolder(UnRegisterAdapter.ViewHolder holder, int position) {
         Todo todo = getData().get(position);
@@ -115,10 +83,6 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
     public int getItemCount() {
         return getData().size();
     }
-
-//    public Todo get(int pickedIndex) {
-//        return datas.get(pickedIndex);
-//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

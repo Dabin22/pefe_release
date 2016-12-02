@@ -33,7 +33,6 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
 
     private OrderedRealmCollection<SelectedTodo> datas;
     private SelectedTodo todo;
-    private int belong_day = -1;
     private TodoDragListener dragListener;
     private TodoLongClickListener longClickListener;
     private Context context;

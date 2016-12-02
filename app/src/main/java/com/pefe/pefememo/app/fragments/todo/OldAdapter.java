@@ -83,17 +83,6 @@ public class OldAdapter extends RealmRecyclerViewAdapter<Todo,OldAdapter.ViewHol
         return datas.size();
     }
 
-    public ArrayList<Todo> popData() {
-        ArrayList<Todo> recycleDatas = new ArrayList<>();
-        for (Todo todo : datas){
-            if(todo.isDone()){
-                todo.setDone(false);
-                recycleDatas.add(todo);
-            }
-        }
-        return recycleDatas;
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_unput_todo;
         ImageView iv_unput_todo;

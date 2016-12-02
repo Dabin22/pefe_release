@@ -50,15 +50,16 @@
             android:id="@+id/delete_layout"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:background="@color/blueRep"
             android:orientation="horizontal"
             android:visibility="gone">
 
             <ImageView
                 android:id="@+id/iv_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_weight="1"
-                app:srcCompat="@android:drawable/ic_menu_delete" />
+                app:srcCompat="@drawable/ic_delete_white_36dp" />
         </LinearLayout>
 
         <android.support.v7.widget.CardView
@@ -76,9 +77,9 @@
 
                 <ImageButton
                     android:id="@+id/ib_before"
-                    android:layout_width="18dp"
+                    android:layout_width="20dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blueSecnd"
+                    android:background="@color/blueSecond"
                     app:srcCompat="@drawable/ic_chevron_left_white_18dp" />
 
 
@@ -87,7 +88,6 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:background="@color/white"
-                    android:elevation="10dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -121,9 +121,9 @@
 
                 <ImageButton
                     android:id="@+id/ib_next"
-                    android:layout_width="18dp"
+                    android:layout_width="20dp"
                     android:layout_height="match_parent"
-                    android:background="@color/blueSecnd"
+                    android:background="@color/blueSecond"
                     android:rotation="180"
                     app:srcCompat="@drawable/ic_chevron_left_white_18dp" />
             </LinearLayout>
@@ -146,8 +146,9 @@
                 <Spinner
                     android:id="@+id/sp_todoType"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/blueSecnd" />
+                    android:layout_height="24dp"
+                    android:minHeight="24dp"
+                    android:background="@color/blueSecond" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/unRegister_todoList"

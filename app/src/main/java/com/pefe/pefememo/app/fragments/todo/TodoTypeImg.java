@@ -16,7 +16,7 @@ public class TodoTypeImg {
         }else if(type.equals(Todo.ONCE)){
             imgSrc = R.drawable.ic_exposure_plus_1_whiteblue_36dp;
         }else if(type.equals(Todo.OLD)){
-            imgSrc = R.drawable.ic_access_time_white_36dp;
+            imgSrc = R.drawable.ic_access_time_whiteblue_36dp;
         }
 
         return imgSrc;
