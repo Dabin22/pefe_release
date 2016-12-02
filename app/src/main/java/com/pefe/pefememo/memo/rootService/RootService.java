@@ -151,7 +151,7 @@ public class RootService extends Service {
         Intent intent = new Intent(this,MainViewImpl.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,NOTI_REQUEST,intent,0);
-        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pflargeicon);
+        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pefelogo);
         Notification.Builder builder = new Notification.Builder(this).setContentTitle("Click to go Pefe App")
                 .setSmallIcon(R.drawable.pefenotification)
                 .setLargeIcon(largeIcon)

@@ -8,6 +8,7 @@
 
     <color name="blueRep">#6bb9f7</color>
     <color name="blueSecond">#b2dcfe</color>
+    <color name="blueSecondDark">#4b6bb9f7</color>
     <color name="blueBg">#edf2f6</color>
     <color name="blueBgLight">#7cf3f4fa</color>
     <color name="blueDark">#328ae1</color>

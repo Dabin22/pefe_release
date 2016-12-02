@@ -82,22 +82,33 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
-                android:id="@+id/noFolderBtn"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/btn_no_folders"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="75dp"
                 android:id="@+id/addFolderBtn"
                 android:layout_above="@id/trashCanBtn"
                 android:background="@drawable/btn_new_folder"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/blueSecondDark"
+                android:layout_above="@id/addFolderBtn"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:id="@+id/noFolderBtn"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/btn_no_folders"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/blueSecondDark"
+                android:layout_below="@id/noFolderBtn"/>
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/dirRecyclerView"
-                android:layout_below="@id/noFolderBtn"/>
+                android:layout_below="@id/noFolderBtn"
+                android:layout_above="@id/addFolderBtn"/>
 
 
         </RelativeLayout>

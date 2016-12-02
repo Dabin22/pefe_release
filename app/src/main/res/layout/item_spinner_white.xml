@@ -7,6 +7,5 @@
     android:paddingBottom="2dp"
     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
     android:textColor="@color/white"
-    android:textSize="22dp"
     android:gravity="center"
     />
