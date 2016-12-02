@@ -43,9 +43,17 @@
         <Button
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:id="@+id/memoEditorCopy"
+            android:id="@+id/memoEditorPaste"
             android:layout_toLeftOf="@id/memoEditorSave"
             android:layout_toStartOf="@id/memoEditorSave"
+            android:background="@drawable/btn_paste"/>
+
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/memoEditorCopy"
+            android:layout_toLeftOf="@id/memoEditorPaste"
+            android:layout_toStartOf="@id/memoEditorPaste"
             android:background="@drawable/btn_copy"/>
 
     </RelativeLayout>
@@ -53,7 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:padding="5dp">
         <EditText
             android:layout_width="0dp"
             android:layout_weight="6"
@@ -74,7 +82,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp">
+        android:padding="5dp">
         <com.pefe.pefememo.customviews.EditMemo
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

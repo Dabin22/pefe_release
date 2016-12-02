@@ -165,7 +165,7 @@ public class MemoViewImpl implements MemoView {
     //투명버튼 파라미터 설정 값 세팅
     private WindowManager.LayoutParams setTrnspBtnParams(){
         float btnHeight = (int) displayHeight/2.5f;
-        int btnWidth = (int) displayWidth/40;
+        int btnWidth = (int) displayWidth/32;
         WindowManager.LayoutParams params= new WindowManager.LayoutParams(
                 btnWidth,
                 (int)btnHeight,
@@ -181,7 +181,7 @@ public class MemoViewImpl implements MemoView {
         WindowManager.LayoutParams memoParams  = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
                 (int) memoHeight,
                 WindowManager.LayoutParams.TYPE_PHONE
-                ,FLAG_NOT_TOUCH_MODAL|FLAG_SPLIT_TOUCH|FLAG_SECURE
+                ,FLAG_NOT_TOUCH_MODAL|FLAG_SPLIT_TOUCH
                 , PixelFormat.TRANSLUCENT);
         memoParams.y = (int)(displayHeight/2.5f);
 //        memoParams.gravity= Gravity.BOTTOM | Gravity.END;

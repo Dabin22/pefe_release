@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="60dp"
+    android:layout_width="75dp"
     android:layout_height="wrap_content"
     android:gravity="center">
 
     <ToggleButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:id="@+id/dirBtn"
         android:textOff=""
         android:textOn=""
@@ -16,11 +16,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-        android:maxLines="1"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:id="@+id/dirName"
-        android:textColor="@color/greyTextName"
-        android:text="tetetet" />
+        android:textColor="@color/greyTextName"/>
 
 
 </LinearLayout>

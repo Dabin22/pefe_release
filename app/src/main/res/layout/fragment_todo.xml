@@ -146,9 +146,7 @@
                 <Spinner
                     android:id="@+id/sp_todoType"
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:minHeight="24dp"
-                    android:background="@color/blueSecond" />
+                    android:layout_height="24dp" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/unRegister_todoList"

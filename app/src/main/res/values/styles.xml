@@ -8,5 +8,8 @@
         <item name="colorPrimaryDark">@color/blueDark</item>
         <item name="android:colorBackground">@color/blueBg</item>
     </style>
+    <style name="MySeekBarTheme" parent="Widget.AppCompat.SeekBar" >
+        <item name="colorAccent">@color/blueAccent</item>
+    </style>
 
 </resources>

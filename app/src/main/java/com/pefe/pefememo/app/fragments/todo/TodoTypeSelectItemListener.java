@@ -19,8 +19,9 @@ public class TodoTypeSelectItemListener implements AdapterView.OnItemSelectedLis
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         TextView type_view = (TextView) view;
         String type = "";
-        type = type_view.getText().toString();
-
+        if(type_view!=null) {
+            type = type_view.getText().toString();
+        }
         if (!type.equals("")) {
             handler.setTodoType(type);
         }
