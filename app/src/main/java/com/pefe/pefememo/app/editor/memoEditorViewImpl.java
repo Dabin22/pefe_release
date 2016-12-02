@@ -119,7 +119,6 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
             memoTitle = title.getText().toString();
             realmController.modifyMemo(memo.getNo(),important,dirCode,memoTitle,memoContent);
             Toast.makeText(MemoEditorViewImpl.this, "Memo Saved", Toast.LENGTH_SHORT).show();
-            view.setVisibility(View.GONE);
         }
     }
     private class CloseClickListener implements View.OnClickListener{

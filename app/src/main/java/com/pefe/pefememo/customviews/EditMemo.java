@@ -29,9 +29,7 @@ public class EditMemo extends EditText {
     private void initPaint() {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setColor(0x80000000);
-        initPaint();
     }
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -46,7 +44,7 @@ public class EditMemo extends EditText {
         int count = (height-paddingTop-paddingBottom) / lineHeight;
 
         for (int i = 0; i < count; i++) {
-            int baseline = lineHeight * (i+1) + paddingTop;
+            int baseline = (lineHeight)* (i+1) + paddingTop;
             canvas.drawLine(left+paddingLeft, baseline, right-paddingRight, baseline, mPaint);
         }
 

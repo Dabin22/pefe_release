@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:gravity="center_vertical"
-        android:background="@color/blueSecnd"
+        android:background="@color/blueSecond"
         android:id="@+id/memoBar"
         android:padding="3dp">
         <SeekBar

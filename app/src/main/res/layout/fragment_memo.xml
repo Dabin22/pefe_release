@@ -30,9 +30,13 @@
             android:id="@+id/searchBtn"
             android:background="@drawable/btn_search"/>
 
-        <android.support.v4.widget.Space
+        <ToggleButton
             android:layout_width="18dp"
-            android:layout_height="36dp" />
+            android:layout_height="36dp"
+            android:background="@color/transparent"
+            android:textOn=""
+            android:textOff=""
+            android:id="@+id/space1"/>
 
         <ToggleButton
             android:layout_width="24dp"
@@ -41,9 +45,14 @@
             android:textOn=""
             android:textOff=""
             android:background="@drawable/tbtn_folder"/>
-        <android.support.v4.widget.Space
+
+        <ToggleButton
             android:layout_width="18dp"
-            android:layout_height="36dp" />
+            android:layout_height="36dp"
+            android:background="@color/transparent"
+            android:textOn=""
+            android:textOff=""
+            android:id="@+id/space2"/>
     </LinearLayout>
 
     <LinearLayout
