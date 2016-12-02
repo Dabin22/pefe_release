@@ -10,8 +10,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -27,6 +29,7 @@ import com.pefe.pefememo.tools.CopyTool;
 import java.util.ArrayList;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.Sort;
 
 public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorView {
     RealmController realmController;
@@ -34,9 +37,9 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     Memo memo;
 
     ToggleButton importance;
-    Button close,save,copy,folderImg;
-    TextView folderName;
-    EditText content;
+    Button close,save,copy;
+    Spinner folderName;
+    EditText title,content;
 
 
     @Override
@@ -54,18 +57,18 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
     private void setMemo(Memo memo){
         importance = (ToggleButton) findViewById(R.id.memoEditorImportance);
         importance.setChecked(memo.isImportant());
+        title  = (EditText) findViewById(R.id.memoEditorTitle);
+        title.setText(memo.getTitle());
         content = (EditText) findViewById(R.id.memoEditorContent);
         content.setText(memo.getContent());
         close = (Button) findViewById(R.id.memoEditorClose);
         save = (Button) findViewById(R.id.memoEditorSave);
         copy = (Button) findViewById(R.id.memoEditorCopy);
-        folderImg =(Button)findViewById(R.id.memoEditorDirImg);
-        folderName =(TextView)findViewById(R.id.memoEditorDirText);
+        folderName =(Spinner)findViewById(R.id.memoEditorDirSpinner);
         close.setOnClickListener(new CloseClickListener());
         save.setOnClickListener(new SaveClickListener());
         copy.setOnClickListener(new CopyClickListener(content));
-        folderImg.setOnClickListener(new FolderSetListener(folderName));
-        folderName.setOnClickListener(new FolderSetListener(folderName));
+        setFolderSpinner(folderName);
     }
 
     @Override
@@ -113,9 +116,14 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         public void onClick(View view) {
             String memoContent = content.getText().toString();
             boolean important = importance.isChecked();
-            String dirName = folderName.getText().toString();
-            String dirCode = realmController.readADir(dirName).getCode();
-            realmController.modifyMemo(memo.getNo(),important,dirCode,memoContent);
+            String dirCode = "";
+            int i = folderName.getSelectedItemPosition();
+            if(i > 0){
+                dirCode = dirs.get(i-1).getCode();
+            }
+            String memoTitle= "";
+            memoTitle = title.getText().toString();
+            realmController.modifyMemo(memo.getNo(),important,dirCode,memoTitle,memoContent);
             Toast.makeText(MemoEditorViewImpl.this, "Memo Saved", Toast.LENGTH_SHORT).show();
             view.setVisibility(View.GONE);
         }
@@ -129,52 +137,19 @@ public class MemoEditorViewImpl extends AppCompatActivity implements MemoEditorV
         }
     }
 
-    private class FolderSetListener implements View.OnClickListener{
-        TextView folderName = null;
-        int who;
-        OrderedRealmCollection<Directory> dirs;
-
-        public FolderSetListener(TextView folderName) {
-            this.folderName = folderName;
-            dirs = realmController.readDirAll();
-        }
-
-        @Override
-        public void onClick(View view) {
-            AlertDialog dirSetDialog = setDirCreateDialog();
-            dirSetDialog.show();
-        }
-        private void setTextOnName(){
-            if(who != -1){
-                folderName.setText(dirs.get(who).getName());
+    OrderedRealmCollection<Directory> dirs;
+    private void setFolderSpinner(Spinner spinner){
+        dirs = realmController.readDirAll().sort("order", Sort.ASCENDING);
+        String[] fList = new String[(dirs.size()+1)];
+        for(int i = 0; i < fList.length; i++){
+            if(i == 0){
+                fList[0] = "No Folder";
+                continue;
             }
+            fList[i] = dirs.get(i-1).getName();
         }
-
-        private AlertDialog setDirCreateDialog() {
-            String[] fList = new String[dirs.size()];
-            for(int i = 0; i < fList.length; i++){
-                fList[i] = dirs.get(i).getName();
-            }
-            AlertDialog dialog = new AlertDialog.Builder(MemoEditorViewImpl.this)
-                    .setTitle("Set Folder")
-                    .setSingleChoiceItems(fList, -1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            who = i;
-                        }
-                    })
-                    .setPositiveButton("Confirm", new DirDialogCancelListener())
-                    .setCancelable(true)
-                    .create();
-            return dialog;
-        }
-        private class DirDialogCancelListener implements DialogInterface.OnClickListener {
-
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                setTextOnName();
-            }
-        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.item_spinner,fList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
-}
+ }

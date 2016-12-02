@@ -9,63 +9,72 @@
     android:focusableInTouchMode="true"
     tools:context="com.pefe.pefememo.app.editor.MemoEditorViewImpl">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="end">
-
-
-
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/memoEditorCopy"
-            android:text="C"/>
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/memoEditorSave"
-            android:text="S"/>
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/memoEditorClose"
-            android:text="X"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:background="@color/blueSecnd"
+        android:padding="5dp">
 
         <ToggleButton
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:id="@+id/memoEditorImportance"
-            android:textOn="Imp"
-            android:textOff="nImp"/>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textOn=""
+            android:textOff=""
+            android:background="@drawable/tbtn_importance"/>
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/memoEditorClose"
+            android:background="@drawable/btn_exit"/>
 
         <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/memoEditorSave"
+            android:layout_toLeftOf="@id/memoEditorClose"
+            android:layout_toStartOf="@id/memoEditorClose"
+            android:background="@drawable/btn_save"/>
+
+        <Button
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:id="@+id/memoEditorCopy"
+            android:layout_toLeftOf="@id/memoEditorSave"
+            android:layout_toStartOf="@id/memoEditorSave"
+            android:background="@drawable/btn_copy"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+        <EditText
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/memoEditorDirImg"/>
+            android:layout_weight="6"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/greyText"
+            android:id="@+id/memoEditorTitle"
+            android:hint="Title"
+            android:textColorHint="@color/greyTextHint"/>
 
-        <TextView
+        <Spinner
             android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_height="match_parent"
-            android:id="@+id/memoEditorDirText"/>
-
-
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:id="@+id/memoEditorDirSpinner" />
 
     </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="5dp">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

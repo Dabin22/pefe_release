@@ -66,7 +66,9 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         boolean isImportant = datas.get(position).isImportant();
         boolean isDeleted = datas.get(position).isDeleted();
         String dirCode = datas.get(position).getDirCode();
+        String memoTitle = datas.get(position).getTitle();
         String memoContent = datas.get(position).getContent();
+        holder.title.setText(memoTitle);
         holder.content.setText(memoContent);
         holder.content.setMinLines(MINLINES);
         holder.content.setMaxLines(MAXLINES);
@@ -79,6 +81,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         holder.copy.setOnClickListener(new CopyClickListener(holder.content));
         holder.delete.setOnClickListener(new DeleteClickListener(no,isDeleted));
         holder.back.setOnClickListener(new BackClickListener(no));
+        holder.title.setOnClickListener(new ContentClickListener(no));
         holder.content.setOnClickListener(new ContentClickListener(no));
     }
 
@@ -89,6 +92,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         Button copy;
         Button delete;
         Button back;
+        EditText title;
         TextView content;
 
         private ViewHolder(View itemView) {
@@ -98,6 +102,7 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
             copy = (Button) itemView.findViewById(R.id.memoItemCopy);
             delete = (Button) itemView.findViewById(R.id.memoItemDelete);
             back =(Button)itemView.findViewById(R.id.memoItemBack);
+            title = (EditText) itemView.findViewById(R.id.memoItemTitle);
             content = (TextView) itemView.findViewById(R.id.memoItemContent);
         }
     }

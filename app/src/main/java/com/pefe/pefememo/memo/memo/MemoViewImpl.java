@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.graphics.PixelFormat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
@@ -330,7 +331,8 @@ public class MemoViewImpl implements MemoView {
             switch (innerType){
                 case MEMO:
                     ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
-                    EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
+                    EditText title = (EditText)innerMemo.findViewById(R.id.title);
+                    EditText content = (EditText)innerMemo.findViewById(R.id.memoContent);
                     Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
 
                     boolean important = importanceTBtn.isChecked();
@@ -339,8 +341,9 @@ public class MemoViewImpl implements MemoView {
                     if(i > 0){
                         dirCode = dirs.get(i-1).getCode();
                     }
-                    String content = memoContent.getText().toString();
-                    memoController.saveMemo(important,dirCode,content);
+                    String memoTitle = title.getText().toString();
+                    String memoContent = content.getText().toString();
+                    memoController.saveMemo(important,dirCode,memoTitle,memoContent);
 
 //                    importanceTBtn.setChecked(false);
 //                    memoContent.setText("");
@@ -434,8 +437,8 @@ public class MemoViewImpl implements MemoView {
     private class DeleteAddTodoListener implements CompoundButton.OnCheckedChangeListener{
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            GridLayout todoBoard = (GridLayout) compoundButton.getParent().getParent().getParent();
-            View todoItem = (View) compoundButton.getParent().getParent();
+            GridLayout todoBoard = (GridLayout) compoundButton.getParent().getParent().getParent().getParent();
+            View todoItem = (View) compoundButton.getParent().getParent().getParent();
             if(!b){
                 EditText content = (EditText) todoItem.findViewById(R.id.todoContent);
                 content.setText("");
@@ -444,7 +447,7 @@ public class MemoViewImpl implements MemoView {
                 todoItem = null;
             }
             else{
-                View parent =(View) compoundButton.getParent().getParent();
+                View parent =(View) compoundButton.getParent().getParent().getParent();
                 parent.setAlpha(1f);
                 ToggleButton repeatOnceBtn = (ToggleButton) parent.findViewById(R.id.todoOnceRepeatBtn);
                 repeatOnceBtn.setClickable(true);
@@ -464,7 +467,7 @@ public class MemoViewImpl implements MemoView {
 
         @Override
         public void onClick(View view) {
-            View todoItem = (View) view.getParent().getParent();
+            View todoItem = (View) view.getParent().getParent().getParent();
             ToggleButton deleteAddButton = (ToggleButton) todoItem.findViewById(R.id.todoAddDelBtn);
             deleteAddButton.setChecked(true);
             EditText content = (EditText)view;

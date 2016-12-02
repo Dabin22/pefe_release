@@ -6,19 +6,20 @@
     <color name="greenWhite">#e8f5e9</color>
     <color name ="greenAccent">#EEFF41</color>
 
-    <color name="blueRep">#2195f2</color>
+    <color name="blueRep">#6bb9f7</color>
     <color name="blueSecnd">#baddfa</color>
     <color name="blueBg">#edf2f6</color>
     <color name="blueBgLight">#7cf3f4fa</color>
-    <color name="blueDark">#207edb</color>
-    <color name="blueAccent">#3ce8ff</color>
-    <color name="blueAccentBg">#98bfff</color>
+    <color name="blueDark">#328ae1</color>
+    <color name="blueAccent">#5dd9ff</color>
+    <color name="blueAccentBg">#a3d4fb</color>
     <color name ="blueSearchBar">#54f3f4fa</color>
 
     <color name="white">#fafbfc</color>
     <color name="whiteBar">#64dbdfe8</color>
     <color name="greyText">#3c3b3b</color>
     <color name="greyTextHint">#463c3b3b</color>
+    <color name="greyTextName">#9f3c3b3b</color>
     <color name="folderGrey">#BDBDBD</color>>
     <color name="transparent">#00000000</color>
 

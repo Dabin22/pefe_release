@@ -22,8 +22,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/todoBoard"
             android:columnCount="1">
-
-
         </GridLayout>
     </ScrollView>
 

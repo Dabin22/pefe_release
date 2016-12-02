@@ -16,6 +16,7 @@ public class Memo extends RealmObject {
 
     private String dirCode;
     private boolean important;
+    private String title;
     private String content;
     private Date createDate;
     private boolean deleted;
@@ -27,6 +28,8 @@ public class Memo extends RealmObject {
     public void setDirCode(String dirCode) {this.dirCode = dirCode;}
     public boolean isImportant() {return important;}
     public void setImportant(boolean important) {this.important = important;}
+    public String getTitle() {return title;}
+    public void setTitle(String title) {this.title = title;}
     public String getContent() {return content;}
     public void setContent(String content) {this.content = content;}
     public Date getCreateDate() {return createDate;}

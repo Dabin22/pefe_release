@@ -36,16 +36,16 @@ public interface RealmController {
     long getLargestNo(String whose);
 
 
-    void writeMemo( boolean importance, String dirCode, String content, Date createDate);
-    void modifyMemo(long no, boolean importance, String dirCode, String content);
+    void writeMemo( boolean importance,String title ,String dirCode, String content, Date createDate);
+    void modifyMemo(long no, boolean importance, String title, String dirCode, String content);
     void deleteMemo(long no, Date deletedDate);
     void deleteMemoForever(long no);
     void emptyTrashCan();
     void recycleMemo(long no);
     void recycleAll();
 
-    void writeMemoAsync( boolean importance, String dirCode, String content, Date createDate);
-    void modifyMemoAsync(long no, boolean importance, String dirCode, String content);
+    void writeMemoAsync( boolean importance, String dirCode, String title,String content, Date createDate);
+    void modifyMemoAsync(long no, boolean importance, String dirCode, String title,String content);
     void deleteMemoAsync(long no, Date deletedDate);
     void emptyTrashCanAsync();
     void recycleAllAsync();

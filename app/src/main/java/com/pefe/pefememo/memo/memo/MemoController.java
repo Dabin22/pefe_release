@@ -12,7 +12,7 @@ import io.realm.OrderedRealmCollection;
 public interface MemoController {
     String getDir(String name);
     OrderedRealmCollection<Directory> getDirs();
-    void saveMemo(boolean importance, String dirCode, String content);
+    void saveMemo(boolean importance, String dirCode, String title, String content);
     void saveTodo(boolean repeatOnce, String content);
 
 }

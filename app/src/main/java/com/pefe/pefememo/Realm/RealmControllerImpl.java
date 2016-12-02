@@ -211,10 +211,10 @@ public class RealmControllerImpl implements RealmController {
     }
 
     @Override
-    public void writeMemo(boolean importance, String dirCode, String content, Date createDate){
+    public void writeMemo(boolean importance, String dirCode, String title,String content, Date createDate){
         try {
             long no = getLargestNo(RealmControllerImpl.MEMO) + 1;
-            pefeRealm.executeTransaction(new MemoWriteTransaction(no, importance, dirCode, content, createDate));
+            pefeRealm.executeTransaction(new MemoWriteTransaction(no, importance, dirCode,title ,content, createDate));
             Toast.makeText(context, "Memo Saved", Toast.LENGTH_SHORT).show();
         }catch(Exception e){
             e.printStackTrace();
@@ -222,9 +222,9 @@ public class RealmControllerImpl implements RealmController {
         }
     }
     @Override
-    public void modifyMemo(long no, boolean importance, String dirCode, String content) {
+    public void modifyMemo(long no, boolean importance, String dirCode, String title, String content) {
         try {
-            pefeRealm.executeTransaction(new MemoModifyTransaction(no, importance, dirCode, content));
+            pefeRealm.executeTransaction(new MemoModifyTransaction(no, importance, dirCode,title ,content));
             Toast.makeText(context, "Memo Modified", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
@@ -291,17 +291,17 @@ public class RealmControllerImpl implements RealmController {
 
 
     @Override
-    public void writeMemoAsync(boolean importance, String dirCode, String content,Date createDate){
+    public void writeMemoAsync(boolean importance, String dirCode, String title,String content,Date createDate){
         long no = getLargestNo(RealmControllerImpl.MEMO)+1;
-        RealmAsyncTask writeMemoTask = pefeRealm.executeTransactionAsync(new MemoWriteTransaction(no, importance, dirCode, content, createDate)
+        RealmAsyncTask writeMemoTask = pefeRealm.executeTransactionAsync(new MemoWriteTransaction(no, importance, dirCode,title ,content, createDate)
                         , new OnMemoWriteSuccess()
                         , new OnMemoWriteError());
 
         taskList.add(writeMemoTask);
     }
     @Override
-    public void modifyMemoAsync(long no, boolean importance, String dirCode, String content){
-        RealmAsyncTask modifyMemoTask = pefeRealm.executeTransactionAsync(new MemoModifyTransaction(no, importance, dirCode, content)
+    public void modifyMemoAsync(long no, boolean importance, String dirCode, String title,String content){
+        RealmAsyncTask modifyMemoTask = pefeRealm.executeTransactionAsync(new MemoModifyTransaction(no,importance, dirCode, title ,content)
                         , new OnMemoModifySuccess()
                         , new OnMemoModifyError());
         taskList.add(modifyMemoTask);
@@ -631,13 +631,15 @@ public class RealmControllerImpl implements RealmController {
     private class MemoWriteTransaction implements Realm.Transaction {
         long no;
         boolean importance;
+        String title;
         String dirCode;
         String content;
         Date createDate;
 
-        private MemoWriteTransaction(long no, boolean importance, String dirCode , String content, Date createDate) {
+        private MemoWriteTransaction(long no, boolean importance, String dirCode , String title , String content, Date createDate) {
             this.no = no;
             this.importance = importance;
+            this.title = title;
             this.content = content;
             this.dirCode = dirCode;
             this.createDate = createDate;
@@ -647,6 +649,7 @@ public class RealmControllerImpl implements RealmController {
         public void execute(Realm realm) {
             Memo newMemo = realm.createObject(Memo.class,no);
             newMemo.setImportant(importance);
+            newMemo.setTitle(title);
             newMemo.setContent(content);
             newMemo.setDirCode(dirCode);
             newMemo.setCreateDate(createDate);
@@ -672,12 +675,14 @@ public class RealmControllerImpl implements RealmController {
 
         long no;
         boolean importance;
+        String title;
         String dirCode;
         String content;
 
-        private MemoModifyTransaction(long no, boolean importance, String dirCode, String content) {
+        private MemoModifyTransaction(long no, boolean importance, String dirCode, String title,String content) {
             this.no = no;
             this.importance = importance;
+            this.title = title;
             this.content = content;
             this.dirCode = dirCode;
         }
@@ -689,6 +694,7 @@ public class RealmControllerImpl implements RealmController {
                     .findFirst();
             modifyMemo.setImportant(importance);
             modifyMemo.setDirCode(dirCode);
+            modifyMemo.setTitle(title);
             modifyMemo.setContent(content);
         }
     }
