@@ -57,6 +57,11 @@ public class MemoFragment extends Fragment {
         RelativeLayout folderList = (RelativeLayout) memoFragment.findViewById(R.id.folderList);
         searchBtn.setOnClickListener(new SearchBtnClickListener(searchBar));
         folderBtn.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
+        ToggleButton space1 = (ToggleButton) memoFragment.findViewById(R.id.space1);
+        ToggleButton space2 = (ToggleButton) memoFragment.findViewById(R.id.space2);
+
+        space1.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
+        space2.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
 
         Button addFolder = (Button) memoFragment.findViewById(R.id.addFolderBtn);
         addFolder.setOnClickListener(new AddFolderBtnClickListener() );

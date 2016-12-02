@@ -161,7 +161,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         final LinearLayout windowCreateDir = (LinearLayout) View.inflate(context, R.layout.dialog_create_dir, null);
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setView(windowCreateDir)
-                .setTitle("ModifyF Folder")
+                .setTitle("Modify Folder")
                 .setNegativeButton("Cancel", new DirDialogCancelListener())
                 .setPositiveButton("Modify", new DirDialogOnClickListener(windowCreateDir,dirCode))
                 .setNeutralButton("Delete", new DirDialogDeleteListener(dirCode))

@@ -218,15 +218,16 @@ public class MemoViewImpl implements MemoView {
     private void defaultingInnerMemo(View innerMemo){
         RelativeLayout innerMemoBar = (RelativeLayout) innerMemo.findViewById(R.id.innerMemoBar);
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
-        EditText memoContent = (EditText)innerMemo.findViewById(R.id.memoContent);
+        EditText title = (EditText)innerMemo.findViewById(R.id.title);
+        EditText content = (EditText)innerMemo.findViewById(R.id.content);
         Button cleanBtn = (Button) innerMemo.findViewById(R.id.cleanBtn);
         Button copyBtn = (Button) innerMemo.findViewById(R.id.copyBtn);
         Button pasteBtn = (Button) innerMemo.findViewById(R.id.pasteBtn);
 
         innerMemoBar.setOnTouchListener(new BarTouchListener());
-        cleanBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
-        copyBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
-        pasteBtn.setOnClickListener(new onInnerMemoMenuClick(memoContent));
+        cleanBtn.setOnClickListener(new onInnerMemoMenuClick(title,content));
+        copyBtn.setOnClickListener(new onInnerMemoMenuClick(title,content));
+        pasteBtn.setOnClickListener(new onInnerMemoMenuClick(title,content));
         folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
         setFolderSpinner(folderSpinner);
     }
@@ -237,9 +238,10 @@ public class MemoViewImpl implements MemoView {
         }
     }
     private class onInnerMemoMenuClick implements View.OnClickListener{
-        EditText content;
+        EditText title,content;
 
-        public onInnerMemoMenuClick(EditText content) {
+        public onInnerMemoMenuClick(EditText title, EditText content) {
+            this.title = title;
             this.content = content;
         }
 
@@ -248,6 +250,7 @@ public class MemoViewImpl implements MemoView {
             switch(view.getId()){
                 case R.id.cleanBtn:
                     content.setText("");
+                    title.setText("");
                     break;
                 case R.id.copyBtn:
                     CopyTool.copyMemo(content);
@@ -332,7 +335,7 @@ public class MemoViewImpl implements MemoView {
                 case MEMO:
                     ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
                     EditText title = (EditText)innerMemo.findViewById(R.id.title);
-                    EditText content = (EditText)innerMemo.findViewById(R.id.memoContent);
+                    EditText content = (EditText)innerMemo.findViewById(R.id.content);
                     Spinner folderSpinner = (Spinner)innerMemo.findViewById(R.id.dirSpinner);
 
                     boolean important = importanceTBtn.isChecked();
