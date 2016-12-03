@@ -10,18 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.model.directory.Directory;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -38,7 +35,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     private RealmController realmController;
     private MemoFragmentController memoDistributor;
     private OrderedRealmCollection<Directory> datas;
-    private CompoundButton openDir =null;
+
     public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);
         datas = data.sort("order", Sort.ASCENDING);
@@ -61,20 +58,20 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         String dirCode = datas.get(position).getCode();
         String dirPw = datas.get(position).getPw();
 
-        holder.dirBtn.setOnCheckedChangeListener(new DirOpenChangedListener(name,dirCode,dirPw));
-        holder.dirBtn.setOnLongClickListener(new DirLongClickListener(name,dirCode,dirPw));
+        holder.dirBtn.setOnClickListener(new dirClickListener(dirCode,dirPw));
+        holder.dirBtn.setOnLongClickListener(new dirLongClickListener(dirCode,dirPw));
         holder.dirName.setText(name);
 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ToggleButton dirBtn;
+        Button dirBtn;
         TextView dirName;
 
         private ViewHolder(View itemView) {
             super(itemView);
-            dirBtn = (ToggleButton) itemView.findViewById(R.id.dirBtn);
+            dirBtn = (Button) itemView.findViewById(R.id.dirBtn);
             dirName = (TextView) itemView.findViewById(R.id.dirName);
         }
     }
@@ -89,73 +86,57 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         @Override
         public boolean onLongClick(View view) {
             if(pw.equals("")){
-                AlertDialog modifyDirDialog = modifyDirCreateDialog(name,code);
+                AlertDialog modifyDirDialog = modifyDirCreateDialog(code);
                 modifyDirDialog.show();
             }
             else{
-                askPW((CompoundButton) view, pw,name,code,true);
+                askPW(pw,code,true);
             }
             return true;
         }
     }
+    private class dirClickListener implements View.OnClickListener {
+        String code;
+        String pw;
 
-    private class DirOpenChangedListener implements CompoundButton.OnCheckedChangeListener{
-        String name,code,pw;
-
-        private DirOpenChangedListener(String name,String code, String pw) {
-            this.name = name;
+        private DirCheckedChangeListener(String code, String pw) {
             this.code = code;
             this.pw = pw;
         }
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if(b){
-                if(pw.equals("")){
-                    memoDistributor.setMemosByDirCode(code);
-                    closeOpenDir(compoundButton);
-                }
-                else{
-                    askPW(compoundButton,pw,name,code,false);
-                }
+        public void onClick(View view) {
+            if(pw.equals("")){
+                memoDistributor.setMemosByDirCode(code);
+            }
+            else{
+                askPW(pw, code,false);
             }
         }
     }
-    private void closeOpenDir(CompoundButton nextOpenDir){
-        if(openDir!=null){
-            openDir.setChecked(false);
-        }
-        if(nextOpenDir.isChecked()){
-            openDir = nextOpenDir;
-        }
-    }
-    private void askPW(CompoundButton cbtn, String pw,String name ,String code, boolean edit){
-        AlertDialog pwDialog = createPWDialog(cbtn,pw,name,code,edit);
+    private void askPW(String pw, String code, boolean edit){
+        AlertDialog pwDialog = createPWDialog(pw,code,edit);
         pwDialog.show();
     }
-    private AlertDialog createPWDialog(CompoundButton cbtn,String pw,String name ,String code,boolean edit){
+    private AlertDialog createPWDialog(String pw, String code,boolean edit){
         final LinearLayout windowPw = (LinearLayout) View.inflate(context,R.layout.dialog_pw,null);
         AlertDialog pwDialog = new AlertDialog.Builder(context)
                 .setView(windowPw)
                 .setTitle("Password")
-                .setPositiveButton("Open", new PWDialogOnClickListener(cbtn ,windowPw, pw, name ,code, edit))
+                .setPositiveButton("Open", new PWDialogOnClickListener(windowPw, pw, code, edit))
                 .setCancelable(true)
                 .create();
-        pwDialog.getWindow().setLayout(300,200);
         return pwDialog;
     }
 
     private class PWDialogOnClickListener implements DialogInterface.OnClickListener{
-        String pw, code ,name;
+        String pw, code;
         View windowPw = null;
-        CompoundButton cbtn;
         boolean edit;
-        PWDialogOnClickListener(CompoundButton cbtn,View windowPw, String pw,String name ,String code, boolean edit){
+        PWDialogOnClickListener(View windowPw, String pw, String code, boolean edit){
             this.pw = pw;
             this.code = code;
-            this.name = name;
             this.windowPw = windowPw;
             this.edit = edit;
-            this.cbtn = cbtn;
         }
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
@@ -165,23 +146,19 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
                 if(!edit){
                     dialogInterface.dismiss();
                     memoDistributor.setMemosByDirCode(code);
-                    closeOpenDir(cbtn);
                 }else{
                     dialogInterface.dismiss();
-                    AlertDialog modifyDirDialog = modifyDirCreateDialog(name,code);
+                    AlertDialog modifyDirDialog = modifyDirCreateDialog(code);
                     modifyDirDialog.show();
                 }
             }else{
                 Toast.makeText(context, "잘못된 비밀번호입니다", Toast.LENGTH_SHORT).show();
                 pwInput.setText("");
-                cbtn.setChecked(false);
             }
         }
     }
-    private AlertDialog modifyDirCreateDialog(String name ,String dirCode) {
+    private AlertDialog modifyDirCreateDialog(String dirCode) {
         final LinearLayout windowCreateDir = (LinearLayout) View.inflate(context, R.layout.dialog_create_dir, null);
-        EditText nameEdt = (EditText) windowCreateDir.findViewById(R.id.createDirName);
-        nameEdt.setText(name);
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setView(windowCreateDir)
                 .setTitle("Modify Folder")

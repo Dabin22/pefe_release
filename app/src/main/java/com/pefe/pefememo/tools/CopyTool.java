@@ -29,9 +29,7 @@ public class CopyTool {
         ClipboardManager clipboard = (ClipboardManager)view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         String pasteData = "";
         int position = view.getSelectionEnd();
-        if (!(clipboard.hasPrimaryClip())) {
-        } else if (!(clipboard.getPrimaryClipDescription().hasMimeType(MIMETYPE_TEXT_PLAIN))) {
-        } else {
+        if (clipboard.hasPrimaryClip()) {
             ClipData.Item item = clipboard.getPrimaryClip().getItemAt(0);
             pasteData = item.getText().toString();
         }

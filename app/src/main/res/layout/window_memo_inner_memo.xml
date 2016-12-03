@@ -35,6 +35,8 @@
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
             android:id="@+id/cleanBtn"
             android:background="@drawable/btn_clean"/>
         <Button
@@ -42,6 +44,8 @@
             android:layout_height="24dp"
             android:layout_toLeftOf="@id/cleanBtn"
             android:layout_toStartOf="@id/cleanBtn"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
             android:id="@+id/pasteBtn"
             android:background="@drawable/btn_paste"/>
         <Button
@@ -49,6 +53,8 @@
             android:layout_height="24dp"
             android:layout_toLeftOf="@id/pasteBtn"
             android:layout_toStartOf="@id/pasteBtn"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
             android:id="@+id/copyBtn"
             android:background="@drawable/btn_copy"/>
 
