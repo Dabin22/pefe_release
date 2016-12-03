@@ -93,7 +93,9 @@ public class MemoFragment extends Fragment {
     @Override
     public void onDestroy() {
         memoFragmentController = null;
-        realmController.realmClose();
+        if(realmController!=null){
+            realmController.realmClose();
+        }
         realmController = null;
         super.onDestroy();
     }

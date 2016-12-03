@@ -10,18 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -79,7 +83,7 @@ public class MemoViewImpl implements MemoView {
     private View trnspBtn = null;
 
     private WindowManager.LayoutParams memoParams;
-    private View memoFrame;
+    private WindowFrame memoFrame;
     private View innerMemo = null;
     Spinner folderSpinner = null;
     private View innerTodo = null;
@@ -87,12 +91,10 @@ public class MemoViewImpl implements MemoView {
     private boolean phoneCallStatus = false;
     private boolean memoOnOff = false;
 
-    public MemoViewImpl(Context context,MemoController memoController,WindowManager wm, float displayHeight, float displayWidth) {
+    public MemoViewImpl(Context context,MemoController memoController,WindowManager wm) {
         this.memoController = memoController;
         this.context = context;
         this.wm = wm;
-        this.displayHeight = displayHeight;
-        this.displayWidth = displayWidth;
     }
 
     @Override
@@ -164,6 +166,8 @@ public class MemoViewImpl implements MemoView {
 
     //투명버튼 파라미터 설정 값 세팅
     private WindowManager.LayoutParams setTrnspBtnParams(){
+        displayHeight = context.getResources().getDisplayMetrics().heightPixels;
+        displayWidth = context.getResources().getDisplayMetrics().widthPixels;
         float btnHeight = (int) displayHeight/2.5f;
         int btnWidth = (int) displayWidth/32;
         WindowManager.LayoutParams params= new WindowManager.LayoutParams(
@@ -176,7 +180,8 @@ public class MemoViewImpl implements MemoView {
     }
 
     private WindowManager.LayoutParams setMemoParams(){
-        //TODO 사용자에게 정의된 비율 사용
+        displayHeight = context.getResources().getDisplayMetrics().heightPixels;
+        displayWidth = context.getResources().getDisplayMetrics().widthPixels;
         float memoHeight = (int) displayHeight/2.5f;
         WindowManager.LayoutParams memoParams  = new WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,
                 (int) memoHeight,
@@ -184,24 +189,27 @@ public class MemoViewImpl implements MemoView {
                 ,FLAG_NOT_TOUCH_MODAL|FLAG_SPLIT_TOUCH
                 , PixelFormat.TRANSLUCENT);
         memoParams.y = (int)(displayHeight/2.5f);
+        memoParams.windowAnimations = android.R.style.Animation_Translucent;
 //        memoParams.gravity= Gravity.BOTTOM | Gravity.END;
         return memoParams;
     }
     //메모 내부 초기화
+
     private void setDefaultMemo(){
 //        memoRoot = new FrameLayout(context);
-        memoFrame = View.inflate(context,R.layout.window_memo,null);
-        innerMemo = memoFrame.findViewById(R.id.innerMemo);
+        memoFrame = new WindowFrame(context);
+        View memo = View.inflate(context,R.layout.window_memo,memoFrame);
+        innerMemo = memo.findViewById(R.id.innerMemo);
         setDefaultInnerMemo(innerMemo);
-        innerTodo = memoFrame.findViewById(R.id.innerTodo);
+        innerTodo = memo.findViewById(R.id.innerTodo);
         setDefaultInnerTodo(innerTodo);
 
-        RelativeLayout memoBar = (RelativeLayout) memoFrame.findViewById(R.id.memoBar);
+        RelativeLayout memoBar = (RelativeLayout) memo.findViewById(R.id.memoBar);
 
-        Button exitBtn = (Button) memoFrame.findViewById(R.id.exitBtn);
-        Button saveBtn = (Button) memoFrame.findViewById(R.id.saveBtn);
-        Button purposeBtn = (Button) memoFrame.findViewById(R.id.purposeBtn);
-        SeekBar trnspController = (SeekBar) memoFrame.findViewById(R.id.trnspController);
+        Button exitBtn = (Button) memo.findViewById(R.id.exitBtn);
+        Button saveBtn = (Button) memo.findViewById(R.id.saveBtn);
+        Button purposeBtn = (Button) memo.findViewById(R.id.purposeBtn);
+        SeekBar trnspController = (SeekBar) memo.findViewById(R.id.trnspController);
 
         memoBar.setOnTouchListener(new BarTouchListener());
         exitBtn.setOnClickListener(new exitListener());
@@ -307,7 +315,7 @@ public class MemoViewImpl implements MemoView {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float motionX = motionEvent.getX();
-                        float motionRange = -(displayWidth/3);
+                        float motionRange = -(displayWidth/6);
                         if (motionX < motionRange) {
                             setMemo();
                             trnspBtn.setAlpha(0.0f);
@@ -423,12 +431,7 @@ public class MemoViewImpl implements MemoView {
                         memoParams.x = mViewX + x;
                         memoParams.y = mViewY + y;
                         wm.updateViewLayout(memoFrame,memoParams);
-                        float motionX = motionEvent.getX();
-                        float motionRange = -(displayWidth/3);
-                        if (motionX < motionRange) {
 
-//                            setMemo();
-                        }
                         break;
                 }
             }
@@ -507,5 +510,29 @@ public class MemoViewImpl implements MemoView {
             }
         }
     };
+
+    private class WindowFrame extends FrameLayout {
+        public WindowFrame(Context context) {
+            super(context);
+
+        }
+
+        public WindowFrame(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public WindowFrame(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent event) {
+            if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                setTrnspBtn();
+                return true;
+            }
+            return super.dispatchKeyEvent(event);
+        }
+    }
 }
 

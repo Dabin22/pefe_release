@@ -23,12 +23,15 @@
         android:padding="3dp">
         <SeekBar
             android:layout_width="120dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/trnspController"
             android:max="700"
             android:progress="700"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:thumb="@drawable/seekbar_thumb"/>
 
         <Button
             android:layout_width="30dp"

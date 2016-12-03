@@ -13,11 +13,14 @@ import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
+import com.pefe.pefememo.memo.lockscreen.LockScreenView;
+import com.pefe.pefememo.memo.lockscreen.LockScreenViewImpl;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.realm.RealmControllerImpl;
 import com.pefe.pefememo.app.main.MainViewImpl;
@@ -42,7 +45,7 @@ public class RootService extends Service {
     private RealmController realmController;
     private MemoController memoController;
     private MemoView memoView;
-    //private ScreenOnOffReciever screenOnOffReciever;
+    private ScreenOnOffReciever screenOnOffReciever;
 
 
     public static boolean memoUse;
@@ -67,10 +70,9 @@ public class RootService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         PefeMemo.setRootOn(true);
-        setPixels();
         setViewBuilders();
         setSettings();
-        //registerScreenOnOffReceiver();
+        registerScreenOnOffReceiver();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -78,7 +80,7 @@ public class RootService extends Service {
     public void onDestroy() {
         memoView.terminateMemo();
         realmController.realmClose();
-        //unregisterReceiver(screenOnOffReciever);
+        unregisterReceiver(screenOnOffReciever);
         stopForeground(true);
         PefeMemo.setRootOn(false);
         super.onDestroy();
@@ -100,16 +102,12 @@ public class RootService extends Service {
         realmController.realmInit();
         memoController = new MemoCotrollerImpl(realmController);
     }
-    //화면 픽셀 크기 즉정
-    private void setPixels(){
-        widthPixel = getResources().getDisplayMetrics().widthPixels;
-        heightPixel = getResources().getDisplayMetrics().heightPixels;
-    }
+
     //View를 그리기위해 필요한 윈도우 매니저와 인플레이터를 MemoView클래스에 전달함
     private void setViewBuilders(){
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        memoView = new MemoViewImpl(this,memoController,wm,heightPixel,widthPixel);
+        memoView = new MemoViewImpl(this,memoController,wm);
         memoView.initMemo();
     }
 
@@ -121,12 +119,12 @@ public class RootService extends Service {
         onOffNotification();
     }
 
-    //Todo 락스크린 리시버
-//    private void registerScreenOnOffReceiver(){
-//        screenOnOffReciever = new ScreenOnOffReciever();
-//        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-//        registerReceiver(screenOnOffReciever, filter);
-//    }
+
+    private void registerScreenOnOffReceiver(){
+        screenOnOffReciever = new ScreenOnOffReciever();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(screenOnOffReciever, filter);
+    }
     //Notification 달기
     private static final int NOTI_ID = 3223;
     private void onOffNotification(){
@@ -171,29 +169,49 @@ public class RootService extends Service {
             setSettings();
         }
     }
-    //Todo View넣기
-//    private class ScreenOnOffReciever extends BroadcastReceiver {
-//
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            if (telephonyManager == null) {
-//                telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-//                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-//            }
-//            if (lockScreenUse) {
-//                if (action.equals(Intent.ACTION_SCREEN_OFF) && !phoneCallStatus) {
-//                    Intent lockScreenIntent = new Intent(RootService.this, LockScreenViewImpl.class);
-//                    lockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                    lockScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(lockScreenIntent);
-//                }
-//            }
-//        }
-//        // 핸드폰이 통화중일 경우 반응하지 않도록 설정
-//
-//    }
+
+    private TelephonyManager telephonyManager = null;
+
+    private class ScreenOnOffReciever extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (telephonyManager == null) {
+                telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+            }
+            if (lockScreenUse) {
+                if (action.equals(Intent.ACTION_SCREEN_OFF) && !phoneCallStatus) {
+                    Log.e("ScreenOFF","true");
+                    LockScreenView lockScreenView = new LockScreenViewImpl(RootService.this);
+                    lockScreenView.showLockScreen();
+                }
+            }
+        }
+        // 핸드폰이 통화중일 경우 반응하지 않도록 설정
+
+    }
+    private boolean phoneCallStatus = false;
+    private PhoneStateListener phoneListener = new PhoneStateListener() {
+
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            switch (state) {
+                //전화 올 때
+                case TelephonyManager.CALL_STATE_RINGING:
+                    phoneCallStatus = true;
+                    break;
+                //전화 받음
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    phoneCallStatus = true;
+                    break;
+                //전화 끊음
+                case TelephonyManager.CALL_STATE_IDLE:
+                    phoneCallStatus = false;
+                    break;
+            }
+        }
+    };
 
 
 }

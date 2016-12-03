@@ -47,19 +47,20 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
     @Override
     public void setCustomResult(String keyWord){
         memos = realmController.readMemoByContent(keyWord,currentFolderCode);
-        MemoViewAdapter memoAdapter = new MemoViewAdapter(context,memos,true, realmController);
+        memoViewAdapter = new MemoViewAdapter(context,memos,true, realmController);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
-        memoRecyclerView.setAdapter(memoAdapter);
+        memoRecyclerView.setAdapter(memoViewAdapter);
         memoRecyclerView.setLayoutManager(gridLayoutManager);
     }
 
     @Override
     public void setTrashCan() {
         memos = realmController.readDeletedMemo().sort("deletedDate", Sort.DESCENDING);
-        MemoViewAdapter memoAdapter = new MemoViewAdapter(context,memos,true,realmController);
+        memoViewAdapter = new MemoViewAdapter(context,memos,true,realmController);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
-        memoRecyclerView.setAdapter(memoAdapter);
+        memoRecyclerView.setAdapter(memoViewAdapter);
         memoRecyclerView.setLayoutManager(gridLayoutManager);
+        dirViewAdapter.setCurrentDirOpen(false);
     }
 
 
@@ -79,10 +80,12 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
     public void setMemosByDirCode(String code){
         currentFolderCode = code;
         memos = realmController.readMemoByDirCode(code).sort("important",Sort.DESCENDING,"no",Sort.DESCENDING);
-        MemoViewAdapter memoAdapter = new MemoViewAdapter(context,memos,true, realmController);
+        memoViewAdapter = new MemoViewAdapter(context,memos,true, realmController);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
-        memoRecyclerView.setAdapter(memoAdapter);
+        memoRecyclerView.setAdapter(memoViewAdapter);
         memoRecyclerView.setLayoutManager(gridLayoutManager);
+        dirViewAdapter.setLastDirOpen(false);
+        dirViewAdapter.setCurrentDirOpen(true);
     }
     @Override
     public String getCurrentFolderCode() {
@@ -91,7 +94,7 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
 
     private void setDirRecyclerView(){
         directories = realmController.readDirAll();
-        DirViewAdapter dirViewAdapter = new DirViewAdapter(context,directories,true,MemoFragmentControllerImpl.this, realmController);
+        dirViewAdapter = new DirViewAdapter(context,directories,true,MemoFragmentControllerImpl.this, realmController);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context,1);
         dirRecyclerView.setAdapter(dirViewAdapter);
         dirRecyclerView.setLayoutManager(gridLayoutManager);

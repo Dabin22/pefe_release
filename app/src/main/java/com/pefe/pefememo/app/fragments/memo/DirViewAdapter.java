@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.realm.RealmController;
@@ -35,7 +37,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     private RealmController realmController;
     private MemoFragmentController memoDistributor;
     private OrderedRealmCollection<Directory> datas;
-
+    private CompoundButton lastOpenDir,currentOpenDir;
     public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);
         datas = data.sort("order", Sort.ASCENDING);
@@ -58,28 +60,28 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         String dirCode = datas.get(position).getCode();
         String dirPw = datas.get(position).getPw();
 
-        holder.dirBtn.setOnClickListener(new dirClickListener(dirCode,dirPw));
-        holder.dirBtn.setOnLongClickListener(new dirLongClickListener(dirCode,dirPw));
+        holder.dirBtn.setOnCheckedChangeListener(new DirCheckedChangeListener(dirCode,dirPw));
+        holder.dirBtn.setOnLongClickListener(new DirLongClickListener(dirCode,dirPw));
         holder.dirName.setText(name);
 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        Button dirBtn;
+        ToggleButton dirBtn;
         TextView dirName;
 
         private ViewHolder(View itemView) {
             super(itemView);
-            dirBtn = (Button) itemView.findViewById(R.id.dirBtn);
+            dirBtn = (ToggleButton) itemView.findViewById(R.id.dirBtn);
             dirName = (TextView) itemView.findViewById(R.id.dirName);
         }
     }
-    private class dirLongClickListener implements  View.OnLongClickListener{
+    private class DirLongClickListener implements  View.OnLongClickListener{
         String code;
         String pw;
 
-        private dirLongClickListener(String code, String pw) {
+        private DirLongClickListener(String code, String pw) {
             this.code = code;
             this.pw = pw;
         }
@@ -95,16 +97,28 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
             return true;
         }
     }
-    private class dirClickListener implements View.OnClickListener {
+    public void setLastDirOpen(boolean open){
+        if(lastOpenDir!=null) {
+            lastOpenDir.setChecked(open);
+        }
+    }
+    public void setCurrentDirOpen(boolean open){
+        if(currentOpenDir!=null) {
+            currentOpenDir.setChecked(open);
+        }
+    }
+    private class DirCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
         String code;
         String pw;
 
-        private dirClickListener(String code, String pw) {
+        private DirCheckedChangeListener(String code, String pw) {
             this.code = code;
             this.pw = pw;
         }
         @Override
-        public void onClick(View view) {
+        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            lastOpenDir = currentOpenDir;
+            currentOpenDir = compoundButton;
             if(pw.equals("")){
                 memoDistributor.setMemosByDirCode(code);
             }
