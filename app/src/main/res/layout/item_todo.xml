@@ -34,9 +34,9 @@
             android:id="@+id/todoContent"
             android:layout_toRightOf="@id/todoOnceRepeatBtn"
             android:layout_toEndOf="@id/todoOnceRepeatBtn"
-            android:textColor="@color/greyText"
+            android:textColor="@color/grayText"
             android:hint="To do"
-            android:textColorHint="@color/greyTextHint"
+            android:textColorHint="@color/grayTextHint"
             android:focusable="false"
             android:focusableInTouchMode="false"/>
 

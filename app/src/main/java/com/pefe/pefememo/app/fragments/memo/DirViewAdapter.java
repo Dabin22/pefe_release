@@ -2,10 +2,14 @@ package com.pefe.pefememo.app.fragments.memo;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +24,8 @@ import android.widget.ToggleButton;
 import com.pefe.pefememo.R;
 import com.pefe.pefememo.realm.RealmController;
 import com.pefe.pefememo.model.directory.Directory;
+
+import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +44,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     private MemoFragmentController memoDistributor;
     private OrderedRealmCollection<Directory> datas;
     private CompoundButton lastOpenDir,currentOpenDir;
+
     public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);
         datas = data.sort("order", Sort.ASCENDING);
@@ -99,18 +106,27 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     }
     public void setLastDirOpen(boolean open){
         if(lastOpenDir!=null) {
-            lastOpenDir.setChecked(open);
+            View parent = (View)lastOpenDir.getParent();
+            setNameBackgroundColor(open, parent);
         }
     }
     public void setCurrentDirOpen(boolean open){
         if(currentOpenDir!=null) {
-            currentOpenDir.setChecked(open);
+            View parent = (View) currentOpenDir.getParent();
+            setNameBackgroundColor(open, parent);
+        }
+    }
+    private void setNameBackgroundColor(boolean open, View parent){
+        if(open){
+            int color =ContextCompat.getColor(context,R.color.blueSecondDark);
+            parent.setBackgroundColor(color);
+            }else{
+            parent.setBackgroundColor(0x00000000);
         }
     }
     private class DirCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
         String code;
         String pw;
-
         private DirCheckedChangeListener(String code, String pw) {
             this.code = code;
             this.pw = pw;
@@ -125,6 +141,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
             else{
                 askPW(pw, code,false);
             }
+
         }
     }
     private void askPW(String pw, String code, boolean edit){
@@ -137,7 +154,6 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
                 .setView(windowPw)
                 .setTitle("Password")
                 .setPositiveButton("Open", new PWDialogOnClickListener(windowPw, pw, code, edit))
-                .setCancelable(true)
                 .create();
         return pwDialog;
     }
@@ -166,8 +182,9 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
                     modifyDirDialog.show();
                 }
             }else{
-                Toast.makeText(context, "잘못된 비밀번호입니다", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Please recheck password", Toast.LENGTH_SHORT).show();
                 pwInput.setText("");
+                setCurrentDirOpen(false);
             }
         }
     }
@@ -232,8 +249,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         public void onClick(DialogInterface dialogInterface, int i) {
             AlertDialog deleteDialog = new AlertDialog.Builder(context)
                     .setTitle("Delete Folder")
-                    .setMessage("Folder is not recoverable, Do you really want to delete?")
-                    .setMessage("(Memo will be in trash can.)")
+                    .setMessage("Memo will be in trash can.")
                     .setNegativeButton("Cancel", new DirDialogCancelListener())
                     .setNeutralButton("Delete", new DeleteDirConfirmedListener(dirCode))
                     .setCancelable(true)

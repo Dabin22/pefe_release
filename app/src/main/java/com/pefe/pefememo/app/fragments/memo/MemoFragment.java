@@ -69,6 +69,7 @@ public class MemoFragment extends Fragment {
         noFolderBtn.setOnClickListener(new FolderClickListener());
         Button trashCanBtn =(Button) memoFragment.findViewById(R.id.trashCanBtn);
         trashCanBtn.setOnClickListener(new FolderClickListener());
+        trashCanBtn.setOnLongClickListener(new TrashCanLongClickListener());
 
         memoView =(RecyclerView)memoFragment.findViewById(R.id.memoRecyclerView);
         dirView =(RecyclerView)memoFragment.findViewById(R.id.dirRecyclerView);
@@ -198,6 +199,39 @@ public class MemoFragment extends Fragment {
                 case R.id.trashCanBtn:
                     memoFragmentController.setTrashCan();
                     break;
+            }
+        }
+    }
+    private class TrashCanLongClickListener implements View.OnLongClickListener{
+
+        @Override
+        public boolean onLongClick(View view) {
+            AlertDialog alertDialog = emptyTrashCanDialog();
+            alertDialog.show();
+            return true;
+        }
+        private AlertDialog emptyTrashCanDialog(){
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setTitle("Empty TrashCan")
+                    .setMessage("Memos cannot be recovered.")
+                    .setNegativeButton("Cancel", new EmptyTrashCanDialogCancel())
+                    .setPositiveButton("Empty", new EmptyTrashCanDialogConfirm())
+                    .setCancelable(true)
+                    .create();
+            return dialog;
+        }
+        private class EmptyTrashCanDialogConfirm implements DialogInterface.OnClickListener {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                realmController.emptyTrashCan();
+            }
+        }
+        private class EmptyTrashCanDialogCancel implements DialogInterface.OnClickListener {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
             }
         }
     }

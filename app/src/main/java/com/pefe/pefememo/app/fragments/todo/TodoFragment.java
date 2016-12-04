@@ -181,10 +181,10 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             old_list.setLayoutManager(manager);
             old_list.setAdapter(oldAdapter);
             old_list.setHasFixedSize(true);
-            builder.setTitle("Delete Old Todos......");
-            builder.setIcon(R.drawable.pflargeicon_two);
+            builder.setTitle("Delete Old Todo");
+            builder.setIcon(R.drawable.pefelogo);
             builder.setView(oldTodoView);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     ArrayList<Todo> remove_datas = oldAdapter.pop_remove_Datas();
@@ -333,7 +333,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         SharedPreferences pref = getActivity().getSharedPreferences("Goal", Context.MODE_PRIVATE);
         String old_goal = pref.getString("goal", "");
         if (old_goal.equals("")) {
-            tv_goal.setHint("목표 또는 좌우명");
+            tv_goal.setHint("Goal");
         } else {
             tv_goal.setText(old_goal);
         }
@@ -407,7 +407,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
         dialogView = inflater.inflate(R.layout.dialog_setgoal, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Setting Goal");
-        builder.setIcon(R.drawable.pflargeicon_two);
+        builder.setIcon(R.drawable.pefelogo);
         builder.setView(dialogView);
         builder.setPositiveButton("Complite", new DialogInterface.OnClickListener() {
             @Override
@@ -541,7 +541,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             }
             //과거일시
         } else {
-            Toast.makeText(getContext(), "지난 날짜에 추가 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Cannot add on past", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -556,7 +556,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             realmController.writeSelectedTodo(pop_todo.getNo(), sTodo.getType(), sTodo.getContent(), selcted_day, selcted_day);
 
         } else {
-            Toast.makeText(getContext(), "이미 올라간 메모입니다!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Already registered", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -611,7 +611,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
             realmController.modifySelectedTodo(temp_todo.getNo(), temp_todo.isDone(), temp_todo.getType(), temp_todo.getContent(), selcted_day, temp_todo.getPutDate());
             Log.e("compare_date",temp_todo.getNo()+"pick after = " + temp_todo.getBelongDate());
         } else {
-            Toast.makeText(getContext(), "지난 날짜에 추가 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Cannot add on past", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -653,10 +653,12 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
     public void isEntered(boolean check) {
         if (check) {
             //delete_layout.setBackgroundResource(R.color.blueSecond);
-            iv_delete.setImageResource(R.drawable.ic_delete_red_36dp);
+
+            iv_delete.setImageResource(R.drawable.ic_delete_white_36dp);
+
         } else {
             //delete_layout.setBackgroundColor(Color.WHITE);
-            iv_delete.setImageResource(R.drawable.ic_delete_white_36dp);
+            iv_delete.setImageResource(R.drawable.ic_delete_red_36dp);
         }
 
     }

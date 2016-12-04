@@ -5,6 +5,7 @@
     android:layout_width="78dp"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:id="@+id/directoryItem"
     app:layout_collapseParallaxMultiplier="1.0"
     android:padding="3dp">
 
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:id="@+id/dirName"
-        android:textColor="@color/greyTextName"
+        android:textColor="@color/grayTextName"
         android:ellipsize="end"
         android:maxLines="1"/>
 

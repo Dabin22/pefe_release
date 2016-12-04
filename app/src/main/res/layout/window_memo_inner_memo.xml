@@ -20,8 +20,8 @@
         android:paddingBottom="3dp">
 
         <ToggleButton
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:id="@+id/memoImportance"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
@@ -31,30 +31,24 @@
 
 
         <Button
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
             android:id="@+id/cleanBtn"
             android:background="@drawable/btn_clean"/>
         <Button
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_toLeftOf="@id/cleanBtn"
             android:layout_toStartOf="@id/cleanBtn"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
             android:id="@+id/pasteBtn"
             android:background="@drawable/btn_paste"/>
         <Button
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_toLeftOf="@id/pasteBtn"
             android:layout_toStartOf="@id/pasteBtn"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
             android:id="@+id/copyBtn"
             android:background="@drawable/btn_copy"/>
 
@@ -70,10 +64,10 @@
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/greyText"
+            android:textColor="@color/grayText"
             android:id="@id/title"
             android:hint="Title"
-            android:textColorHint="@color/greyTextHint"/>
+            android:textColorHint="@color/grayTextHint"/>
 
         <Spinner
             android:layout_width="0dp"
@@ -94,10 +88,10 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:inputType="textMultiLine"
             android:ems="10"
-            android:textColor="@color/greyText"
+            android:textColor="@color/grayText"
             android:id="@+id/content"
             android:hint="Content"
-            android:textColorHint="@color/greyTextHint"/>
+            android:textColorHint="@color/grayTextHint"/>
 
     </ScrollView>
 

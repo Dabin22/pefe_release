@@ -22,7 +22,7 @@
         <TextView
             android:id="@+id/tv_register_todo"
             android:layout_weight="1"
-            android:textColor="@color/greyText"
+            android:textColor="@color/grayText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical" />

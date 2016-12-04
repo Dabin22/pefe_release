@@ -8,7 +8,7 @@
         android:id="@+id/et_goal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/greyText"
-        android:hint="좌우명이나 목표를 설정해주세요"/>
+        android:textColor="@color/grayText"
+        android:hint="set your goal"/>
 
 </LinearLayout>

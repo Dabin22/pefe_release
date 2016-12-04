@@ -79,26 +79,6 @@ public class MainViewImpl extends AppCompatActivity {
         super.onDestroy();
     }
 
-//    private void addSamples() {
-//        for (Directory d : Sample.getDirectories()) {
-//            Log.e("Directory",d.getCode());
-//            Date nDate = Calendar.getInstance().getTime();
-//            realmController.createDir(d.getName(), d.getPw(),nDate);
-//        }
-//        for (Memo m : Sample.getMemos()) {
-//            Log.e("Memo",m.getNo()+"");
-//            Date nDate = Calendar.getInstance().getTime();
-//            realmController.writeMemo(m.isImportant(), m.getDirCode(), m.getContent(),nDate);
-//        }
-//        for (Todo t : Sample.createSampleTodo()) {
-//            Log.e("todo",t.getNo()+"");
-//            realmController.writeTodo(t.getType(), t.getContent(), t.getCreateDate());
-//        }
-////        for (SelectedTodo st : Sample.createSampleSelectedTodo()){
-////            Log.e("stodo",st.getNo()+"");
-////            realmController.writeSelectedTodo(st.getType(),st.getContent(),st.getBelongDate(),st.getPutDate());
-////        }
-//        }
 
     private void init(){
         drawViews();
@@ -123,16 +103,15 @@ public class MainViewImpl extends AppCompatActivity {
 
     private void checkRoot(){
         Intent intent = new Intent(MainViewImpl.this, RootService.class);
-        if(preferenceControl.restoreMemoUse()|| preferenceControl.restoreLockScreenUse()){
+//        if(preferenceControl.restoreMemoUse()|| preferenceControl.restoreLockScreenUse()){
             if(!PefeMemo.isRootOn()){
                 startService(intent);
             }
-        }else{
-            if(PefeMemo.isRootOn()){
-                stopService(intent);
-            }
-        }
-        intent = null;
+//        }else{
+//            if(PefeMemo.isRootOn()){
+//                stopService(intent);
+//            }
+//        }
     }
 
     private void setupViewPager(ViewPager viewPager, ArrayList<Fragment> fragments, FragmentManager fragmentManager){

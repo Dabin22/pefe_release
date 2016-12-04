@@ -16,7 +16,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="LockScreen"/>
+            android:text="LockScreen"
+            android:textColor="@color/white"/>
         <Switch
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -28,7 +29,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/txtMemobtn"
             android:gravity="center_vertical"
-            android:text="Memo"/>
+            android:text="Memo"
+            android:textColor="@color/white"/>
         <Switch
             android:layout_width="0dp"
             android:layout_weight="1"

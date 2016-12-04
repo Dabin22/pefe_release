@@ -157,7 +157,7 @@ public class RealmControllerImpl implements RealmController {
     public void modifyDir(String code, String name, String pw) {
         try{
             pefeRealm.executeTransaction(new DirModifyWoOrderTransaction(code, name, pw));
-            Toast.makeText(context, "Folder Settings Changed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Folder Modifed", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Changing folder settings has been cancelled", Toast.LENGTH_SHORT).show();
@@ -225,7 +225,7 @@ public class RealmControllerImpl implements RealmController {
     public void modifyMemo(long no, boolean importance, String dirCode, String title, String content) {
         try {
             pefeRealm.executeTransaction(new MemoModifyTransaction(no, importance, dirCode,title ,content));
-            Toast.makeText(context, "Memo Modified", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Memo Edited", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Modifying memo has been cancelled", Toast.LENGTH_SHORT).show();
@@ -246,7 +246,7 @@ public class RealmControllerImpl implements RealmController {
     public void deleteMemoForever(long no) {
         try{
             pefeRealm.executeTransaction(new MemoDeleteForeverTransaction(no));
-            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Memo Deleted", Toast.LENGTH_SHORT).show();
         }catch(Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
@@ -257,7 +257,7 @@ public class RealmControllerImpl implements RealmController {
     public void emptyTrashCan() {
         try{
             pefeRealm.executeTransaction(new EmptyTrashCanTransaction());
-            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"Trash can Emptied", Toast.LENGTH_SHORT).show();
         }catch(Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
@@ -271,7 +271,7 @@ public class RealmControllerImpl implements RealmController {
     public void recycleMemo(long no) {
         try{
             pefeRealm.executeTransaction(new RecycleMemoTransaction(no));
-            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Memo Recovered", Toast.LENGTH_SHORT).show();
         }catch(Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
@@ -282,7 +282,7 @@ public class RealmControllerImpl implements RealmController {
     public void recycleAll() {
         try{
             pefeRealm.executeTransaction(new RecycleAllMemoTransaction());
-            Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Memos Recovered", Toast.LENGTH_SHORT).show();
         }catch(Exception e){
             e.printStackTrace();
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
@@ -349,7 +349,7 @@ public class RealmControllerImpl implements RealmController {
     }
     @Override
     public OrderedRealmCollection<Memo> readMemoByContent(String keyWord, String dirCode) {
-        RealmResults<Memo> result = pefeRealm.where(Memo.class).equalTo("dirCode",dirCode).contains("content",keyWord).findAll();
+        RealmResults<Memo> result = pefeRealm.where(Memo.class).equalTo("dirCode",dirCode).beginGroup().contains("content",keyWord).or().contains("title",keyWord).endGroup().findAll();
         return result;
     }
 

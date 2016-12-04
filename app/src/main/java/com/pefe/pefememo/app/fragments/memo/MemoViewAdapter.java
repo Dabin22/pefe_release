@@ -107,21 +107,6 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         }
     }
 
-//    private class ImportanceChangeListener implements CompoundButton.OnCheckedChangeListener{
-//        long no;
-//        String dirCode;
-//        String content;
-//
-//        private ImportanceChangeListener(long no, String dirCode, String content) {
-//            this.no = no;
-//            this.dirCode = dirCode;
-//            this.content = content;
-//        }
-//        @Override
-//        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//            realmController.modifyMemo(no,b,dirCode,content);
-//        }
-//    }
     private class CopyClickListener implements View.OnClickListener{
         TextView content = null;
         String memoContent = null;

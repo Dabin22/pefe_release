@@ -86,6 +86,11 @@ public class MemoFragmentControllerImpl implements MemoFragmentController {
         memoRecyclerView.setLayoutManager(gridLayoutManager);
         dirViewAdapter.setLastDirOpen(false);
         dirViewAdapter.setCurrentDirOpen(true);
+        if(code.equals("")) {
+            dirViewAdapter.setCurrentDirOpen(false);
+        }else{
+            dirViewAdapter.setCurrentDirOpen(true);
+        }
     }
     @Override
     public String getCurrentFolderCode() {

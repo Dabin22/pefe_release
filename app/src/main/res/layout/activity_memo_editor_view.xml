@@ -67,10 +67,10 @@
             android:layout_weight="6"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/greyText"
+            android:textColor="@color/grayText"
             android:id="@+id/memoEditorTitle"
             android:hint="Title"
-            android:textColorHint="@color/greyTextHint"/>
+            android:textColorHint="@color/grayTextHint"/>
 
         <Spinner
             android:layout_width="0dp"

@@ -54,6 +54,7 @@
             android:layout_height="40dp"
             android:background="@color/blueRep"
             android:orientation="horizontal"
+            android:gravity="center_horizontal"
             android:visibility="gone">
 
             <ImageView
@@ -95,7 +96,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textColor="@color/greyText"
+                        android:textColor="@color/grayText"
                         android:textSize="25sp" />
 
                     <TextView
@@ -103,7 +104,7 @@
                         android:layout_marginBottom="2dp"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/greyTextHint"
+                        android:background="@color/grayTextHint"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp" />
 

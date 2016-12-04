@@ -1,6 +1,7 @@
 package com.pefe.pefememo.memo.rootservice;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -10,12 +11,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
+import android.widget.RemoteViews;
 
 import com.pefe.pefememo.PefeMemo;
 import com.pefe.pefememo.R;
@@ -124,38 +127,76 @@ public class RootService extends Service {
         screenOnOffReciever = new ScreenOnOffReciever();
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenOnOffReciever, filter);
+        filter = new IntentFilter(ACTION_SWITCH_MEMO);
+        registerReceiver(screenOnOffReciever,filter);
+        filter = new IntentFilter(ACTION_SWITCH_LOCKSCREEN);
+        registerReceiver(screenOnOffReciever,filter);
     }
     //Notification 달기
     private static final int NOTI_ID = 3223;
+    NotificationManager notiMng;
     private void onOffNotification(){
+        notiMng = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         if (noti == null) {
             if(memoUse||lockScreenUse){
-                noti = makeNotification();
-                startForeground(NOTI_ID,noti);
+                makeNotification();
+                notiMng.notify(NOTI_ID,noti);
             }
         }else{
             if(memoUse||lockScreenUse){
-                startForeground(NOTI_ID,noti);
-            }else{
-                stopForeground(true);
-                noti = null;
+                makeNotification();
+                notiMng.notify(NOTI_ID,noti);
             }
+//            else{
+//                notiMng.cancel(NOTI_ID);
+//                noti = null;
+//            }
         }
 
     }
     private final int NOTI_REQUEST = 8080;
-    private Notification makeNotification(){
+
+    private void makeNotification(){
         // 노티 클릭시 앱으로 가기 위한 인텐트
         Intent intent = new Intent(this,MainViewImpl.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                this,NOTI_REQUEST,intent,0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,NOTI_REQUEST,intent,0);
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pefelogo);
-        Notification.Builder builder = new Notification.Builder(this).setContentTitle("Click to go Pefe App")
-                .setSmallIcon(R.drawable.pefenotification)
-                .setLargeIcon(largeIcon)
-                .setOngoing(true)
-                .setContentIntent(pendingIntent);
-        Notification result = builder.build();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
+            Notification.Builder builder = new Notification.Builder(this).setContentTitle("Click to go Pefe App")
+                    .setSmallIcon(R.drawable.pefenoti)
+                    .setLargeIcon(largeIcon)
+                    .setOngoing(true)
+                    .setContentIntent(pendingIntent)
+                    .setContent(createNotficaitonView());
+            noti = builder.build();
+        }else{
+            Notification.Builder builder = new Notification.Builder(this).setContentTitle("Click to go Pefe App")
+                    .setSmallIcon(R.drawable.pefenoti)
+                    .setLargeIcon(largeIcon)
+                    .setOngoing(true)
+                    .setContentIntent(pendingIntent)
+                    .setCustomContentView(createNotficaitonView());
+            noti =  builder.build();
+        }
+    }
+
+    private RemoteViews createNotficaitonView(){
+        Intent mIntent = new Intent();
+        mIntent.setAction(ACTION_SWITCH_MEMO);
+        PendingIntent pMIntent = PendingIntent.getBroadcast(this,0,mIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent lIntent = new Intent(this,MainViewImpl.class);
+        PendingIntent pLIntent = PendingIntent.getActivity(this,NOTI_REQUEST,lIntent,0);
+        RemoteViews result = new RemoteViews(getPackageName(),R.layout.noti_onoff);
+        result.setOnClickPendingIntent(R.id.notiLogo,pLIntent);
+        if(memoUse) {
+            result.setImageViewResource(R.id.notiMemoOnOff, R.drawable.ic_event_available_white_36dp);
+        }else{
+            result.setImageViewResource(R.id.notiMemoOnOff, R.drawable.ic_event_busy_white_36dp);
+        }
+        result.setOnClickPendingIntent(R.id.notiMemoOnOff,pMIntent);;
+        //result.setTextViewText(R.id.notiLockscreenOnOff,lockScreenUse+"");
+        //result.setOnClickPendingIntent(R.id.notiLockscreenOnOff,pLIntent);
+
         return result;
     }
 
@@ -172,24 +213,44 @@ public class RootService extends Service {
 
     private TelephonyManager telephonyManager = null;
 
+    private static final String ACTION_SWITCH_MEMO ="Switch_MEMO";
+    private static final String ACTION_SWITCH_LOCKSCREEN = "Switch_Lockscreen";
+
     private class ScreenOnOffReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (telephonyManager == null) {
-                telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-            }
-            if (lockScreenUse) {
-                if (action.equals(Intent.ACTION_SCREEN_OFF) && !phoneCallStatus) {
-                    Log.e("ScreenOFF","true");
-                    LockScreenView lockScreenView = new LockScreenViewImpl(RootService.this);
-                    lockScreenView.showLockScreen();
-                }
+            switch(action){
+                case Intent.ACTION_SCREEN_OFF:
+                    if (telephonyManager == null) {
+                        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                        telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+                    }
+                    if (lockScreenUse) {
+                        if (!phoneCallStatus) {
+                            Log.e("ScreenOFF","true");
+                            LockScreenView lockScreenView = new LockScreenViewImpl(RootService.this);
+                            lockScreenView.showLockScreen();
+                        }
+                    }
+                    break;
+
+                case ACTION_SWITCH_MEMO:
+                    memoUse = !memoUse;
+                    preferenceControl.saveMemoUse(memoUse);
+                    updateNoti();
+                    break;
+//                case ACTION_SWITCH_LOCKSCREEN:
+//                    lockScreenUse = !lockScreenUse;
+//                    preferenceControl.saveMemoUse(lockScreenUse);
+//                    updateNoti();
+//                    break;
             }
         }
-        // 핸드폰이 통화중일 경우 반응하지 않도록 설정
-
+        private void updateNoti(){
+            makeNotification();
+            notiMng.notify(NOTI_ID,noti);
+        }
     }
     private boolean phoneCallStatus = false;
     private PhoneStateListener phoneListener = new PhoneStateListener() {
