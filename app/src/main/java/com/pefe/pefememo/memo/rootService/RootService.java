@@ -85,6 +85,7 @@ public class RootService extends Service {
         realmController.realmClose();
         unregisterReceiver(screenOnOffReciever);
         stopForeground(true);
+        preferences.unregisterOnSharedPreferenceChangeListener(listener);
         PefeMemo.setRootOn(false);
         super.onDestroy();
     }
@@ -95,10 +96,18 @@ public class RootService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
     //프리퍼런스 사용 세팅
+    private SharedPreferences preferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
     private void setPreferenceControl(){
-        SharedPreferences preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
+        preferences = getSharedPreferences(PreferenceControlImpl.SAVE_SETTINGS,0);
         preferenceControl = new PreferenceControlImpl(preferences);
-        preferences.registerOnSharedPreferenceChangeListener(new OnStatusChangedListener());
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+                setSettings();
+            }
+        };
+        preferences.registerOnSharedPreferenceChangeListener(listener);
     }
     private void setControllers(){
         realmController = new RealmControllerImpl(this);
@@ -137,28 +146,34 @@ public class RootService extends Service {
     NotificationManager notiMng;
     private void onOffNotification(){
         notiMng = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (noti == null) {
-            if(memoUse||lockScreenUse){
-                makeNotification();
-                notiMng.notify(NOTI_ID,noti);
-            }
-        }else{
-            if(memoUse||lockScreenUse){
-                makeNotification();
-                notiMng.notify(NOTI_ID,noti);
-            }
+        updateNoti();
+//        if (noti == null) {
+//            if(memoUse||lockScreenUse){
+//                makeNotification();
+//                notiMng.notify(NOTI_ID,noti);
+//            }
+//        }else{
+//            if(memoUse||lockScreenUse){
+//                makeNotification();
+//                notiMng.notify(NOTI_ID,noti);
+//            }
 //            else{
 //                notiMng.cancel(NOTI_ID);
 //                noti = null;
 //            }
-        }
+//        }
 
+    }
+    private void updateNoti(){
+        makeNotification();
+        notiMng.notify(NOTI_ID,noti);
     }
     private final int NOTI_REQUEST = 8080;
 
     private void makeNotification(){
         // 노티 클릭시 앱으로 가기 위한 인텐트
         Intent intent = new Intent(this,MainViewImpl.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,NOTI_REQUEST,intent,0);
         Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pefelogo);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
@@ -238,7 +253,7 @@ public class RootService extends Service {
                 case ACTION_SWITCH_MEMO:
                     memoUse = !memoUse;
                     preferenceControl.saveMemoUse(memoUse);
-                    updateNoti();
+//                    updateNoti();
                     break;
 //                case ACTION_SWITCH_LOCKSCREEN:
 //                    lockScreenUse = !lockScreenUse;
@@ -247,10 +262,7 @@ public class RootService extends Service {
 //                    break;
             }
         }
-        private void updateNoti(){
-            makeNotification();
-            notiMng.notify(NOTI_ID,noti);
-        }
+
     }
     private boolean phoneCallStatus = false;
     private PhoneStateListener phoneListener = new PhoneStateListener() {
