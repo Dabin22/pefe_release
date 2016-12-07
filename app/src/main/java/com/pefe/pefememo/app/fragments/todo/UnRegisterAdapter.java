@@ -49,7 +49,7 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
 
     @Override
     public void onBindViewHolder(UnRegisterAdapter.ViewHolder holder, int position) {
-        Todo todo = getData().get(position);
+        Todo todo = datas.get(position);
         holder.tv_unRegister_todo.setText(todo.getContent());
         holder.iv_unRegister_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
         setViewTag(todo.getType(), holder.itemView, position);
@@ -81,7 +81,7 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
 
     @Override
     public int getItemCount() {
-        return getData().size();
+        return datas.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

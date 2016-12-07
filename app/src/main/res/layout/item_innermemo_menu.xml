@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/innerMemoMenu"
+    android:background="@color/blueSecond">
+    <Button
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/cleanBtn"
+        android:background="@drawable/btn_clean" />
+    <Button
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_toLeftOf="@id/cleanBtn"
+        android:layout_toStartOf="@id/cleanBtn"
+        android:id="@+id/pasteBtn"
+        android:background="@drawable/btn_paste"/>
+    <Button
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_toLeftOf="@id/pasteBtn"
+        android:layout_toStartOf="@id/pasteBtn"
+        android:id="@+id/copyBtn"
+        android:background="@drawable/btn_copy"/>
+</RelativeLayout>

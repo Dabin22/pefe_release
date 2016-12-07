@@ -26,7 +26,7 @@ public class SettingsFragment extends Fragment {
     private PreferenceControl preferenceControl;
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
-    private Button switchMemo, switchLockScreen;
+    private Button switchMemo; //switchLockScreen;
     public SettingsFragment() {}
 
     public static SettingsFragment newInstance() {
@@ -53,10 +53,10 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View settingFragment = inflater.inflate(R.layout.fragment_settings, container, false);
         switchMemo =(Button)settingFragment.findViewById(R.id.switchMemo);
-        switchLockScreen =(Button)settingFragment.findViewById(R.id.switchLockScreen);
+        //switchLockScreen =(Button)settingFragment.findViewById(R.id.switchLockScreen);
         setSwitchStatus();
         switchMemo.setOnClickListener(new SwitchClickListener());
-        switchLockScreen.setOnClickListener(new SwitchClickListener());
+        //switchLockScreen.setOnClickListener(new SwitchClickListener());
         return settingFragment;
     }
     @Override
@@ -81,11 +81,11 @@ public class SettingsFragment extends Fragment {
         }else{
             switchMemo.setBackgroundResource(R.drawable.btn_memo_off);
         }
-        if(preferenceControl.restoreLockScreenUse()){
-            switchLockScreen.setBackgroundResource(R.drawable.btn_lock_on);
-        }else{
-            switchLockScreen.setBackgroundResource(R.drawable.btn_lock_off);
-        }
+//        if(preferenceControl.restoreLockScreenUse()){
+//            switchLockScreen.setBackgroundResource(R.drawable.btn_lock_on);
+//        }else{
+//            switchLockScreen.setBackgroundResource(R.drawable.btn_lock_off);
+//        }
     }
 
     private void checkRoot(){
@@ -113,11 +113,11 @@ public class SettingsFragment extends Fragment {
                     preferenceControl.saveMemoUse(memoS);
                 }catch (Exception e){e.printStackTrace();}
 
-            }else if(view.equals(switchLockScreen)){
-                try {
-                    boolean lockS = !preferenceControl.restoreLockScreenUse();
-                    preferenceControl.saveLockScreenUse(lockS);
-                }catch (Exception e){e.printStackTrace();}
+//            }else if(view.equals(switchLockScreen)){
+//                try {
+//                    boolean lockS = !preferenceControl.restoreLockScreenUse();
+//                    preferenceControl.saveLockScreenUse(lockS);
+//                }catch (Exception e){e.printStackTrace();}
             }
             checkRoot();
         }

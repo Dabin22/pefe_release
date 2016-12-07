@@ -217,14 +217,6 @@ public class RootService extends Service {
 
 
 
-    //어플리케이션에서 환경설정을 변화에 대한 리스너
-    private class OnStatusChangedListener implements SharedPreferences.OnSharedPreferenceChangeListener{
-        //변경시 사용여부 업데이트
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-            setSettings();
-        }
-    }
 
     private TelephonyManager telephonyManager = null;
 
@@ -236,19 +228,19 @@ public class RootService extends Service {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             switch(action){
-                case Intent.ACTION_SCREEN_OFF:
-                    if (telephonyManager == null) {
-                        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                        telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-                    }
-                    if (lockScreenUse) {
-                        if (!phoneCallStatus) {
-                            Log.e("ScreenOFF","true");
-                            LockScreenView lockScreenView = new LockScreenViewImpl(RootService.this);
-                            lockScreenView.showLockScreen();
-                        }
-                    }
-                    break;
+//                case Intent.ACTION_SCREEN_OFF:
+//                    if (telephonyManager == null) {
+//                        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+//                        telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+//                    }
+//                    if (lockScreenUse) {
+//                        if (!phoneCallStatus) {
+//                            Log.e("ScreenOFF","true");
+//                            LockScreenView lockScreenView = new LockScreenViewImpl(RootService.this);
+//                            lockScreenView.showLockScreen();
+//                        }
+//                    }
+//                    break;
 
                 case ACTION_SWITCH_MEMO:
                     memoUse = !memoUse;
@@ -264,27 +256,27 @@ public class RootService extends Service {
         }
 
     }
-    private boolean phoneCallStatus = false;
-    private PhoneStateListener phoneListener = new PhoneStateListener() {
-
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            switch (state) {
-                //전화 올 때
-                case TelephonyManager.CALL_STATE_RINGING:
-                    phoneCallStatus = true;
-                    break;
-                //전화 받음
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    phoneCallStatus = true;
-                    break;
-                //전화 끊음
-                case TelephonyManager.CALL_STATE_IDLE:
-                    phoneCallStatus = false;
-                    break;
-            }
-        }
-    };
+//    private boolean phoneCallStatus = false;
+//    private PhoneStateListener phoneListener = new PhoneStateListener() {
+//
+//        @Override
+//        public void onCallStateChanged(int state, String incomingNumber) {
+//            switch (state) {
+//                //전화 올 때
+//                case TelephonyManager.CALL_STATE_RINGING:
+//                    phoneCallStatus = true;
+//                    break;
+//                //전화 받음
+//                case TelephonyManager.CALL_STATE_OFFHOOK:
+//                    phoneCallStatus = true;
+//                    break;
+//                //전화 끊음
+//                case TelephonyManager.CALL_STATE_IDLE:
+//                    phoneCallStatus = false;
+//                    break;
+//            }
+//        }
+//    };
 
 
 }
