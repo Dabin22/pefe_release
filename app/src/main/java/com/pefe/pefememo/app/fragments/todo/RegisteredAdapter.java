@@ -32,7 +32,6 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
 
 
     private OrderedRealmCollection<SelectedTodo> datas;
-    private SelectedTodo todo;
     private TodoDragListener dragListener;
     private TodoLongClickListener longClickListener;
     private Context context;
@@ -58,24 +57,26 @@ public class RegisteredAdapter extends RealmRecyclerViewAdapter<SelectedTodo, Re
     }
 
     @Override
-    public void onBindViewHolder(RegisteredAdapter.ViewHolder holder, int position) {
-        todo = datas.get(position);
+    public void onBindViewHolder(final RegisteredAdapter.ViewHolder holder, int position) {
+        final SelectedTodo todo = datas.get(position);
         holder.tv_unput_todo.setText(todo.getContent());
         holder.iv_unput_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
         holder.ck_todo_done.setChecked(todo.isDone());
+
         if (!compare_date(todo.getBelongDate()).equals("past")) {
-            holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean done) {
-                handler.change_done(todo,done);
-                }
-            });
+
         } else {
             holder.ck_todo_done.setVisibility(View.GONE);
             holder.itemView.setOnLongClickListener(null);
         }
-        TodoViewType viewType = new TodoViewType();
 
+        TodoViewType viewType = new TodoViewType();
+        holder.ck_todo_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean done) {
+                handler.change_done(todo,done);
+            }
+        });
         viewType.setType("Today");
         viewType.setIndex(position);
         viewType.setBelongDate(todo.getBelongDate());

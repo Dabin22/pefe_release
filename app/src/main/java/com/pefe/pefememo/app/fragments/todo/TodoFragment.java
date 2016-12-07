@@ -645,6 +645,7 @@ public class TodoFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void change_done(SelectedTodo todo, boolean done) {
+        Log.e("tag","get no = " + todo.getNo());
         realmController.modifySelectedTodo(todo.getNo(),done,todo.getType(),todo.getContent(),todo.getBelongDate(),todo.getPutDate());
     }
 

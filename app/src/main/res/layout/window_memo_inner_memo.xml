@@ -7,58 +7,20 @@
     android:id="@+id/rglrRoot"
     tools:showIn="@layout/window_memo">
 
-    <RelativeLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/blueSecond"
-        android:id="@+id/innerMemoBar"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:paddingRight="5dp"
-        android:paddingLeft="5dp"
-        android:paddingBottom="3dp">
+        android:layout_margin="5dp">
 
         <ToggleButton
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:id="@+id/memoImportance"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:textOff=""
             android:textOn=""
             android:background="@drawable/tbtn_importance"/>
 
-
-        <Button
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:id="@+id/cleanBtn"
-            android:background="@drawable/btn_clean"/>
-        <Button
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_toLeftOf="@id/cleanBtn"
-            android:layout_toStartOf="@id/cleanBtn"
-            android:id="@+id/pasteBtn"
-            android:background="@drawable/btn_paste"/>
-        <Button
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_toLeftOf="@id/pasteBtn"
-            android:layout_toStartOf="@id/pasteBtn"
-            android:id="@+id/copyBtn"
-            android:background="@drawable/btn_copy"/>
-
-
-
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp">
         <EditText
             android:layout_width="0dp"
             android:layout_weight="6"
@@ -79,7 +41,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_margin="3dp">
 
         <EditText
@@ -94,5 +57,45 @@
             android:textColorHint="@color/grayTextHint"/>
 
     </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:background="@color/blueSecond"
+        android:id="@+id/innerMemoMenuBar"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:paddingBottom="3dp">
 
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/copyBtn"
+            android:text="Copy All"
+            android:textColor="@color/white"
+            android:background="@color/blueSecondTrnsp"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/pasteBtn"
+            android:text="Paste"
+            android:textColor="@color/white"
+            android:background="@color/blueSecondTrnsp"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/cleanBtn"
+            android:text="Clean All"
+            android:textColor="@color/white"
+            android:background="@color/blueSecondTrnsp"/>
+
+
+    </LinearLayout>
     </LinearLayout>

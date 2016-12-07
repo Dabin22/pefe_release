@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -224,15 +225,16 @@ public class MemoViewImpl implements MemoView {
         defaultingInnerMemo(innerMemo);
     }
     private void defaultingInnerMemo(View innerMemo){
-        RelativeLayout innerMemoBar = (RelativeLayout) innerMemo.findViewById(R.id.innerMemoBar);
+        LinearLayout innerMemoMenuBar = (LinearLayout) innerMemo.findViewById(R.id.innerMemoMenuBar);
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
         EditText title = (EditText)innerMemo.findViewById(R.id.title);
         EditText content = (EditText)innerMemo.findViewById(R.id.content);
+        content.setOnLongClickListener(new ContentLongClickListener(innerMemoMenuBar));
         Button cleanBtn = (Button) innerMemo.findViewById(R.id.cleanBtn);
         Button copyBtn = (Button) innerMemo.findViewById(R.id.copyBtn);
         Button pasteBtn = (Button) innerMemo.findViewById(R.id.pasteBtn);
 
-        innerMemoBar.setOnTouchListener(new BarTouchListener());
+//        innerMemoBar.setOnTouchListener(new BarTouchListener());
         cleanBtn.setOnClickListener(new onInnerMemoMenuClick(title,content));
         copyBtn.setOnClickListener(new onInnerMemoMenuClick(title,content));
         pasteBtn.setOnClickListener(new onInnerMemoMenuClick(title,content));
@@ -243,6 +245,29 @@ public class MemoViewImpl implements MemoView {
         if (telephonyManager == null) {
             telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
             telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+    }
+    private class ContentLongClickListener implements  View.OnLongClickListener{
+        View innerMemoMenuBar;
+
+        public ContentLongClickListener(View innerMemoMenuBar) {
+            this.innerMemoMenuBar = innerMemoMenuBar;
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            innerMemoMenuBar.setVisibility(View.VISIBLE);
+            Handler mHandler = new Handler();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    innerMemoMenuBar.setVisibility(View.GONE);
+                }
+            };
+
+            mHandler.postDelayed(runnable,4000);
+
+            return true;
         }
     }
     private class onInnerMemoMenuClick implements View.OnClickListener{

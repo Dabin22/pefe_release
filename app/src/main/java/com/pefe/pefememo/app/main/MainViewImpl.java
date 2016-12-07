@@ -1,11 +1,14 @@
 package com.pefe.pefememo.app.main;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -135,10 +138,32 @@ public class MainViewImpl extends AppCompatActivity {
                     Uri.parse("package:" + getPackageName()));
             startActivityForResult(permission_request,PERMISSION_REQUEST_CODE);
         } else if(android.provider.Settings.canDrawOverlays(this)){
+            checkPermissionList();
+        }
+    }
+    @TargetApi(Build.VERSION_CODES.M)
+    public void checkPermissionList() {
+        //REQUESTCODE를 사용한다. ->후에 onReuqestPermissionResult라는 함수를 override해야한다.
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            String permissionArray[] = {android.Manifest.permission.READ_PHONE_STATE};
+            requestPermissions(permissionArray, PERMISSION_REQUEST_CODE);
+
+        } else {
             init();
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == PERMISSION_REQUEST_CODE){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                init();
+            }
+
+        }
+
+    }
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
