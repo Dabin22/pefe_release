@@ -229,6 +229,7 @@ public class MemoViewImpl implements MemoView {
         ToggleButton importanceTBtn = (ToggleButton)innerMemo.findViewById(R.id.memoImportance);
         EditText title = (EditText)innerMemo.findViewById(R.id.title);
         EditText content = (EditText)innerMemo.findViewById(R.id.content);
+        title.setOnLongClickListener(new ContentLongClickListener(innerMemoMenuBar));
         content.setOnLongClickListener(new ContentLongClickListener(innerMemoMenuBar));
         Button cleanBtn = (Button) innerMemo.findViewById(R.id.cleanBtn);
         Button copyBtn = (Button) innerMemo.findViewById(R.id.copyBtn);

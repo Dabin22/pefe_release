@@ -30,12 +30,10 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
     private Context context;
     private TodoDragListener dragListener;
     private TodoLongClickListener longClickListener;
-    private OrderedRealmCollection<Todo>datas;
 
     public UnRegisterAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Todo> data, boolean autoUpdate, TodoDragListener dragListener) {
         super(context, data, autoUpdate);
         this.context = context;
-        datas = data.sort("no", Sort.DESCENDING);
         //TODO Adapter에 NotifyItemChanged가 필요함 (또는 NotifyItemRemoved), 소스코드 http://stackoverflow.com/questions/28995380/best-practices-to-use-realm-with-a-recycler-view
         this.dragListener = dragListener;
         longClickListener = new TodoLongClickListener();
@@ -49,7 +47,7 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
 
     @Override
     public void onBindViewHolder(UnRegisterAdapter.ViewHolder holder, int position) {
-        Todo todo = datas.get(position);
+        Todo todo = getData().get(position);
         holder.tv_unRegister_todo.setText(todo.getContent());
         holder.iv_unRegister_todo.setImageResource(TodoTypeImg.getTypeImgSrc(todo.getType()));
         setViewTag(todo.getType(), holder.itemView, position);
@@ -81,7 +79,7 @@ public class UnRegisterAdapter extends RealmRecyclerViewAdapter<Todo, UnRegister
 
     @Override
     public int getItemCount() {
-        return datas.size();
+        return getData().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

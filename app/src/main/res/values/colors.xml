@@ -6,17 +6,18 @@
     <color name="greenWhite">#e8f5e9</color>
     <color name ="greenAccent">#EEFF41</color>
 
-    <color name="blueRep">#6bb9f7</color>
-    <color name="blueSecond">#b2dcfe</color>
-    <color name="blueSecondLight">#7db2dcfe</color>
-    <color name="blueSecondDark">#4b6bb9f7</color>
-    <color name="blueSecondTrnsp">#00b2dcfe</color>
+    <color name="blueRep">#1bbafd</color>
+    <color name="blueSecond">#1bbafd</color>
+    <color name="blueSecondLight">#7d02b3fd</color>
+    <color name="blueSecondDark">#4b02b3fd</color>
+    <color name="blueSecondTrnsp">#0002b3fd</color>
     <color name="blueBg">#edf2f6</color>
     <color name="blueBgLight">#7cf3f4fa</color>
     <color name="blueDark">#328ae1</color>
     <color name="blueAccent">#5de4ff</color>
-    <color name="blueAccentBg">#a3d4fb</color>
+    <color name="blueAccentBg">#01a3fe</color>
     <color name ="blueSearchBar">#54f3f4fa</color>
+    <color name ="redAccent">#fc0283</color>
 
     <color name="white">#fafbfc</color>
     <color name="whiteBar">#64dbdfe8</color>

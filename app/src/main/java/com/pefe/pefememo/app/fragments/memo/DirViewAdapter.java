@@ -43,7 +43,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     private RealmController realmController;
     private MemoFragmentController memoDistributor;
     private OrderedRealmCollection<Directory> datas;
-    private CompoundButton lastOpenDir,currentOpenDir;
+    private View lastOpenDir,currentOpenDir;
 
     public DirViewAdapter(@NonNull Context context, @Nullable OrderedRealmCollection<Directory> data, boolean autoUpdate,MemoFragmentControllerImpl memoDistributor ,RealmController realmController) {
         super(context, data, autoUpdate);
@@ -67,7 +67,7 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
         String dirCode = datas.get(position).getCode();
         String dirPw = datas.get(position).getPw();
 
-        holder.dirBtn.setOnCheckedChangeListener(new DirCheckedChangeListener(dirCode,dirPw));
+        holder.dirBtn.setOnClickListener(new DirCheckedChangeListener(dirCode,dirPw));
         holder.dirBtn.setOnLongClickListener(new DirLongClickListener(dirCode,dirPw));
         holder.dirName.setText(name);
 
@@ -75,12 +75,12 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ToggleButton dirBtn;
+        Button dirBtn;
         TextView dirName;
 
         private ViewHolder(View itemView) {
             super(itemView);
-            dirBtn = (ToggleButton) itemView.findViewById(R.id.dirBtn);
+            dirBtn = (Button) itemView.findViewById(R.id.dirBtn);
             dirName = (TextView) itemView.findViewById(R.id.dirName);
         }
     }
@@ -106,35 +106,33 @@ public class DirViewAdapter extends RealmRecyclerViewAdapter<Directory,DirViewAd
     }
     public void setLastDirOpen(boolean open){
         if(lastOpenDir!=null) {
-            View parent = (View)lastOpenDir.getParent();
-            setNameBackgroundColor(open, parent);
+            setFolderBackground(open, lastOpenDir);
         }
     }
     public void setCurrentDirOpen(boolean open){
         if(currentOpenDir!=null) {
-            View parent = (View) currentOpenDir.getParent();
-            setNameBackgroundColor(open, parent);
+            setFolderBackground(open, currentOpenDir);
         }
     }
-    private void setNameBackgroundColor(boolean open, View parent){
+    private void setFolderBackground(boolean open, View folder){
         if(open){
-            int color =ContextCompat.getColor(context,R.color.blueSecondDark);
-            parent.setBackgroundColor(color);
+            folder.setBackgroundResource(R.drawable.btn_folder_open);
             }else{
-            parent.setBackgroundColor(0x00000000);
+            folder.setBackgroundResource(R.drawable.btn_folder_close);
         }
     }
-    private class DirCheckedChangeListener implements CompoundButton.OnCheckedChangeListener {
+    private class DirCheckedChangeListener implements View.OnClickListener {
         String code;
         String pw;
         private DirCheckedChangeListener(String code, String pw) {
             this.code = code;
             this.pw = pw;
         }
+
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        public void onClick(View view) {
             lastOpenDir = currentOpenDir;
-            currentOpenDir = compoundButton;
+            currentOpenDir = view;
             if(pw.equals("")){
                 memoDistributor.setMemosByDirCode(code);
             }

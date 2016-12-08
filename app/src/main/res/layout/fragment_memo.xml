@@ -15,7 +15,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_vertical"
-        android:background="@color/blueRep">
+        android:padding="0dp"
+        android:background="@color/blueSecond">
         <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -30,29 +31,17 @@
             android:id="@+id/searchBtn"
             android:background="@drawable/btn_search"/>
 
-        <ToggleButton
-            android:layout_width="19.5dp"
-            android:layout_height="36dp"
-            android:background="@color/transparent"
-            android:textOn=""
-            android:textOff=""
-            android:id="@+id/space1"/>
 
-        <ToggleButton
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+
+        <ImageButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="0dp"
             android:id="@+id/folderBtn"
-            android:textOn=""
-            android:textOff=""
-            android:background="@drawable/tbtn_folder"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/folder_btn_close"
+            android:background="@drawable/btn_gradit_folder" />
 
-        <ToggleButton
-            android:layout_width="19.5dp"
-            android:layout_height="36dp"
-            android:background="@color/transparent"
-            android:textOn=""
-            android:textOff=""
-            android:id="@+id/space2"/>
     </LinearLayout>
 
     <LinearLayout
@@ -66,7 +55,7 @@
             android:id="@+id/memoRecyclerView"/>
 
         <RelativeLayout
-            android:layout_width="75dp"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="end"
@@ -75,32 +64,37 @@
             android:visibility="gone">
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="64dp"
                 android:id="@+id/trashCanBtn"
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/btn_trashcan"/>
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="64dp"
                 android:id="@+id/addFolderBtn"
                 android:layout_above="@id/trashCanBtn"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/btn_new_folder"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:background="@color/blueSecondDark"
+                android:layout_centerHorizontal="true"
                 android:layout_above="@id/addFolderBtn"/>
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="64dp"
                 android:id="@+id/noFolderBtn"
                 android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/btn_no_folders"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:background="@color/blueSecondDark"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@id/noFolderBtn"/>
 
             <android.support.v7.widget.RecyclerView
@@ -108,6 +102,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/dirRecyclerView"
                 android:layout_below="@id/noFolderBtn"
+                android:layout_centerHorizontal="true"
                 android:layout_above="@id/addFolderBtn"/>
 
 

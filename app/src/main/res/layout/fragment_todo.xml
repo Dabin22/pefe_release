@@ -37,7 +37,7 @@
                 android:layout_weight="1"
                 android:text="11"
                 android:textColor="@color/white"
-                android:textSize="25sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <Button
@@ -78,7 +78,7 @@
 
                 <ImageButton
                     android:id="@+id/ib_before"
-                    android:layout_width="20dp"
+                    android:layout_width="24dp"
                     android:layout_height="match_parent"
                     android:background="@color/blueSecond"
                     app:srcCompat="@drawable/ic_chevron_left_white_18dp" />
@@ -94,10 +94,10 @@
                     <TextView
                         android:id="@+id/tv_nDate"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="36dp"
                         android:gravity="center"
                         android:textColor="@color/grayText"
-                        android:textSize="25sp" />
+                        android:textSize="24sp" />
 
                     <TextView
                         android:layout_marginTop="2dp"
@@ -122,7 +122,7 @@
 
                 <ImageButton
                     android:id="@+id/ib_next"
-                    android:layout_width="20dp"
+                    android:layout_width="24dp"
                     android:layout_height="match_parent"
                     android:background="@color/blueSecond"
                     android:rotation="180"

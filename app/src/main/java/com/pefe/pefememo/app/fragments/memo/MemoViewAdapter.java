@@ -74,9 +74,13 @@ public class MemoViewAdapter extends RealmRecyclerViewAdapter<Memo,MemoViewAdapt
         holder.content.setMaxLines(MAXLINES);
         if(isImportant){
             holder.importance.setVisibility(View.VISIBLE);
+        }else{
+            holder.importance.setVisibility(View.GONE);
         }
         if(isDeleted){
             holder.back.setVisibility(View.VISIBLE);
+        }else{
+            holder.back.setVisibility(View.GONE);
         }
         holder.copy.setOnClickListener(new CopyClickListener(holder.content));
         holder.delete.setOnClickListener(new DeleteClickListener(no,isDeleted));

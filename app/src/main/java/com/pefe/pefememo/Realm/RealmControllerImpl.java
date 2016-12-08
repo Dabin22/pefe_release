@@ -20,6 +20,7 @@ import io.realm.RealmAsyncTask;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmResults;
+import io.realm.RealmSchema;
 import io.realm.Sort;
 import io.realm.annotations.RealmModule;
 
@@ -62,12 +63,18 @@ public class RealmControllerImpl implements RealmController {
                 //.encryptionKey()
                 .schemaVersion(NEWEST_VERSION)
                 .modules(new MemoModule())
-                .deleteRealmIfMigrationNeeded()
                 .build();
     }
     private class PefeMigration implements RealmMigration {
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+            RealmSchema schema = realm.getSchema();
+            if(oldVersion == 0) {
+//                schema.create("Memo")
+//                        .addField()
+//                        .addField();
+//            oldVersion++;
+            }
         }
     }
     

@@ -6,7 +6,8 @@
     android:orientation="vertical">
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:elevation="2dp">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +53,4 @@
             android:background="@drawable/tbtn_add_delete"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
-    <android.support.v4.widget.Space
-        android:layout_width="match_parent"
-        android:layout_height="3dp"/>
 </LinearLayout>

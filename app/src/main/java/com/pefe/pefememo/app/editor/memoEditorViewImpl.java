@@ -60,11 +60,11 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
         copy = (Button) findViewById(R.id.memoEditorCopy);
         paste =(Button) findViewById(R.id.memoEditorPaste);
         folderName =(Spinner)findViewById(R.id.memoEditorDirSpinner);
+        setFolderSpinner(folderName);
         close.setOnClickListener(new CloseClickListener());
         save.setOnClickListener(new SaveClickListener());
         copy.setOnClickListener(new CopyClickListener(content));
         paste.setOnClickListener(new PasteClickListener(content));
-        setFolderSpinner(folderName);
     }
 
     @Override
@@ -148,6 +148,8 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
 
     OrderedRealmCollection<Directory> dirs;
     private void setFolderSpinner(Spinner spinner){
+        String dirCode = memo.getDirCode();
+        int dirPosition = 0;
         dirs = realmController.readDirAll().sort("order", Sort.ASCENDING);
         String[] fList = new String[(dirs.size()+1)];
         for(int i = 0; i < fList.length; i++){
@@ -156,9 +158,13 @@ public  class MemoEditorViewImpl extends AppCompatActivity implements MemoEditor
                 continue;
             }
             fList[i] = dirs.get(i-1).getName();
+            if(dirs.get(i-1).getCode().equals(dirCode)){
+                dirPosition = i;
+            }
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.item_spinner,fList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(dirPosition);
     }
  }

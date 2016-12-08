@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -53,15 +55,15 @@ public class MemoFragment extends Fragment {
 
         EditText searchBar = (EditText)memoFragment.findViewById(R.id.searchBar);
         Button searchBtn = (Button)memoFragment.findViewById(R.id.searchBtn);
-        ToggleButton folderBtn = (ToggleButton)memoFragment.findViewById(R.id.folderBtn);
-        RelativeLayout folderList = (RelativeLayout) memoFragment.findViewById(R.id.folderList);
         searchBtn.setOnClickListener(new SearchBtnClickListener(searchBar));
-        folderBtn.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
-        ToggleButton space1 = (ToggleButton) memoFragment.findViewById(R.id.space1);
-        ToggleButton space2 = (ToggleButton) memoFragment.findViewById(R.id.space2);
-
-        space1.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
-        space2.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
+        ImageButton folderBtn = (ImageButton) memoFragment.findViewById(R.id.folderBtn);
+        RelativeLayout folderList = (RelativeLayout) memoFragment.findViewById(R.id.folderList);
+        folderBtn.setOnClickListener(new FolderBtnClickListener(folderList));
+//        ToggleButton space1 = (ToggleButton) memoFragment.findViewById(R.id.space1);
+//        ToggleButton space2 = (ToggleButton) memoFragment.findViewById(R.id.space2);
+//
+//        space1.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
+//        space2.setOnCheckedChangeListener(new FolderBtnClickListener(folderList));
 
         Button addFolder = (Button) memoFragment.findViewById(R.id.addFolderBtn);
         addFolder.setOnClickListener(new AddFolderBtnClickListener() );
@@ -101,18 +103,23 @@ public class MemoFragment extends Fragment {
         super.onDestroy();
     }
 
-    private class FolderBtnClickListener implements CompoundButton.OnCheckedChangeListener{
+    private class FolderBtnClickListener implements View.OnClickListener{
         RelativeLayout folderList = null;
-
+        boolean open = false;
         public FolderBtnClickListener(RelativeLayout folderList) {
             this.folderList = folderList;
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if(b){
+        public void onClick(View view) {
+            open = !open;
+            if(open){
+                ImageButton imgBtn = (ImageButton)view;
+                imgBtn.setImageResource(R.drawable.folder_btn_open);
                 folderList.setVisibility(View.VISIBLE);
             }else{
+                ImageButton imgBtn = (ImageButton)view;
+                imgBtn.setImageResource(R.drawable.folder_btn_close);
                 folderList.setVisibility(View.GONE);
             }
         }
